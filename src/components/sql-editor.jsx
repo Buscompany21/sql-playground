@@ -49,7 +49,7 @@ const levels = [
   }
 ]
 
-export function TrendySqlEditor() {
+export function SqlEditor() {
   const [sqlCode, setSqlCode] = useState(levels[0].initialCode)
   const [output, setOutput] = useState("")
   const [serverMessage, setServerMessage] = useState("")
