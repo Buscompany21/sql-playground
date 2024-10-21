@@ -68,6 +68,8 @@ export function SqlEditor({ moduleId, levelId }) {
   const [levelData, setLevelData] = useState(null);
   const sqlSpellApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/leveldata`;
   const levelsApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/sqlspell`;
+  console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+
 
   useEffect(() => {
     const fetchLevelData = async () => {
