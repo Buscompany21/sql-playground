@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { Button } from "./ui/button"
+import { Card, CardContent } from "./ui/card"
+import { Progress } from "./ui/progress"
 import CodeMirror from '@uiw/react-codemirror'
 import { sql } from '@codemirror/lang-sql'
 import { vscodeDark } from '@uiw/codemirror-theme-vscode'
@@ -16,87 +16,157 @@ import {
   ChevronUp,
   Sparkles,
 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog"
 import confetti from 'canvas-confetti'
 
-const levels = [
-  { 
-    title: "Level 1: Select All Spells", 
-    task: "Can you select all the spells from our magic book?",
-    initialCode: "SELECT * FROM spells;",
-    expectedOutput: JSON.stringify([
-      { id: 1, name: "Lumos", effect: "Creates light" },
-      { id: 2, name: "Alohomora", effect: "Unlocks doors" },
-      { id: 3, name: "Wingardium Leviosa", effect: "Levitates objects" }
-    ], null, 2)
-  },
-  { 
-    title: "Level 2: Find Specific Creatures", 
-    task: "Can you find all magical creatures that can fly?",
-    initialCode: "SELECT * FROM magical_creatures WHERE can_fly = true;",
-    expectedOutput: JSON.stringify([
-      { id: 1, name: "Dragon", type: "Reptile", can_fly: true },
-      { id: 3, name: "Phoenix", type: "Bird", can_fly: true }
-    ], null, 2)
-  },
-  { 
-    title: "Level 3: Count Potions", 
-    task: "How many potions do we have in our inventory?",
-    initialCode: "SELECT COUNT(*) AS potion_count FROM potions;",
-    expectedOutput: JSON.stringify([
-      { potion_count: 15 }
-    ], null, 2)
-  }
-]
+// const levels = [
+//   { 
+//     title: "Level 1: Select All Spells", 
+//     task: "Can you select all the spells from our magic book?",
+//     initialCode: "SELECT * FROM spells;",
+//     expectedOutput: JSON.stringify([
+//       { id: 1, name: "Lumos", effect: "Creates light" },
+//       { id: 2, name: "Alohomora", effect: "Unlocks doors" },
+//       { id: 3, name: "Wingardium Leviosa", effect: "Levitates objects" }
+//     ], null, 2)
+//   },
+//   { 
+//     title: "Level 2: Find Specific Creatures", 
+//     task: "Can you find all magical creatures that can fly?",
+//     initialCode: "SELECT * FROM magical_creatures WHERE can_fly = true;",
+//     expectedOutput: JSON.stringify([
+//       { id: 1, name: "Dragon", type: "Reptile", can_fly: true },
+//       { id: 3, name: "Phoenix", type: "Bird", can_fly: true }
+//     ], null, 2)
+//   },
+//   { 
+//     title: "Level 3: Count Potions", 
+//     task: "How many potions do we have in our inventory?",
+//     initialCode: "SELECT COUNT(*) AS potion_count FROM potions;",
+//     expectedOutput: JSON.stringify([
+//       { potion_count: 15 }
+//     ], null, 2)
+//   }
+// ]
 
-export function SqlEditor() {
-  const [sqlCode, setSqlCode] = useState(levels[0].initialCode)
-  const [output, setOutput] = useState("")
-  const [serverMessage, setServerMessage] = useState("")
-  const [currentLevel, setCurrentLevel] = useState(0)
-  const [progress, setProgress] = useState(0)
-  const [isMessageExpanded, setIsMessageExpanded] = useState(true)
-  const [isCelebrationOpen, setIsCelebrationOpen] = useState(false)
-  const messageRef = useRef(null)
+export function SqlEditor({ moduleId, levelId }) {
+  // Convert moduleId and levelId to numbers
+  const moduleIdNum = parseInt(moduleId);
+  const levelIdNum = parseInt(levelId);
+
+
+  // State variables
+  const [sqlCode, setSqlCode] = useState('');
+  const [output, setOutput] = useState('');
+  const [serverMessage, setServerMessage] = useState('');
+  const [isMessageExpanded, setIsMessageExpanded] = useState(true);
+  const [isCelebrationOpen, setIsCelebrationOpen] = useState(false);
+  const messageRef = useRef(null);
+
+
+  // Fetch level data based on moduleId and levelId
+  const [levelData, setLevelData] = useState(null);
 
   useEffect(() => {
-    setSqlCode(levels[currentLevel].initialCode)
-    setOutput("")
-    setServerMessage(`Welcome to ${levels[currentLevel].title}! ${levels[currentLevel].task}`)
-    setProgress((currentLevel / (levels.length - 1)) * 100)
-    setIsMessageExpanded(true)
-    setTimeout(() => setIsMessageExpanded(false), 5000) // Auto-collapse after 5 seconds
-  }, [currentLevel])
+    const fetchLevelData = async () => {
+      const moduleLevelID = `${moduleIdNum}${levelIdNum}`; // e.g., "11"
+  
+      try {
+        // Send request to the backend
+        const response = await fetch('https://pbipnzziz4.execute-api.us-west-1.amazonaws.com/prod/leveldata', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ moduleLevelID }),
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          setLevelData(data);
+          setSqlCode(data.initialCode);
+          setServerMessage(`Welcome to ${data.title}! ${data.task}`);
+        } else {
+          setServerMessage(`Error: ${data.error || 'Failed to fetch level data.'}`);
+        }
+      } catch (error) {
+        console.error('Error fetching level data:', error);
+        setServerMessage(`Error fetching level data: ${error.message}`);
+      }
+    };
+  
+    fetchLevelData();
+  }, [moduleIdNum, levelIdNum]);
+  
 
   const handleExecute = async () => {
-    setServerMessage("Casting your SQL spell... 🧙‍♀️✨")
-    setIsMessageExpanded(true)
+    setServerMessage('Casting your SQL spell... 🧙‍♀️✨');
+    setIsMessageExpanded(true);
+  
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setOutput(levels[currentLevel].expectedOutput)
-      setServerMessage(
-        "OMG, you did it! 🎉 Your SQL spell was totally perfect! Let's break it down:\n\n1. You used SELECT, which is like using your wand to point at the exact info you want.\n2. The * is like saying 'Accio everything!' - it grabs all the columns.\n3. FROM spells tells the database which magical book to look in.\n\nNow, try tweaking your spell to get specific stuff. Like, can you just get the 'name' and 'effect' of the spells? Remember, in SQL, being precise is key - just like getting your eyeliner perfect! 💖"
-      )
-      setIsCelebrationOpen(true)
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      })
+      // Prepare the payload
+      const payload = {
+        moduleId: moduleIdNum,
+        levelId: levelIdNum,
+        sqlCode,
+      };
+  
+      // Send request to the backend
+      const response = await fetch('https://pbipnzziz4.execute-api.us-west-1.amazonaws.com/prod/sqlspell', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        // Backend indicates if the level is passed
+        const { output: backendOutput, passed, message } = result;
+  
+        setOutput(JSON.stringify(backendOutput, null, 2));
+  
+        if (passed) {
+          setServerMessage(message || 'You passed the level! 🎉');
+          setIsCelebrationOpen(true);
+          // Trigger confetti or any success animation
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          });
+        } else {
+          setServerMessage(message || 'Not quite there yet. Try again!');
+        }
+      } else {
+        setServerMessage(`Error: ${result.error || 'An error occurred'}`);
+      }
     } catch (error) {
       setServerMessage(
-        "Oops! Your spell kinda fizzled: " + error.message + " But don't stress! Every amazing witch makes mistakes. Let's troubleshoot:\n\n1. Double-check your spelling: SQL words like SELECT, FROM, WHERE need to be just right.\n2. Look at your punctuation: Are your quotes and semicolons in the right spots?\n3. Check your table names: Is 'spells' really the name of our magical table?\n\nTake a sec, look over your spell, and give it another shot. You've got this! 💪✨"
-      )
+        `Oops! Something went wrong: ${error.message}. Please try again.`,
+      );
     }
-  }
+  };
+  
 
   const handleNavigation = (direction) => {
-    if (direction === 'back' && currentLevel > 0) {
-      setCurrentLevel(currentLevel - 1)
-    } else if (direction === 'next' && currentLevel < levels.length - 1) {
-      setCurrentLevel(currentLevel + 1)
+    if (direction === 'back') {
+      // Navigate to the previous level
+      const prevLevelId = levelIdNum - 1;
+      if (prevLevelId > 0) {
+        window.location.href = `/module/${moduleIdNum}/${prevLevelId}`;
+      }
+    } else if (direction === 'next') {
+      // Navigate to the next level
+      const nextLevelId = levelIdNum + 1;
+      // You might want to check if the next level exists
+      window.location.href = `/module/${moduleIdNum}/${nextLevelId}`;
     }
-  }
+  };
+  
 
   const toggleMessageBox = () => {
     setIsMessageExpanded(prev => !prev)
@@ -113,7 +183,7 @@ export function SqlEditor() {
               <Sparkles className="mr-2 text-pink-500" />
               Magical SQL Spellbook
             </h2>
-            <span className="text-lg font-semibold text-indigo-600">{levels[currentLevel].title}</span>
+            <span className="text-lg font-semibold text-indigo-600">{levelData?.title || 'Loading...'}</span>
           </div>
           <div className="grid grid-cols-2 gap-4 flex-1 overflow-hidden">
             <div className="flex flex-col">
@@ -174,17 +244,18 @@ export function SqlEditor() {
         <div className="flex justify-between items-center">
           <Button
             onClick={() => handleNavigation('back')}
-            disabled={currentLevel === 0}
+            disabled={levelIdNum === 1}
             className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm">
             <ArrowLeft className="mr-1 h-4 w-4" /> Previous
           </Button>
           <Progress
-            value={progress}
+            value={0} // Replace with actual progress calculation when implemented
             className="w-1/3 h-2 bg-pink-200"
-            indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500" />
+            indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500"
+          />
           <Button
             onClick={() => handleNavigation('next')}
-            disabled={currentLevel === levels.length - 1}
+            disabled={false} // You might want to add a condition to disable this button when on the last level
             className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm">
             Next <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
@@ -212,3 +283,4 @@ export function SqlEditor() {
     </div>)
   );
 }
+
