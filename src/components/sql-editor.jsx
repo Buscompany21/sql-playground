@@ -66,6 +66,8 @@ export function SqlEditor({ moduleId, levelId }) {
 
   // Fetch level data based on moduleId and levelId
   const [levelData, setLevelData] = useState(null);
+  const sqlSpellApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/leveldata`;
+  const levelsApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/sqlspell`;
 
   useEffect(() => {
     const fetchLevelData = async () => {
@@ -73,7 +75,7 @@ export function SqlEditor({ moduleId, levelId }) {
   
       try {
         // Send request to the backend
-        const response = await fetch('https://pbipnzziz4.execute-api.us-west-1.amazonaws.com/prod/leveldata', {
+        const response = await fetch(levelsApiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -113,7 +115,7 @@ export function SqlEditor({ moduleId, levelId }) {
       };
   
       // Send request to the backend
-      const response = await fetch('https://pbipnzziz4.execute-api.us-west-1.amazonaws.com/prod/sqlspell', {
+      const response = await fetch(sqlSpellApiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
