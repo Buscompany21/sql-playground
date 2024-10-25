@@ -19,36 +19,6 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog"
 import confetti from 'canvas-confetti'
 
-// const levels = [
-//   { 
-//     title: "Level 1: Select All Spells", 
-//     task: "Can you select all the spells from our magic book?",
-//     initialCode: "SELECT * FROM spells;",
-//     expectedOutput: JSON.stringify([
-//       { id: 1, name: "Lumos", effect: "Creates light" },
-//       { id: 2, name: "Alohomora", effect: "Unlocks doors" },
-//       { id: 3, name: "Wingardium Leviosa", effect: "Levitates objects" }
-//     ], null, 2)
-//   },
-//   { 
-//     title: "Level 2: Find Specific Creatures", 
-//     task: "Can you find all magical creatures that can fly?",
-//     initialCode: "SELECT * FROM magical_creatures WHERE can_fly = true;",
-//     expectedOutput: JSON.stringify([
-//       { id: 1, name: "Dragon", type: "Reptile", can_fly: true },
-//       { id: 3, name: "Phoenix", type: "Bird", can_fly: true }
-//     ], null, 2)
-//   },
-//   { 
-//     title: "Level 3: Count Potions", 
-//     task: "How many potions do we have in our inventory?",
-//     initialCode: "SELECT COUNT(*) AS potion_count FROM potions;",
-//     expectedOutput: JSON.stringify([
-//       { potion_count: 15 }
-//     ], null, 2)
-//   }
-// ]
-
 export function SqlEditor({ moduleId, levelId }) {
   // Convert moduleId and levelId to numbers
   const moduleIdNum = parseInt(moduleId);
