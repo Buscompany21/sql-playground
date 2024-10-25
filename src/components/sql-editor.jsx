@@ -66,9 +66,8 @@ export function SqlEditor({ moduleId, levelId }) {
 
   // Fetch level data based on moduleId and levelId
   const [levelData, setLevelData] = useState(null);
-  const sqlSpellApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/leveldata`;
-  const levelsApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/sqlspell`;
-  console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+  const sqlSpellApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/sqlspell`;
+  const levelsApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/leveldata`;
 
 
   useEffect(() => {
