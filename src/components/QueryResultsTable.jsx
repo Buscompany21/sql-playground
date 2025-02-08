@@ -9,27 +9,43 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
-import { Wand2 } from 'lucide-react';
+import { Wand2, Loader2 } from 'lucide-react';
 
-const QueryResultsTable = ({ results }) => {
-  if (!results || results.length === 0) {
+const QueryResultsTable = ({ results, error, isExecuting }) => {
+  const renderContent = () => {
+    if (isExecuting) {
+      return (
+        <div className="text-center p-4">
+          <Loader2 className="h-8 w-8 text-purple-600 animate-spin mx-auto mb-2" />
+          <p className="text-purple-600 font-medium">Casting spell... ✨</p>
+          <p className="text-sm text-purple-500">Your magical query is being executed</p>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="text-center p-4">
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
+            <p className="font-medium">SQL Error</p>
+            <p className="text-sm mt-1">{error}</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (!results || results.length === 0) {
+      return (
+        <div className="text-center p-4 text-purple-600">
+          No results to display yet. Cast your SQL spell! ✨
+        </div>
+      );
+    }
+
+    const columns = Object.keys(results[0]);
+
     return (
-      <div className="text-center p-4 text-purple-600">
-        No results to display yet. Cast your SQL spell! ✨
-      </div>
-    );
-  }
-
-  // Get column headers from the first result object
-  const columns = Object.keys(results[0]);
-
-  return (
-    <Card className="bg-pink-50 rounded-lg border-2 border-pink-200 shadow-inner">
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-purple-600 mb-2 flex items-center">
-          <Wand2 className="mr-2 text-pink-500" />
-          Magical Results ✨
-        </h3>
+      <>
         <ScrollArea className="h-[calc(100vh-400px)] rounded-md">
           <Table>
             <TableHeader>
@@ -66,6 +82,18 @@ const QueryResultsTable = ({ results }) => {
         <div className="mt-2 text-sm text-purple-600">
           {results.length} {results.length === 1 ? 'row' : 'rows'} returned
         </div>
+      </>
+    );
+  };
+
+  return (
+    <Card className="bg-pink-50 rounded-lg border-2 border-pink-200 shadow-inner">
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-purple-600 mb-2 flex items-center">
+          <Wand2 className="mr-2 text-pink-500" />
+          Magical Results ✨
+        </h3>
+        {renderContent()}
       </div>
     </Card>
   );

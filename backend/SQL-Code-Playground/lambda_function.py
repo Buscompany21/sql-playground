@@ -46,7 +46,7 @@ class SQLExecutor:
                 return {
                     'output': [],
                     'passed': False,
-                    'message': 'Level not found'
+                    'error': 'Level not found'  # Changed from message to error
                 }
 
             schema = level_data.get('schema')
@@ -56,47 +56,48 @@ class SQLExecutor:
                 return {
                     'output': [],
                     'passed': False,
-                    'message': 'Invalid level configuration'
+                    'error': 'Invalid level configuration'  # Changed from message to error
                 }
 
             with self.create_temp_db(schema) as conn:
                 cursor = conn.cursor()
                 
-                # Execute user's query
-                user_results = cursor.execute(user_query).fetchall()
-                user_columns = [desc[0] for desc in cursor.description]
+                try:
+                    # Execute user's query
+                    user_results = cursor.execute(user_query).fetchall()
+                    user_columns = [desc[0] for desc in cursor.description]
+                    
+                    # Execute solution query
+                    solution_results = cursor.execute(solution_query).fetchall()
+                    
+                    # Compare results
+                    passed = user_results == solution_results
+                    
+                    # Convert results to dictionary format
+                    output = [
+                        dict(zip(user_columns, row))
+                        for row in user_results
+                    ]
+                    
+                    return {
+                        'output': output,
+                        'passed': passed,
+                        'message': level_data.get('successMessage', '🎉 Spell perfectly cast!') if passed 
+                                else level_data.get('hintMessage', 'Not quite right. Try again!')
+                    }
+                except sqlite3.Error as sql_error:
+                    return {
+                        'output': [],
+                        'passed': False,
+                        'error': f'SQL Error: {str(sql_error)}'  # Changed from message to error
+                    }
                 
-                # Execute solution query
-                solution_results = cursor.execute(solution_query).fetchall()
-                
-                # Compare results
-                passed = user_results == solution_results
-                
-                # Convert results to dictionary format
-                output = [
-                    dict(zip(user_columns, row))
-                    for row in user_results
-                ]
-                
-                return {
-                    'output': output,
-                    'passed': passed,
-                    'message': level_data.get('successMessage', '🎉 Spell perfectly cast!') if passed 
-                              else level_data.get('hintMessage', 'Not quite right. Try again!')
-                }
-                
-        except sqlite3.Error as e:
-            return {
-                'output': [],
-                'passed': False,
-                'message': f'SQL Error: {str(e)}'
-            }
         except Exception as e:
             print(f"Unexpected error: {str(e)}")
             return {
                 'output': [],
                 'passed': False,
-                'message': f'An unexpected error occurred: {str(e)}'
+                'error': f'An unexpected error occurred: {str(e)}'  # Changed from message to error
             }
 
 def lambda_handler(event, context):
@@ -116,7 +117,7 @@ def lambda_handler(event, context):
                 'body': json.dumps({
                     'output': [],
                     'passed': False,
-                    'message': 'SQL query cannot be empty'
+                    'error': 'SQL query cannot be empty'  # Changed from message to error
                 })
             }
         
@@ -142,6 +143,6 @@ def lambda_handler(event, context):
             'body': json.dumps({
                 'output': [],
                 'passed': False,
-                'message': f'Invalid input: {str(e)}'
+                'error': f'Invalid input: {str(e)}'  # Changed from message to error
             })
         }
