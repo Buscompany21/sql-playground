@@ -36,7 +36,8 @@ export function SqlEditor({ moduleId, levelId }) {
   // State variables
   const [sqlCode, setSqlCode] = useState('')
   const [queryResults, setQueryResults] = useState([])
-  const [serverMessage, setServerMessage] = useState('')
+  const [sqlError, setSqlError] = useState(null)
+  const [taskMessage, setTaskMessage] = useState('')
   const [isMessageExpanded, setIsMessageExpanded] = useState(true)
   const [isCelebrationOpen, setIsCelebrationOpen] = useState(false)
   const messageRef = useRef(null)
@@ -48,10 +49,9 @@ export function SqlEditor({ moduleId, levelId }) {
 
   useEffect(() => {
     const fetchLevelData = async () => {
-      const moduleLevelID = `${moduleIdNum}${levelIdNum}` // e.g., "11"
+      const moduleLevelID = `${moduleIdNum}${levelIdNum}`
   
       try {
-        // Send request to the backend
         const response = await fetch(levelsApiUrl, {
           method: 'POST',
           headers: {
@@ -65,13 +65,13 @@ export function SqlEditor({ moduleId, levelId }) {
         if (response.ok) {
           setLevelData(data)
           setSqlCode(data.initialCode)
-          setServerMessage(`Welcome to ${data.title}! ${data.task}`)
+          setTaskMessage(`Welcome to ${data.title}! ${data.task}`)
         } else {
-          setServerMessage(`Error: ${data.error || 'Failed to fetch level data.'}`)
+          setTaskMessage(`Error: ${data.error || 'Failed to fetch level data.'}`)
         }
       } catch (error) {
         console.error('Error fetching level data:', error)
-        setServerMessage(`Error fetching level data: ${error.message}`)
+        setTaskMessage(`Error fetching level data: ${error.message}`)
       }
     }
   
@@ -79,18 +79,15 @@ export function SqlEditor({ moduleId, levelId }) {
   }, [moduleIdNum, levelIdNum])
 
   const handleExecute = async () => {
-    setServerMessage('Casting your SQL spell... 🧙‍♀️✨')
-    setIsMessageExpanded(true)
+    setSqlError(null)  // Clear any previous errors
   
     try {
-      // Prepare the payload
       const payload = {
         moduleId: moduleIdNum,
         levelId: levelIdNum,
         sqlCode,
       }
   
-      // Send request to the backend
       const response = await fetch(sqlSpellApiUrl, {
         method: 'POST',
         headers: {
@@ -99,48 +96,45 @@ export function SqlEditor({ moduleId, levelId }) {
         body: JSON.stringify(payload),
       })
   
-      const result = await response.json()
+      const responseData = await response.json()
+      const result = responseData.body ? JSON.parse(responseData.body) : responseData
   
-      if (response.ok) {
+      if (result.error) {
+        // SQL error occurred
+        setSqlError(result.error)
+        setQueryResults([])
+      } else {
+        // Successful query
         const { output, passed, message } = result
-        
-        // Update the results state
         setQueryResults(output)
-  
+        
         if (passed) {
-          setServerMessage(message || 'You passed the level! 🎉')
+          // Only update the task message if the query is correct
+          setTaskMessage(message || 'You passed the level! 🎉')
           setIsCelebrationOpen(true)
           confetti({
             particleCount: 100,
             spread: 70,
             origin: { y: 0.6 },
           })
-        } else {
-          setServerMessage(message || 'Not quite there yet. Try again!')
         }
-      } else {
-        setServerMessage(`Error: ${result.error || 'An error occurred'}`)
-        setQueryResults([])
+        // If not passed, keep showing the original task message
       }
     } catch (error) {
-      setServerMessage(
-        `Oops! Something went wrong: ${error.message}. Please try again.`,
-      )
+      console.error('Error executing query:', error)
+      setSqlError(`Error executing query: ${error.message}`)
       setQueryResults([])
     }
   }
 
   const handleNavigation = (direction) => {
     if (direction === 'back') {
-      // Navigate to the previous level
       const prevLevelId = levelIdNum - 1
       if (prevLevelId > 0) {
         window.location.href = `/module/${moduleIdNum}/${prevLevelId}`
       }
     } else if (direction === 'next') {
-      // Navigate to the next level
       const nextLevelId = levelIdNum + 1
-      // You might want to check if the next level exists
       window.location.href = `/module/${moduleIdNum}/${nextLevelId}`
     }
   }
@@ -149,7 +143,18 @@ export function SqlEditor({ moduleId, levelId }) {
     setIsMessageExpanded(prev => !prev)
   }
 
-  const QueryResultsTable = ({ results }) => {
+  const QueryResultsTable = ({ results, error }) => {
+    if (error) {
+      return (
+        <div className="flex items-center justify-center h-32 text-center p-4">
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded w-full">
+            <p className="font-medium">SQL Error</p>
+            <p className="text-sm mt-1">{error}</p>
+          </div>
+        </div>
+      )
+    }
+
     if (!results || results.length === 0) {
       return (
         <div className="text-center p-4 text-purple-600">
@@ -158,7 +163,6 @@ export function SqlEditor({ moduleId, levelId }) {
       )
     }
 
-    // Get column headers from the first result object
     const columns = Object.keys(results[0])
 
     return (
@@ -253,7 +257,7 @@ export function SqlEditor({ moduleId, levelId }) {
                   <div
                     ref={messageRef}
                     className={`overflow-auto transition-all duration-300 ease-in-out ${isMessageExpanded ? 'max-h-[250px]' : 'max-h-0'}`}>
-                    <p className="text-sm text-purple-800 whitespace-pre-line">{serverMessage}</p>
+                    <p className="text-sm text-purple-800 whitespace-pre-line">{taskMessage}</p>
                   </div>
                 </div>
               </div>
@@ -263,7 +267,7 @@ export function SqlEditor({ moduleId, levelId }) {
                 <Wand2 className="mr-2 text-pink-500" />
                 Magical Results ✨
               </h3>
-              <QueryResultsTable results={queryResults} />
+              <QueryResultsTable results={queryResults} error={sqlError} />
             </div>
           </div>
         </CardContent>
@@ -277,13 +281,13 @@ export function SqlEditor({ moduleId, levelId }) {
             <ArrowLeft className="mr-1 h-4 w-4" /> Previous
           </Button>
           <Progress
-            value={0} // Replace with actual progress calculation when implemented
+            value={0}
             className="w-1/3 h-2 bg-pink-200"
             indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500"
           />
           <Button
             onClick={() => handleNavigation('next')}
-            disabled={false} // You might want to add a condition to disable this button when on the last level
+            disabled={false}
             className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm">
             Next <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
