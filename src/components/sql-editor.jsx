@@ -24,6 +24,8 @@ import {
   ChevronDown,
   ChevronUp,
   Sparkles,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog"
 import Link from 'next/link'
@@ -45,6 +47,9 @@ export function SqlEditor({ moduleId, levelId }) {
   const [isCelebrationOpen, setIsCelebrationOpen] = useState(false)
   const messageRef = useRef(null)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [isEditorExpanded, setIsEditorExpanded] = useState(false)
+  const [instructionsHeight, setInstructionsHeight] = useState(56) // Default height
+  const instructionsRef = useRef(null)
 
   // Fetch level data based on moduleId and levelId
   const [levelData, setLevelData] = useState(null)
@@ -83,6 +88,8 @@ export function SqlEditor({ moduleId, levelId }) {
   }, [moduleIdNum, levelIdNum, levelsApiUrl])
 
   const handleExecute = async () => {
+    // Minimize the editor when executing query
+    setIsEditorExpanded(false)
     setSqlError(null)  // Clear any previous errors
   
     try {
@@ -104,21 +111,17 @@ export function SqlEditor({ moduleId, levelId }) {
       const result = responseData.body ? JSON.parse(responseData.body) : responseData
   
       if (result.error) {
-        // SQL error occurred
         setSqlError(result.error)
         setQueryResults([])
       } else {
-        // Successful query
         const { output, passed, message } = result
         setQueryResults(output)
         
         if (passed) {
-          // Only update the task message if the query is correct
           setTaskMessage(message || 'You passed the level! 🎉')
           setIsCelebrationOpen(true)
           handleSuccess()
         }
-        // If not passed, keep showing the original task message
       }
     } catch (error) {
       console.error('Error executing query:', error)
@@ -142,6 +145,8 @@ export function SqlEditor({ moduleId, levelId }) {
   const toggleMessageBox = () => {
     setIsMessageExpanded(prev => !prev)
   }
+
+  const toggleEditor = () => setIsEditorExpanded(prev => !prev)
 
   const QueryResultsTable = ({ results, error }) => {
     if (error) {
@@ -288,39 +293,110 @@ export function SqlEditor({ moduleId, levelId }) {
     }
   }, [showSuccess]);
 
+  // Update height when instructions expand/collapse
+  useEffect(() => {
+    if (instructionsRef.current) {
+      setInstructionsHeight(instructionsRef.current.offsetHeight)
+    }
+  }, [isMessageExpanded, taskMessage])
+
   return (
     <div className="relative">
       <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100">
         <NavBar moduleId={moduleId} levelId={levelId} levelData={levelData} />
         
         <main className="flex-1 container mx-auto px-6 py-4 flex flex-col overflow-hidden max-w-7xl">
-          {/* Main Content Area */}
-          <div className="flex-1 grid grid-cols-2 gap-6 overflow-hidden">
-            {/* Left Column */}
-            <div className="flex flex-col gap-4 overflow-hidden">
-              {/* Task Card - Fixed Height */}
-              <Card className="bg-white/70 shadow-sm border-purple-100">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between cursor-pointer" onClick={toggleMessageBox}>
-                    <div className="flex items-center gap-2">
-                      <MessageSquare className="h-5 w-5 text-purple-500" />
-                      <h3 className="font-semibold text-purple-900">Instructions</h3>
+          <div className="flex-1 grid grid-cols-2 gap-6 relative">
+            {/* Left Column - Instructions */}
+            <div className="flex flex-col gap-4">
+              <div ref={instructionsRef}>
+                <Card className="bg-white/70 shadow-sm border-purple-100">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between cursor-pointer" onClick={toggleMessageBox}>
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-5 w-5 text-purple-500" />
+                        <h3 className="font-semibold text-purple-900">Instructions</h3>
+                      </div>
+                      {isMessageExpanded ? <ChevronUp className="h-5 w-5 text-purple-500" /> : <ChevronDown className="h-5 w-5 text-purple-500" />}
                     </div>
-                    {isMessageExpanded ? <ChevronUp className="h-5 w-5 text-purple-500" /> : <ChevronDown className="h-5 w-5 text-purple-500" />}
+                    <div className={`mt-3 text-purple-700 ${isMessageExpanded ? 'block' : 'hidden'}`}>
+                      {taskMessage}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Right Column - Results */}
+            <div className={`${isEditorExpanded ? 'invisible' : 'visible'}`}>
+              <Card className="bg-white/70 shadow-sm border-purple-100 flex flex-col overflow-hidden h-full">
+                <CardContent className="p-4 flex flex-col flex-1">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold text-purple-900">
+                      Query Results
+                    </h3>
+                    {queryResults && queryResults.length > 0 && (
+                      <span className="text-sm text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
+                        {queryResults.length} {queryResults.length === 1 ? 'row' : 'rows'} returned
+                      </span>
+                    )}
                   </div>
-                  <div className={`mt-3 text-purple-700 ${isMessageExpanded ? 'block' : 'hidden'}`}>
-                    {taskMessage}
+                  <div className="flex-1 relative">
+                    <QueryResultsTable results={queryResults} error={sqlError} />
                   </div>
                 </CardContent>
               </Card>
+            </div>
 
-              {/* Editor Area - Fills Remaining Space */}
-              <div className="flex-1 flex flex-col min-h-0">
-                <Card className="flex-1 border-purple-100 bg-[#1E1E1E] overflow-hidden">
-                  <div className="px-4 py-2 text-xs text-purple-300 border-b border-purple-800/20 bg-[#2D2D2D]">
-                    SQL Editor
+            {/* Floating Editor */}
+            <motion.div 
+              layout
+              initial={false}
+              className="absolute left-0"
+              style={{
+                width: 'calc(50% - 12px)',
+                height: `calc(100% - ${instructionsHeight + 16}px)`,
+              }}
+              animate={{
+                width: isEditorExpanded ? '100%' : 'calc(50% - 12px)',
+                height: isEditorExpanded ? '100%' : `calc(100% - ${instructionsHeight + 16}px)`,
+                top: isEditorExpanded ? 0 : instructionsHeight + 16,
+                left: 0,
+                scale: 1,
+                transformOrigin: 'top left',
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                mass: 1,
+              }}
+            >
+              <motion.div 
+                className="h-full flex flex-col"
+                layout
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                  mass: 1,
+                }}
+              >
+                <Card className="flex-1 border-purple-100 bg-[#1E1E1E] overflow-hidden flex flex-col">
+                  <div className="px-4 py-2 text-xs text-purple-300 border-b border-purple-800/20 bg-[#2D2D2D] flex justify-between items-center shrink-0">
+                    <span>SQL Editor</span>
+                    <button
+                      onClick={toggleEditor}
+                      className="p-1 hover:bg-purple-800/20 rounded transition-colors"
+                    >
+                      {isEditorExpanded ? (
+                        <Minimize2 className="h-4 w-4 text-purple-300" />
+                      ) : (
+                        <Maximize2 className="h-4 w-4 text-purple-300" />
+                      )}
+                    </button>
                   </div>
-                  <div className="h-[calc(100%-2.5rem)] overflow-auto">
+                  <div className="flex-1 overflow-auto">
                     <CodeMirror
                       value={sqlCode}
                       theme={vscodeDark}
@@ -341,30 +417,10 @@ export function SqlEditor({ moduleId, levelId }) {
                 >
                   Execute Query
                 </Button>
-              </div>
-            </div>
-
-            {/* Right Column - Results */}
-            <Card className="bg-white/70 shadow-sm border-purple-100 flex flex-col overflow-hidden">
-              <CardContent className="p-4 flex flex-col flex-1">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-purple-900">
-                    Query Results
-                  </h3>
-                  {queryResults && queryResults.length > 0 && (
-                    <span className="text-sm text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
-                      {queryResults.length} {queryResults.length === 1 ? 'row' : 'rows'} returned
-                    </span>
-                  )}
-                </div>
-                <div className="flex-1 relative">
-                  <QueryResultsTable results={queryResults} error={sqlError} />
-                </div>
-              </CardContent>
-            </Card>
+              </motion.div>
+            </motion.div>
           </div>
 
-          {/* Navigation */}
           <div className="flex justify-between items-center mt-4 pb-2">
             <Button
               variant="ghost"
