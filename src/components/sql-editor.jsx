@@ -26,6 +26,7 @@ import {
   Sparkles,
   Maximize2,
   Minimize2,
+  Loader2,
 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog"
 import Link from 'next/link'
@@ -39,24 +40,47 @@ export function SqlEditor({ moduleId, levelId }) {
   const levelIdNum = parseInt(levelId)
 
   // State variables
-  const [sqlCode, setSqlCode] = useState('')
+  const [sqlCode, setSqlCode] = useState('-- Write your SQL query here\n')
   const [queryResults, setQueryResults] = useState([])
   const [sqlError, setSqlError] = useState(null)
-  const [taskMessage, setTaskMessage] = useState('')
+  const [taskMessage, setTaskMessage] = useState('Loading...')
   const [isMessageExpanded, setIsMessageExpanded] = useState(true)
   const [isCelebrationOpen, setIsCelebrationOpen] = useState(false)
   const messageRef = useRef(null)
   const [showSuccess, setShowSuccess] = useState(false)
   const [isEditorExpanded, setIsEditorExpanded] = useState(false)
-  const [instructionsHeight, setInstructionsHeight] = useState(56) // Default height
+  const [instructionsHeight, setInstructionsHeight] = useState(() => {
+    // Default height that matches our loading state layout
+    return 56 + 16 + 24 // header + padding + min-height of content
+  })
   const instructionsRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isExecuting, setIsExecuting] = useState(false)
 
   // Fetch level data based on moduleId and levelId
   const [levelData, setLevelData] = useState(null)
   const sqlSpellApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/sqlspell`
   const levelsApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/leveldata`
 
+  // Calculate initial height after mount
   useEffect(() => {
+    if (instructionsRef.current) {
+      const newHeight = Math.max(instructionsRef.current.offsetHeight, 56)
+      setInstructionsHeight(newHeight)
+    }
+  }, []) // Run once on mount
+
+  // Update height when content changes
+  useEffect(() => {
+    if (instructionsRef.current) {
+      const newHeight = Math.max(instructionsRef.current.offsetHeight, 56)
+      setInstructionsHeight(newHeight)
+    }
+  }, [isMessageExpanded, taskMessage, isLoading])
+
+  // Fetch level data without affecting layout
+  useEffect(() => {
+    setIsLoading(true)
     const fetchLevelData = async () => {
       const moduleLevelID = `${moduleIdNum}${levelIdNum}`
   
@@ -73,7 +97,7 @@ export function SqlEditor({ moduleId, levelId }) {
   
         if (response.ok) {
           setLevelData(data)
-          setSqlCode(data.initialCode)
+          setSqlCode(data.initialCode || '-- Write your SQL query here\n')
           setTaskMessage(data.task)
         } else {
           setTaskMessage(`Error: ${data.error || 'Failed to fetch level data.'}`)
@@ -81,6 +105,8 @@ export function SqlEditor({ moduleId, levelId }) {
       } catch (error) {
         console.error('Error fetching level data:', error)
         setTaskMessage(`Error fetching level data: ${error.message}`)
+      } finally {
+        setIsLoading(false)
       }
     }
   
@@ -88,9 +114,9 @@ export function SqlEditor({ moduleId, levelId }) {
   }, [moduleIdNum, levelIdNum, levelsApiUrl])
 
   const handleExecute = async () => {
-    // Minimize the editor when executing query
+    setIsExecuting(true)
     setIsEditorExpanded(false)
-    setSqlError(null)  // Clear any previous errors
+    setSqlError(null)
   
     try {
       const payload = {
@@ -127,10 +153,13 @@ export function SqlEditor({ moduleId, levelId }) {
       console.error('Error executing query:', error)
       setSqlError(`Error executing query: ${error.message}`)
       setQueryResults([])
+    } finally {
+      setIsExecuting(false)
     }
   }
 
   const handleNavigation = (direction) => {
+    // Don't reset layout, just navigate
     if (direction === 'back') {
       const prevLevelId = levelIdNum - 1
       if (prevLevelId > 0) {
@@ -293,13 +322,6 @@ export function SqlEditor({ moduleId, levelId }) {
     }
   }, [showSuccess]);
 
-  // Update height when instructions expand/collapse
-  useEffect(() => {
-    if (instructionsRef.current) {
-      setInstructionsHeight(instructionsRef.current.offsetHeight)
-    }
-  }, [isMessageExpanded, taskMessage])
-
   return (
     <div className="relative">
       <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100">
@@ -319,8 +341,15 @@ export function SqlEditor({ moduleId, levelId }) {
                       </div>
                       {isMessageExpanded ? <ChevronUp className="h-5 w-5 text-purple-500" /> : <ChevronDown className="h-5 w-5 text-purple-500" />}
                     </div>
-                    <div className={`mt-3 text-purple-700 ${isMessageExpanded ? 'block' : 'hidden'}`}>
-                      {taskMessage}
+                    <div className={`mt-3 text-purple-700 min-h-[24px] ${isMessageExpanded ? 'block' : 'hidden'}`}>
+                      {isLoading ? (
+                        <div className="flex items-center gap-2 text-purple-400 animate-pulse">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Loading instructions...
+                        </div>
+                      ) : (
+                        taskMessage
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -348,13 +377,13 @@ export function SqlEditor({ moduleId, levelId }) {
               </Card>
             </div>
 
-            {/* Floating Editor */}
+            {/* Editor - Always render with correct positioning */}
             <motion.div 
               layout
               initial={false}
               className="absolute left-0"
               style={{
-                width: 'calc(50% - 12px)',
+                width: isEditorExpanded ? '100%' : 'calc(50% - 12px)',
                 height: `calc(100% - ${instructionsHeight + 16}px)`,
               }}
               animate={{
@@ -413,9 +442,19 @@ export function SqlEditor({ moduleId, levelId }) {
                 
                 <Button 
                   onClick={handleExecute}
-                  className="mt-4 w-full bg-violet-600 hover:bg-violet-700 text-white py-4 text-lg shadow-sm"
+                  disabled={isExecuting}
+                  className={`mt-4 w-full py-4 text-lg shadow-sm transition-all ${
+                    isExecuting 
+                      ? 'bg-violet-400 cursor-not-allowed' 
+                      : 'bg-violet-600 hover:bg-violet-700'
+                  } text-white`}
                 >
-                  Execute Query
+                  <div className="flex items-center justify-center gap-2">
+                    {isExecuting && (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    )}
+                    {isExecuting ? 'Executing Query...' : 'Execute Query'}
+                  </div>
                 </Button>
               </motion.div>
             </motion.div>
