@@ -131,11 +131,11 @@ export function SqlEditor({ moduleId, levelId }) {
     if (direction === 'back') {
       const prevLevelId = levelIdNum - 1
       if (prevLevelId > 0) {
-        window.location.href = `/module/${moduleIdNum}/${prevLevelId}`
+        window.location.href = `/module/${moduleIdNum}/${prevLevelId}/`
       }
     } else if (direction === 'next') {
       const nextLevelId = levelIdNum + 1
-      window.location.href = `/module/${moduleIdNum}/${nextLevelId}`
+      window.location.href = `/module/${moduleIdNum}/${nextLevelId}/`
     }
   }
 

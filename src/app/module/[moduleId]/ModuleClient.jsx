@@ -10,8 +10,8 @@ export default function ModuleClient({ params }) {
   const moduleData = moduleConfig[moduleId]
 
   useEffect(() => {
-    router.push(`/module/${moduleId}/1`)
-  }, [moduleId, router])
+    window.location.href = `/module/${moduleId}/1/`
+  }, [moduleId])
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400">

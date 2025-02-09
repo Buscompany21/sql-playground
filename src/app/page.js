@@ -19,7 +19,7 @@ export default function Home() {
             {Object.entries(moduleConfig).map(([id, module]) => (
               <Link 
                 key={id}
-                href={`/module/${id}/1`}
+                href={`/module/${id}/1/`}
                 className="block group"
               >
                 <div className="p-8 rounded-2xl bg-white/50 hover:bg-white/80 border border-purple-100 

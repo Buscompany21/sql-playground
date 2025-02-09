@@ -29,7 +29,7 @@ export function NavBar({ moduleId, levelId, levelData }) {
           >
             <HomeIcon className="h-6 w-6 text-violet-600 group-hover:text-violet-700 transition-colors" />
             <span className="text-lg font-semibold text-violet-700 group-hover:text-violet-800">
-              SQL Editor
+              SQL Home
             </span>
           </Link>
 
@@ -46,7 +46,7 @@ export function NavBar({ moduleId, levelId, levelData }) {
                 {[...Array(totalModules)].map((_, i) => (
                   <DropdownMenuItem key={i + 1} asChild>
                     <Link
-                      href={`/module/${i + 1}/1`}
+                      href={`/module/${i + 1}/1/`}
                       className="w-full cursor-pointer"
                     >
                       Module {i + 1}
@@ -68,7 +68,7 @@ export function NavBar({ moduleId, levelId, levelData }) {
                 {[...Array(levels)].map((_, i) => (
                   <DropdownMenuItem key={i + 1} asChild>
                     <Link
-                      href={`/module/${moduleId}/${i + 1}`}
+                      href={`/module/${moduleId}/${i + 1}/`}
                       className="w-full cursor-pointer"
                     >
                       Level {i + 1}
