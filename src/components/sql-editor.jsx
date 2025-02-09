@@ -27,6 +27,7 @@ import {
 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog"
 import confetti from 'canvas-confetti'
+import Link from 'next/link'
 
 export function SqlEditor({ moduleId, levelId }) {
   // Convert moduleId and levelId to numbers
@@ -76,7 +77,7 @@ export function SqlEditor({ moduleId, levelId }) {
     }
   
     fetchLevelData()
-  }, [moduleIdNum, levelIdNum])
+  }, [moduleIdNum, levelIdNum, levelsApiUrl])
 
   const handleExecute = async () => {
     setSqlError(null)  // Clear any previous errors
@@ -274,23 +275,35 @@ export function SqlEditor({ moduleId, levelId }) {
       </Card>
       <Card className="w-full p-4 bg-white bg-opacity-80 backdrop-blur-sm border-4 border-indigo-200 shadow-lg">
         <div className="flex justify-between items-center">
-          <Button
-            onClick={() => handleNavigation('back')}
-            disabled={levelIdNum === 1}
-            className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm">
-            <ArrowLeft className="mr-1 h-4 w-4" /> Previous
-          </Button>
+          {levelIdNum > 1 ? (
+            <Link 
+              href={`/module/${moduleIdNum}/${levelIdNum - 1}`}
+              className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
+            >
+              <ArrowLeft className="mr-1 h-4 w-4" />
+              Previous
+            </Link>
+          ) : (
+            <div className="w-24"></div>
+          )}
+          
           <Progress
-            value={0}
+            value={((levelIdNum - 1) / 9) * 100}
             className="w-1/3 h-2 bg-pink-200"
             indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500"
           />
-          <Button
-            onClick={() => handleNavigation('next')}
-            disabled={false}
-            className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm">
-            Next <ArrowRight className="ml-1 h-4 w-4" />
-          </Button>
+          
+          {levelIdNum < 9 ? (
+            <Link 
+              href={`/module/${moduleIdNum}/${levelIdNum + 1}`}
+              className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
+            >
+              Next
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          ) : (
+            <div className="w-24"></div>
+          )}
         </div>
       </Card>
       <Dialog open={isCelebrationOpen} onOpenChange={setIsCelebrationOpen}>
@@ -300,7 +313,7 @@ export function SqlEditor({ moduleId, levelId }) {
               Magical Success! 🎉✨
             </DialogTitle>
             <DialogDescription className="text-lg text-purple-600">
-              You've cast the perfect SQL spell! Your magical coding skills are truly enchanting!
+              You&apos;ve cast the perfect SQL spell! Your magical coding skills are truly enchanting!
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 text-center">
