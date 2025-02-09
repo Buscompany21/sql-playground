@@ -30,6 +30,7 @@ import confetti from 'canvas-confetti'
 import Link from 'next/link'
 import { getModuleLevels } from '../config/modules'
 import { ModuleHomeButton } from './ModuleHomeButton'
+import { NavBar } from './NavBar'
 
 export function SqlEditor({ moduleId, levelId }) {
   // Convert moduleId and levelId to numbers
@@ -209,122 +210,139 @@ export function SqlEditor({ moduleId, levelId }) {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 p-4 space-y-4">
-      <Card className="flex-1 border-4 border-pink-200 shadow-lg overflow-hidden bg-white bg-opacity-80 backdrop-blur-sm">
-        <CardContent className="p-4 h-full flex flex-col">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-2xl font-bold text-purple-600 flex items-center">
-              <Sparkles className="mr-2 text-pink-500" />
-              Magical SQL Spellbook
-            </h2>
-            <span className="text-lg font-semibold text-indigo-600">
-              {levelData?.title || 'Loading...'}
-            </span>
-          </div>
-          <div className="grid grid-cols-2 gap-4 flex-1 overflow-hidden">
-            <div className="flex flex-col">
-              <div className="flex-grow overflow-hidden rounded-lg shadow-inner">
-                <CodeMirror
-                  value={sqlCode}
-                  height="100%"
-                  theme={vscodeDark}
-                  extensions={[sql()]}
-                  onChange={(value) => setSqlCode(value)}
-                  className="h-full overflow-auto rounded-lg"
-                />
-              </div>
-              <Button
-                className="mt-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-200 w-full overflow-hidden hover:shadow-xl"
-                onClick={handleExecute}>
-                Cast Your Spell! 🧙‍♀️✨
-              </Button>
-              <div
-                className={`mt-2 bg-purple-100 rounded-lg border-2 border-purple-200 overflow-hidden transition-all duration-300 ease-in-out ${
-                  isMessageExpanded ? 'max-h-[300px]' : 'max-h-12'
-                }`}>
-                <div className="p-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center">
-                      <MessageSquare className="w-4 h-4 mr-2 text-purple-600" />
-                      <span className="font-semibold text-purple-600">Enchanted Message:</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={toggleMessageBox}
-                      className="p-1 hover:bg-purple-200 text-purple-600"
-                      aria-label={isMessageExpanded ? "Collapse message" : "Expand message"}>
-                      {isMessageExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                  <div
-                    ref={messageRef}
-                    className={`overflow-auto transition-all duration-300 ease-in-out ${isMessageExpanded ? 'max-h-[250px]' : 'max-h-0'}`}>
-                    <p className="text-sm text-purple-800 whitespace-pre-line">{taskMessage}</p>
-                  </div>
-                </div>
+    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400">
+      {/* Top Navigation - Slim and Elegant */}
+      <nav className="bg-white/90 backdrop-blur-sm shadow-md">
+        <div className="container mx-auto py-2 px-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              <ModuleHomeButton />
+              <div className="px-3 py-1 bg-purple-100/80 rounded-full">
+                <span className="text-sm font-bold text-purple-700">
+                  Module {moduleIdNum} • Level {levelIdNum}
+                </span>
               </div>
             </div>
-            <div className="bg-pink-50 rounded-lg p-4 overflow-auto border-2 border-pink-200 shadow-inner">
-              <h3 className="text-lg font-semibold text-purple-600 mb-2 flex items-center">
-                <Wand2 className="mr-2 text-pink-500" />
-                Magical Results ✨
-              </h3>
-              <QueryResultsTable results={queryResults} error={sqlError} />
+            <div className="flex items-center gap-3 w-1/3">
+              <Progress
+                value={((levelIdNum - 1) / (getModuleLevels(moduleIdNum.toString()) - 1)) * 100}
+                className="h-1.5 bg-pink-200/50"
+                indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500"
+              />
             </div>
-          </div>
-        </CardContent>
-      </Card>
-      <Card className="w-full p-4 bg-white bg-opacity-80 backdrop-blur-sm border-4 border-indigo-200 shadow-lg">
-        <div className="flex justify-between items-center">
-          <div className="flex gap-2">
-            <ModuleHomeButton />
-            {levelIdNum > 1 ? (
-              <Link 
-                href={`/module/${moduleIdNum}/${levelIdNum - 1}`}
-                className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
-              >
-                <ArrowLeft className="mr-1 h-4 w-4" />
-                Previous
-              </Link>
-            ) : moduleIdNum > 1 ? (
-              <Link 
-                href={`/module/${moduleIdNum - 1}/1`}
-                className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
-              >
-                <ArrowLeft className="mr-1 h-4 w-4" />
-                Previous Module
-              </Link>
-            ) : null}
-          </div>
-          
-          <Progress
-            value={((levelIdNum - 1) / (getModuleLevels(moduleIdNum.toString()) - 1)) * 100}
-            className="w-1/3 h-2 bg-pink-200"
-            indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500"
-          />
-          
-          <div className="flex gap-2">
-            {levelIdNum < getModuleLevels(moduleIdNum.toString()) ? (
-              <Link 
-                href={`/module/${moduleIdNum}/${levelIdNum + 1}`}
-                className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
-              >
-                Next
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            ) : moduleIdNum < 10 ? (
-              <Link 
-                href={`/module/${moduleIdNum + 1}/1`}
-                className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
-              >
-                Next Module
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            ) : null}
           </div>
         </div>
-      </Card>
+      </nav>
+
+      {/* Main Content - Maximized Space */}
+      <main className="flex-1 container mx-auto p-4 flex flex-col overflow-hidden">
+        <Card className="flex-1 border-2 border-white/20 shadow-xl overflow-hidden bg-white/90 backdrop-blur-sm">
+          <CardContent className="p-4 h-full flex flex-col">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-xl font-bold text-purple-600 flex items-center">
+                <Sparkles className="mr-2 text-pink-500 h-5 w-5" />
+                Magical SQL Spellbook
+              </h2>
+              <span className="text-sm font-semibold text-indigo-600 px-3 py-1 bg-indigo-50 rounded-full">
+                {levelData?.title || 'Loading...'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
+              <div className="flex flex-col gap-3">
+                <div className="flex-1 overflow-hidden rounded-lg shadow-inner bg-gray-900 min-h-0">
+                  <CodeMirror
+                    value={sqlCode}
+                    height="100%"
+                    theme={vscodeDark}
+                    extensions={[sql()]}
+                    onChange={(value) => setSqlCode(value)}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  {isMessageExpanded ? (
+                    <div 
+                      className="bg-purple-50 rounded-xl p-3 shadow-inner border border-purple-100 transition-all duration-200"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4 text-purple-500" />
+                          <span className="font-medium text-purple-700">Enchanted Message</span>
+                        </div>
+                        <button 
+                          onClick={toggleMessageBox}
+                          className="text-purple-500 hover:text-purple-700 transition-colors"
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="text-purple-600 text-sm">
+                        {taskMessage}
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={toggleMessageBox}
+                      className="flex items-center gap-2 text-purple-500 hover:text-purple-700 transition-colors text-sm font-medium px-2"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      Show Instructions
+                    </button>
+                  )}
+                  <Button
+                    className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-2 px-6 rounded-full shadow-lg transition duration-200 flex-shrink-0 w-full"
+                    onClick={handleExecute}
+                  >
+                    Cast Your Spell! 🧙‍♀️✨
+                  </Button>
+                </div>
+              </div>
+              <QueryResultsTable results={queryResults} error={sqlError} />
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+
+      {/* Bottom Navigation - Floating Style */}
+      <div className="container mx-auto px-4 pb-4">
+        <div className="flex justify-between">
+          {levelIdNum > 1 ? (
+            <Link 
+              href={`/module/${moduleIdNum}/${levelIdNum - 1}`}
+              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
+            >
+              <ArrowLeft className="mr-1 h-4 w-4" />
+              Previous
+            </Link>
+          ) : moduleIdNum > 1 ? (
+            <Link 
+              href={`/module/${moduleIdNum - 1}/1`}
+              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
+            >
+              <ArrowLeft className="mr-1 h-4 w-4" />
+              Previous Module
+            </Link>
+          ) : <div />}
+          
+          {levelIdNum < getModuleLevels(moduleIdNum.toString()) ? (
+            <Link 
+              href={`/module/${moduleIdNum}/${levelIdNum + 1}`}
+              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
+            >
+              Next
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          ) : moduleIdNum < 10 ? (
+            <Link 
+              href={`/module/${moduleIdNum + 1}/1`}
+              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
+            >
+              Next Module
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          ) : <div />}
+        </div>
+      </div>
       <Dialog open={isCelebrationOpen} onOpenChange={setIsCelebrationOpen}>
         <DialogContent className="bg-gradient-to-r from-pink-200 via-purple-200 to-indigo-200 border-4 border-purple-300">
           <DialogHeader>
