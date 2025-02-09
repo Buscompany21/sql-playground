@@ -1,21 +1,13 @@
 import ModuleClient from './ModuleClient'
+import { moduleConfig } from '../../../config/moduleConfig'
 
 export const dynamic = 'force-static'
 
 export async function generateStaticParams() {
-  // Generate routes for modules 1-2
-  return [
-    { moduleId: '1' },
-    { moduleId: '2' },
-    { moduleId: '3' },
-    { moduleId: '4' },
-    { moduleId: '5' },
-    { moduleId: '6' },
-    { moduleId: '7' },
-    { moduleId: '8' },
-    { moduleId: '9' },
-    { moduleId: '10' },
-  ]
+  // Generate routes for all modules in the config
+  return Object.keys(moduleConfig).map(moduleId => ({
+    moduleId
+  }))
 }
 
 export default function ModulePage(props) {
