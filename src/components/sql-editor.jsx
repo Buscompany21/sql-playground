@@ -339,31 +339,35 @@ export function SqlEditor({ moduleId, levelId }) {
               <div ref={instructionsRef}>
                 <Card className="bg-white/70 shadow-sm border-purple-100">
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between cursor-pointer" onClick={toggleMessageBox}>
-                      <div className="flex items-center gap-2">
-                        <MessageSquare className="h-5 w-5 text-purple-500" />
-                        <h3 className="font-semibold text-purple-900">Instructions</h3>
-                      </div>
-                      {isMessageExpanded ? <ChevronUp className="h-5 w-5 text-purple-500" /> : <ChevronDown className="h-5 w-5 text-purple-500" />}
-                    </div>
-                    <div className={`mt-3 space-y-3 ${isMessageExpanded ? 'block' : 'hidden'}`}>
-                      <p className="text-purple-700">{taskMessage}</p>
-                      {!isLoading && levelData?.hintMessage && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
+                          <MessageSquare className="h-5 w-5 text-purple-500" />
+                          <h3 className="font-semibold text-purple-900">Instructions</h3>
+                        </div>
+                        {isMessageExpanded && !isLoading && levelData?.hintMessage && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setShowHint(!showHint);
                             }}
-                            className="text-xs text-purple-400 hover:text-purple-500 transition-colors"
+                            className="text-sm text-purple-400 hover:text-purple-600 transition-colors px-3 py-1 rounded-full border border-purple-100"
                           >
                             {showHint ? 'Hide hint' : 'Need a hint?'}
                           </button>
-                          {showHint && (
-                            <p className="text-sm text-purple-400 italic">
-                              {levelData.hintMessage}
-                            </p>
-                          )}
+                        )}
+                      </div>
+                      <div onClick={toggleMessageBox}>
+                        {isMessageExpanded ? <ChevronUp className="h-5 w-5 text-purple-500" /> : <ChevronDown className="h-5 w-5 text-purple-500" />}
+                      </div>
+                    </div>
+                    
+                    <div className={`space-y-3 ${isMessageExpanded ? 'block' : 'hidden'}`}>
+                      <p className="text-purple-700 mt-3">{taskMessage}</p>
+                      
+                      {showHint && (
+                        <div className="mt-2 p-3 text-sm text-purple-500 bg-purple-50 rounded-lg border border-purple-100">
+                          {levelData?.hintMessage}
                         </div>
                       )}
                     </div>
