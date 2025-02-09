@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table"
-import { ScrollArea } from "./ui/scroll-area"
+import { ScrollArea, ScrollBar } from "./ui/scroll-area"
 import {
   Wand2,
   ArrowLeft,
@@ -166,42 +166,45 @@ export function SqlEditor({ moduleId, levelId }) {
     const columns = Object.keys(results[0])
 
     return (
-      <ScrollArea className="h-[calc(100vh-400px)] rounded-md">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-purple-100 hover:bg-purple-100">
-              {columns.map((column) => (
-                <TableHead 
-                  key={column}
-                  className="text-purple-900 font-semibold"
-                >
-                  {column}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {results.map((row, rowIndex) => (
-              <TableRow 
-                key={rowIndex}
-                className="hover:bg-pink-100 transition-colors"
-              >
-                {columns.map((column) => (
-                  <TableCell 
-                    key={`${rowIndex}-${column}`}
-                    className="text-purple-800"
+      <div className="absolute inset-0">
+        <ScrollArea className="h-full rounded-md">
+          <div className="min-w-max">
+            <Table>
+              <TableHeader className="sticky top-0 z-10 bg-purple-100">
+                <TableRow className="hover:bg-purple-100">
+                  {columns.map((column) => (
+                    <TableHead 
+                      key={column}
+                      className="text-purple-900 font-semibold whitespace-nowrap"
+                    >
+                      {column}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {results.map((row, rowIndex) => (
+                  <TableRow 
+                    key={rowIndex}
+                    className="hover:bg-pink-100 transition-colors"
                   >
-                    {row[column]?.toString() ?? 'NULL'}
-                  </TableCell>
+                    {columns.map((column) => (
+                      <TableCell 
+                        key={`${rowIndex}-${column}`}
+                        className="text-purple-800 whitespace-nowrap"
+                      >
+                        {row[column]?.toString() ?? 'NULL'}
+                      </TableCell>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <div className="mt-2 p-2 text-sm text-purple-600">
-          {results.length} {results.length === 1 ? 'row' : 'rows'} returned
-        </div>
-      </ScrollArea>
+              </TableBody>
+            </Table>
+          </div>
+          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
+      </div>
     )
   }
 
@@ -342,12 +345,19 @@ export function SqlEditor({ moduleId, levelId }) {
             </div>
 
             {/* Right Column - Results */}
-            <Card className="bg-white/70 shadow-sm border-purple-100 flex flex-col">
-              <CardContent className="p-4 flex-1 flex flex-col min-h-0">
-                <h3 className="text-lg font-semibold text-purple-900 mb-4">
-                  Query Results
-                </h3>
-                <div className="flex-1 min-h-0">
+            <Card className="bg-white/70 shadow-sm border-purple-100 flex flex-col overflow-hidden">
+              <CardContent className="p-4 flex flex-col flex-1">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-purple-900">
+                    Query Results
+                  </h3>
+                  {queryResults && queryResults.length > 0 && (
+                    <span className="text-sm text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
+                      {queryResults.length} {queryResults.length === 1 ? 'row' : 'rows'} returned
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 relative">
                   <QueryResultsTable results={queryResults} error={sqlError} />
                 </div>
               </CardContent>

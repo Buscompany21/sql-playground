@@ -7,8 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Wand2, Loader2 } from 'lucide-react';
 
 const QueryResultsTable = ({ results, error, isExecuting }) => {
@@ -45,57 +44,57 @@ const QueryResultsTable = ({ results, error, isExecuting }) => {
     const columns = Object.keys(results[0]);
 
     return (
-      <>
-        <ScrollArea className="h-[calc(100vh-400px)] rounded-md">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-purple-100 hover:bg-purple-100">
-                {columns.map((column) => (
-                  <TableHead 
-                    key={column}
-                    className="text-purple-900 font-semibold"
-                  >
-                    {column}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {results.map((row, rowIndex) => (
-                <TableRow 
-                  key={rowIndex}
-                  className="hover:bg-pink-100 transition-colors"
-                >
+      <ScrollArea className="w-full h-full rounded-md">
+        <div className="w-full h-full">
+          <div className="inline-block min-w-full align-middle">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-purple-100 hover:bg-purple-100">
                   {columns.map((column) => (
-                    <TableCell 
-                      key={`${rowIndex}-${column}`}
-                      className="text-purple-800"
+                    <TableHead 
+                      key={column}
+                      className="text-purple-900 font-semibold whitespace-nowrap"
                     >
-                      {row[column]?.toString() ?? 'NULL'}
-                    </TableCell>
+                      {column}
+                    </TableHead>
                   ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-        <div className="mt-2 text-sm text-purple-600">
+              </TableHeader>
+              <TableBody>
+                {results.map((row, rowIndex) => (
+                  <TableRow 
+                    key={rowIndex}
+                    className="hover:bg-pink-100 transition-colors"
+                  >
+                    {columns.map((column) => (
+                      <TableCell 
+                        key={`${rowIndex}-${column}`}
+                        className="text-purple-800 whitespace-nowrap"
+                      >
+                        {row[column]?.toString() ?? 'NULL'}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+        <ScrollBar orientation="horizontal" />
+        <ScrollBar orientation="vertical" />
+        <div className="mt-2 p-2 text-sm text-purple-600">
           {results.length} {results.length === 1 ? 'row' : 'rows'} returned
         </div>
-      </>
+      </ScrollArea>
     );
   };
 
   return (
-    <Card className="bg-pink-50 rounded-lg border-2 border-pink-200 shadow-inner">
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-purple-600 mb-2 flex items-center">
-          <Wand2 className="mr-2 text-pink-500" />
-          Magical Results ✨
-        </h3>
+    <div className="w-full h-full flex flex-col">
+      <div className="flex-1 min-h-0">
         {renderContent()}
       </div>
-    </Card>
+    </div>
   );
 };
 
