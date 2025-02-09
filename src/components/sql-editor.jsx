@@ -29,7 +29,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import confetti from 'canvas-confetti'
 import Link from 'next/link'
 import { getModuleLevels } from '../config/modules'
-import { ModuleHomeButton } from './ModuleHomeButton'
 import { NavBar } from './NavBar'
 
 export function SqlEditor({ moduleId, levelId }) {
@@ -69,7 +68,7 @@ export function SqlEditor({ moduleId, levelId }) {
         if (response.ok) {
           setLevelData(data)
           setSqlCode(data.initialCode)
-          setTaskMessage(`Welcome to ${data.title}! ${data.task}`)
+          setTaskMessage(data.task)
         } else {
           setTaskMessage(`Error: ${data.error || 'Failed to fetch level data.'}`)
         }
@@ -209,140 +208,109 @@ export function SqlEditor({ moduleId, levelId }) {
     )
   }
 
+  const maxLevels = getModuleLevels(moduleId.toString())
+
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400">
-      {/* Top Navigation - Slim and Elegant */}
-      <nav className="bg-white/90 backdrop-blur-sm shadow-md">
-        <div className="container mx-auto py-2 px-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <ModuleHomeButton />
-              <div className="px-3 py-1 bg-purple-100/80 rounded-full">
-                <span className="text-sm font-bold text-purple-700">
-                  Module {moduleIdNum} • Level {levelIdNum}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 w-1/3">
-              <Progress
-                value={((levelIdNum - 1) / (getModuleLevels(moduleIdNum.toString()) - 1)) * 100}
-                className="h-1.5 bg-pink-200/50"
-                indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500"
-              />
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100">
+      <NavBar moduleId={moduleId} levelId={levelId} levelData={levelData} />
+      
+      <main className="flex-1 container mx-auto px-6 py-4 flex flex-col overflow-hidden max-w-7xl">
+        {/* Main Content Area */}
+        <div className="flex-1 grid grid-cols-2 gap-6 overflow-hidden">
+          {/* Left Column */}
+          <div className="flex flex-col gap-4 overflow-hidden">
+            {/* Task Card - Fixed Height */}
+            <Card className="bg-white/70 shadow-sm border-purple-100">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between cursor-pointer" onClick={toggleMessageBox}>
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-purple-500" />
+                    <h3 className="font-semibold text-purple-900">Instructions</h3>
+                  </div>
+                  {isMessageExpanded ? <ChevronUp className="h-5 w-5 text-purple-500" /> : <ChevronDown className="h-5 w-5 text-purple-500" />}
+                </div>
+                <div className={`mt-3 text-purple-700 ${isMessageExpanded ? 'block' : 'hidden'}`}>
+                  {taskMessage}
+                </div>
+              </CardContent>
+            </Card>
 
-      {/* Main Content - Maximized Space */}
-      <main className="flex-1 container mx-auto p-4 flex flex-col overflow-hidden">
-        <Card className="flex-1 border-2 border-white/20 shadow-xl overflow-hidden bg-white/90 backdrop-blur-sm">
-          <CardContent className="p-4 h-full flex flex-col">
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-xl font-bold text-purple-600 flex items-center">
-                <Sparkles className="mr-2 text-pink-500 h-5 w-5" />
-                Magical SQL Spellbook
-              </h2>
-              <span className="text-sm font-semibold text-indigo-600 px-3 py-1 bg-indigo-50 rounded-full">
-                {levelData?.title || 'Loading...'}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
-              <div className="flex flex-col gap-3">
-                <div className="flex-1 overflow-hidden rounded-lg shadow-inner bg-gray-900 min-h-0">
+            {/* Editor Area - Fills Remaining Space */}
+            <div className="flex-1 flex flex-col min-h-0">
+              <Card className="flex-1 border-purple-100 bg-[#1E1E1E] overflow-hidden">
+                <div className="px-4 py-2 text-xs text-purple-300 border-b border-purple-800/20 bg-[#2D2D2D]">
+                  Write your SQL spell here ✨
+                </div>
+                <div className="h-[calc(100%-2.5rem)] overflow-auto">
                   <CodeMirror
                     value={sqlCode}
-                    height="100%"
                     theme={vscodeDark}
                     extensions={[sql()]}
                     onChange={(value) => setSqlCode(value)}
+                    height="100%"
+                    basicSetup={{
+                      lineNumbers: true,
+                      foldGutter: true,
+                    }}
                   />
                 </div>
-                <div className="flex flex-col gap-2">
-                  {isMessageExpanded ? (
-                    <div 
-                      className="bg-purple-50 rounded-xl p-3 shadow-inner border border-purple-100 transition-all duration-200"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <MessageSquare className="h-4 w-4 text-purple-500" />
-                          <span className="font-medium text-purple-700">Enchanted Message</span>
-                        </div>
-                        <button 
-                          onClick={toggleMessageBox}
-                          className="text-purple-500 hover:text-purple-700 transition-colors"
-                        >
-                          <ChevronUp className="h-4 w-4" />
-                        </button>
-                      </div>
-                      <div className="text-purple-600 text-sm">
-                        {taskMessage}
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={toggleMessageBox}
-                      className="flex items-center gap-2 text-purple-500 hover:text-purple-700 transition-colors text-sm font-medium px-2"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      Show Instructions
-                    </button>
-                  )}
-                  <Button
-                    className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white py-2 px-6 rounded-full shadow-lg transition duration-200 flex-shrink-0 w-full"
-                    onClick={handleExecute}
-                  >
-                    Cast Your Spell! 🧙‍♀️✨
-                  </Button>
-                </div>
-              </div>
-              <QueryResultsTable results={queryResults} error={sqlError} />
+              </Card>
+              
+              <Button 
+                onClick={handleExecute}
+                className="mt-4 w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 text-lg shadow-md"
+              >
+                <Sparkles className="mr-2 h-5 w-5" />
+                Cast Your Spell!
+              </Button>
             </div>
-          </CardContent>
-        </Card>
-      </main>
+          </div>
 
-      {/* Bottom Navigation - Floating Style */}
-      <div className="container mx-auto px-4 pb-4">
-        <div className="flex justify-between">
-          {levelIdNum > 1 ? (
-            <Link 
-              href={`/module/${moduleIdNum}/${levelIdNum - 1}`}
-              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
-            >
-              <ArrowLeft className="mr-1 h-4 w-4" />
-              Previous
-            </Link>
-          ) : moduleIdNum > 1 ? (
-            <Link 
-              href={`/module/${moduleIdNum - 1}/1`}
-              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
-            >
-              <ArrowLeft className="mr-1 h-4 w-4" />
-              Previous Module
-            </Link>
-          ) : <div />}
-          
-          {levelIdNum < getModuleLevels(moduleIdNum.toString()) ? (
-            <Link 
-              href={`/module/${moduleIdNum}/${levelIdNum + 1}`}
-              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
-            >
-              Next
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          ) : moduleIdNum < 10 ? (
-            <Link 
-              href={`/module/${moduleIdNum + 1}/1`}
-              className="bg-white/90 hover:bg-white/95 text-purple-600 font-medium py-2 px-4 rounded-full shadow-lg transition duration-200 text-sm flex items-center backdrop-blur-sm"
-            >
-              Next Module
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          ) : <div />}
+          {/* Right Column - Results */}
+          <Card className="bg-white/70 shadow-sm border-purple-100 flex flex-col">
+            <CardContent className="p-4 flex-1 flex flex-col min-h-0">
+              <h3 className="text-lg font-semibold text-purple-900 mb-4 flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-purple-500" />
+                Magical Results
+              </h3>
+              <div className="flex-1 min-h-0">
+                <QueryResultsTable results={queryResults} error={sqlError} />
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between items-center mt-4 pb-2">
+          <Button
+            variant="outline"
+            onClick={() => handleNavigation('back')}
+            disabled={levelIdNum <= 1}
+            className="text-purple-600 border-purple-200 hover:bg-purple-50"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Previous Level
+          </Button>
+          
+          <div className="w-96">
+            <Progress
+              value={((levelIdNum - 1) / (maxLevels - 1)) * 100}
+              className="h-2 bg-violet-100"
+              indicatorClassName="bg-gradient-to-r from-violet-500 to-fuchsia-500"
+            />
+          </div>
+
+          <Button
+            variant="outline"
+            onClick={() => handleNavigation('next')}
+            disabled={levelIdNum >= maxLevels}
+            className="text-purple-600 border-purple-200 hover:bg-purple-50"
+          >
+            Next Level
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </main>
       <Dialog open={isCelebrationOpen} onOpenChange={setIsCelebrationOpen}>
         <DialogContent className="bg-gradient-to-r from-pink-200 via-purple-200 to-indigo-200 border-4 border-purple-300">
           <DialogHeader>
