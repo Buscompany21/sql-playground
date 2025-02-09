@@ -40,7 +40,7 @@ export function SqlEditor({ moduleId, levelId }) {
   const levelIdNum = parseInt(levelId)
 
   // State variables
-  const [sqlCode, setSqlCode] = useState('-- Write your SQL query here\n')
+  const [sqlCode, setSqlCode] = useState('')
   const [queryResults, setQueryResults] = useState([])
   const [sqlError, setSqlError] = useState(null)
   const [taskMessage, setTaskMessage] = useState('Loading...')
@@ -97,7 +97,7 @@ export function SqlEditor({ moduleId, levelId }) {
   
         if (response.ok) {
           setLevelData(data)
-          setSqlCode(data.initialCode || '-- Write your SQL query here\n')
+          setSqlCode(data.initialCode || '')
           setTaskMessage(data.task)
         } else {
           setTaskMessage(`Error: ${data.error || 'Failed to fetch level data.'}`)
