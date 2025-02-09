@@ -199,13 +199,13 @@ export function SqlEditor({ moduleId, levelId }) {
     }
   }, []) // Run once on mount
 
-  // Update height when content changes
+  // Update height when content or hint changes
   useEffect(() => {
     if (instructionsRef.current) {
       const newHeight = Math.max(instructionsRef.current.offsetHeight, 56)
       setInstructionsHeight(newHeight)
     }
-  }, [isMessageExpanded, taskMessage, isLoading])
+  }, [isMessageExpanded, taskMessage, isLoading, showHint])
 
   // Fetch level data without affecting layout
   useEffect(() => {
