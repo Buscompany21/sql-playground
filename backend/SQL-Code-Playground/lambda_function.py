@@ -94,17 +94,26 @@ class SQLExecutor:
                         for row in user_results
                     ]
                     
-                    return {
+                    response = {
                         'output': output,
                         'passed': passed,
                         'message': level_data.get('successMessage', '🎉 Spell perfectly cast!') if passed 
                                 else level_data.get('hintMessage', 'Not quite right. Try again!')
                     }
+
+                    # Only include hint if query failed but was valid SQL
+                    if not passed:
+                        response['hint'] = level_data.get('hintMessage')
+                    
+                    return response
+
                 except sqlite3.Error as sql_error:
                     return {
                         'output': [],
                         'passed': False,
-                        'error': f'SQL Error: {str(sql_error)}'
+                        'error': f'SQL Error: {str(sql_error)}',
+                        'hint': level_data.get('hintMessage'),
+                        'showSolution': True  # Only show solution option on SQL errors
                     }
                 
         except Exception as e:

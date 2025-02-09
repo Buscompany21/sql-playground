@@ -6,9 +6,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Wand2, Loader2 } from 'lucide-react';
+} from "./ui/table"
+import { ScrollArea, ScrollBar } from "./ui/scroll-area"
+import { Loader2 } from 'lucide-react'
+import { Wand2 } from 'lucide-react';
 
 const QueryResultsTable = ({ results, error, isExecuting }) => {
   const renderContent = () => {
