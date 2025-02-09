@@ -46,7 +46,7 @@ class SQLExecutor:
                 return {
                     'output': [],
                     'passed': False,
-                    'error': 'Level not found'  # Changed from message to error
+                    'error': 'Level not found'
                 }
 
             schema = level_data.get('schema')
@@ -56,16 +56,31 @@ class SQLExecutor:
                 return {
                     'output': [],
                     'passed': False,
-                    'error': 'Invalid level configuration'  # Changed from message to error
+                    'error': 'Invalid level configuration'
                 }
 
             with self.create_temp_db(schema) as conn:
                 cursor = conn.cursor()
                 
                 try:
-                    # Execute user's query
-                    user_results = cursor.execute(user_query).fetchall()
-                    user_columns = [desc[0] for desc in cursor.description]
+                    # Execute all user queries except the last one without fetching results
+                    queries = [q.strip() for q in user_query.split(';') if q.strip()]
+                    if not queries:
+                        return {
+                            'output': [],
+                            'passed': False,
+                            'error': 'No valid SQL statements found'
+                        }
+                    
+                    # Execute all queries except the last one
+                    for query in queries[:-1]:
+                        cursor.execute(query)
+                        conn.commit()  # Commit after each statement
+                    
+                    # Execute the final query and get its results
+                    final_query = queries[-1]
+                    user_results = cursor.execute(final_query).fetchall()
+                    user_columns = [desc[0] for desc in cursor.description] if cursor.description else []
                     
                     # Execute solution query
                     solution_results = cursor.execute(solution_query).fetchall()
@@ -89,7 +104,7 @@ class SQLExecutor:
                     return {
                         'output': [],
                         'passed': False,
-                        'error': f'SQL Error: {str(sql_error)}'  # Changed from message to error
+                        'error': f'SQL Error: {str(sql_error)}'
                     }
                 
         except Exception as e:
@@ -97,7 +112,7 @@ class SQLExecutor:
             return {
                 'output': [],
                 'passed': False,
-                'error': f'An unexpected error occurred: {str(e)}'  # Changed from message to error
+                'error': f'An unexpected error occurred: {str(e)}'
             }
 
 def lambda_handler(event, context):
@@ -117,7 +132,7 @@ def lambda_handler(event, context):
                 'body': json.dumps({
                     'output': [],
                     'passed': False,
-                    'error': 'SQL query cannot be empty'  # Changed from message to error
+                    'error': 'SQL query cannot be empty'
                 })
             }
         
@@ -143,6 +158,6 @@ def lambda_handler(event, context):
             'body': json.dumps({
                 'output': [],
                 'passed': False,
-                'error': f'Invalid input: {str(e)}'  # Changed from message to error
+                'error': f'Invalid input: {str(e)}'
             })
         }
