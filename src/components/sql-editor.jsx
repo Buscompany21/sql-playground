@@ -28,6 +28,8 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog"
 import confetti from 'canvas-confetti'
 import Link from 'next/link'
+import { getModuleLevels } from '../config/modules'
+import { ModuleHomeButton } from './ModuleHomeButton'
 
 export function SqlEditor({ moduleId, levelId }) {
   // Convert moduleId and levelId to numbers
@@ -275,35 +277,52 @@ export function SqlEditor({ moduleId, levelId }) {
       </Card>
       <Card className="w-full p-4 bg-white bg-opacity-80 backdrop-blur-sm border-4 border-indigo-200 shadow-lg">
         <div className="flex justify-between items-center">
-          {levelIdNum > 1 ? (
-            <Link 
-              href={`/module/${moduleIdNum}/${levelIdNum - 1}`}
-              className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
-            >
-              <ArrowLeft className="mr-1 h-4 w-4" />
-              Previous
-            </Link>
-          ) : (
-            <div className="w-24"></div>
-          )}
+          <div className="flex gap-2">
+            <ModuleHomeButton />
+            {levelIdNum > 1 ? (
+              <Link 
+                href={`/module/${moduleIdNum}/${levelIdNum - 1}`}
+                className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
+              >
+                <ArrowLeft className="mr-1 h-4 w-4" />
+                Previous
+              </Link>
+            ) : moduleIdNum > 1 ? (
+              <Link 
+                href={`/module/${moduleIdNum - 1}/1`}
+                className="bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
+              >
+                <ArrowLeft className="mr-1 h-4 w-4" />
+                Previous Module
+              </Link>
+            ) : null}
+          </div>
           
           <Progress
-            value={((levelIdNum - 1) / 9) * 100}
+            value={((levelIdNum - 1) / (getModuleLevels(moduleIdNum.toString()) - 1)) * 100}
             className="w-1/3 h-2 bg-pink-200"
             indicatorClassName="bg-gradient-to-r from-purple-500 to-pink-500"
           />
           
-          {levelIdNum < 9 ? (
-            <Link 
-              href={`/module/${moduleIdNum}/${levelIdNum + 1}`}
-              className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
-            >
-              Next
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          ) : (
-            <div className="w-24"></div>
-          )}
+          <div className="flex gap-2">
+            {levelIdNum < getModuleLevels(moduleIdNum.toString()) ? (
+              <Link 
+                href={`/module/${moduleIdNum}/${levelIdNum + 1}`}
+                className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
+              >
+                Next
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            ) : moduleIdNum < 10 ? (
+              <Link 
+                href={`/module/${moduleIdNum + 1}/1`}
+                className="bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-500 hover:to-purple-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-200 hover:scale-105 text-sm flex items-center"
+              >
+                Next Module
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            ) : null}
+          </div>
         </div>
       </Card>
       <Dialog open={isCelebrationOpen} onOpenChange={setIsCelebrationOpen}>

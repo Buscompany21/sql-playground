@@ -1,13 +1,15 @@
 import LevelClient from './LevelClient'
+import { MODULE_CONFIG, getModuleLevels } from '../../../../config/modules'
 
 export const dynamic = 'force-static'
 
 export async function generateStaticParams() {
   const routes = []
-  for (let moduleNum = 1; moduleNum <= 10; moduleNum++) {
-    for (let level = 1; level <= 9; level++) {
+  for (const moduleId in MODULE_CONFIG) {
+    const numLevels = getModuleLevels(moduleId)
+    for (let level = 1; level <= numLevels; level++) {
       routes.push({
-        moduleId: moduleNum.toString(),
+        moduleId: moduleId.toString(),
         levelId: level.toString()
       })
     }
