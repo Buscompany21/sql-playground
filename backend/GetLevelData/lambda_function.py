@@ -9,6 +9,7 @@ def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
         moduleLevelID = body.get('moduleLevelID')
+        getSolution = body.get('getSolution', False)
 
         if not moduleLevelID:
             return {
@@ -28,12 +29,30 @@ def lambda_handler(event, context):
                 'body': json.dumps({'error': 'Level data not found.'})
             }
 
+        item = response['Item']
+        
+        # If requesting solution, only return that
+        if getSolution:
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({
+                    'solution': item.get('solution')
+                })
+            }
+
+        # Remove solution from regular response
+        if 'solution' in item:
+            del item['solution']
+
         return {
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*'
             },
-            'body': json.dumps(response['Item'])
+            'body': json.dumps(item)
         }
 
     except Exception as e:
