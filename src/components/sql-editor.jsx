@@ -251,7 +251,7 @@ const QueryResultsTable = ({ results, error }) => {
 // Level progress indicator
 const LevelProgressIndicator = ({ currentLevel, maxLevels, onLevelClick }) => {
   return (
-    <div className="flex items-center justify-center space-x-2 py-2 bg-slate-100 rounded-md px-2">
+    <div className="flex items-center justify-center space-x-2 py-2 bg-[#E6F2F2] rounded-md px-2">
       {[...Array(maxLevels)].map((_, index) => {
         const levelNumber = index + 1;
         const isCurrentLevel = levelNumber === currentLevel;
@@ -266,8 +266,8 @@ const LevelProgressIndicator = ({ currentLevel, maxLevels, onLevelClick }) => {
               isCurrentLevel 
                 ? "bg-[#2A6B70] text-white" 
                 : isPreviousLevel 
-                  ? "bg-[#E6F2F2] text-[#2A6B70]" 
-                  : "bg-white text-slate-400 border border-slate-200"
+                  ? "bg-[#68A4A1] text-white" 
+                  : "bg-white text-slate-600 border border-slate-200"
             )}
           >
             {levelNumber}
@@ -467,7 +467,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col overflow-hidden">
       {/* Module Navigation Sidebar */}
       <AnimatePresence>
         {isSidebarOpen && (
@@ -483,38 +483,38 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
       {/* Fullscreen Editor Container */}
       {isFullScreen && (
         <div 
-          className="fixed inset-0 z-50 bg-white flex flex-col border"
+          className="fixed inset-0 z-50 flex flex-col bg-white"
           ref={fullScreenContainerRef}
         >
           {/* Fullscreen Top Bar */}
-          <div className="bg-white border-b p-2 flex items-center justify-between">
+          <div className="bg-[#2A6B70] text-white py-2 px-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <Link href="/" className="p-1.5 rounded-md hover:bg-slate-100 transition-colors">
-                  <Home className="h-4 w-4 text-[#4E5964]" />
+                <Link href="/" className="p-1.5 rounded-md hover:bg-[#235458] transition-colors">
+                  <Home className="h-4 w-4 text-white" />
                 </Link>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={toggleSidebar}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 text-white hover:bg-[#235458]"
                 >
-                  <Menu className="h-5 w-5 text-[#4E5964]" />
+                  <Menu className="h-5 w-5" />
                 </Button>
-                <div className="h-4 w-px bg-slate-200 mx-2"></div>
+                <div className="h-4 w-px bg-white/20 mx-2"></div>
                 <div className="text-sm">
                   <Link 
                     href={`/module/${moduleIdNum}`}
-                    className="text-[#2A6B70] hover:text-[#235458] font-medium"
+                    className="text-white hover:text-white/80 font-medium"
                   >
                     Module {moduleIdNum}
                   </Link>
-                  <span className="text-slate-400 mx-1">·</span>
-                  <span className="font-medium text-[#4E5964]">
+                  <span className="text-white/60 mx-1">·</span>
+                  <span className="font-medium">
                     Level {levelIdNum}
                   </span>
-                  <span className="text-slate-400 mx-1">·</span>
-                  <span className="text-slate-600 font-normal">
+                  <span className="text-white/60 mx-1">·</span>
+                  <span className="text-white/80 font-normal max-w-[300px] truncate inline-block">
                     {levelData?.title || 'SQL Query'}
                   </span>
                 </div>
@@ -525,7 +525,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                 variant="outline"
                 size="sm"
                 onClick={toggleFullScreen}
-                className="h-8 flex items-center gap-1 text-slate-600 hover:bg-slate-100"
+                className="h-8 flex items-center gap-1 bg-transparent text-white border-white/20 hover:bg-[#235458] hover:text-white"
               >
                 <Minimize2 className="h-3.5 w-3.5" />
                 <span>Exit Fullscreen</span>
@@ -536,16 +536,16 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
           {/* Fullscreen Main Content */}
           <div className="flex-1 flex overflow-hidden">
             {/* Left Panel - Instructions */}
-            <div className="w-[300px] border-r flex flex-col bg-white overflow-hidden">
-              <div className="p-3 border-b flex items-center justify-between">
+            <div className="w-[300px] border-r border-slate-200 flex flex-col bg-white overflow-hidden">
+              <div className="p-3 border-b border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-[#5B8A9D]" />
-                  <h3 className="font-medium text-sm">Instructions</h3>
+                  <h3 className="font-medium text-sm text-[#2E3A45]">Instructions</h3>
                 </div>
                 {levelData?.hintMessage && (
                   <button
                     onClick={toggleHint}
-                    className="text-xs flex items-center gap-1 px-2 py-1 rounded hover:bg-slate-100 transition-colors text-[#5B8A9D]"
+                    className="text-xs flex items-center gap-1 px-2 py-1 rounded hover:bg-[#E6F2F2] transition-colors text-[#5B8A9D]"
                   >
                     <HelpCircle className="h-3 w-3" />
                     <span>{showHint ? "Hide hint" : "Show hint"}</span>
@@ -553,7 +553,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                 )}
               </div>
               
-              <div className="p-4 overflow-y-auto flex-1">
+              <div className="p-4 overflow-y-auto flex-1 text-sm">
                 <p className="text-[#2E3A45]">{taskMessage}</p>
                 
                 {levelData?.hintMessage && showHint && (
@@ -570,13 +570,14 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
             
             {/* Middle Panel - SQL Editor */}
             <div className="flex-1 flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 overflow-hidden bg-[#0F172A]">
                 <CodeMirror
                   value={sqlCode}
                   theme={vscodeDark}
                   extensions={[sql()]}
                   onChange={(value) => setSqlCode(value)}
                   height="100%"
+                  className="h-full"
                   basicSetup={{
                     lineNumbers: true,
                     foldGutter: true,
@@ -594,7 +595,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                     "w-full py-2 text-white flex items-center justify-center gap-2",
                     isExecuting 
                       ? "bg-[#68A4A1]/70 cursor-not-allowed" 
-                      : "bg-[#5B8A9D] hover:bg-[#4A7688]"
+                      : "bg-[#2A6B70] hover:bg-[#235458]"
                   )}
                 >
                   {isExecuting ? (
@@ -613,11 +614,11 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
             </div>
             
             {/* Right Panel - Results */}
-            <div className="w-[400px] border-l bg-white flex flex-col overflow-hidden">
-              <div className="p-3 border-b flex items-center justify-between">
+            <div className="w-[400px] border-l border-slate-200 bg-white flex flex-col overflow-hidden">
+              <div className="p-3 border-b border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Monitor className="h-4 w-4 text-[#5B8A9D]" />
-                  <h3 className="font-medium text-sm">Query Results</h3>
+                  <h3 className="font-medium text-sm text-[#2E3A45]">Query Results</h3>
                 </div>
                 {queryResults?.length > 0 && (
                   <span className="text-xs px-1.5 py-0.5 bg-[#E6F2F2] text-[#2A6B70] rounded">
@@ -633,7 +634,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
           </div>
           
           {/* Fullscreen Bottom Navigation */}
-          <div className="border-t py-3 px-6 bg-slate-50 flex items-center justify-between">
+          <div className="border-t border-slate-200 py-3 px-6 bg-white flex items-center justify-between">
             <Button 
               variant="outline" 
               size="sm"
@@ -667,14 +668,14 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
       
       {/* Regular Mode Layout */}
       {!isFullScreen && (
-        <div className="relative flex-1 flex flex-col bg-[#F8FAFA]">
+        <div className="relative flex-1 flex flex-col overflow-hidden bg-[#F8FAFA]">
           {/* Top Header Bar */}
-          <header className="bg-white border-b z-10 px-4 py-2">
+          <header className="bg-[#2A6B70] text-white border-b z-10 px-4 py-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Link href="/">
-                  <Button variant="ghost" size="sm" className="h-8 mr-1">
-                    <Home className="h-4 w-4 text-[#4E5964]" />
+                  <Button variant="ghost" size="sm" className="h-8 mr-1 text-white hover:bg-[#235458]">
+                    <Home className="h-4 w-4" />
                     <span className="sr-only">Home</span>
                   </Button>
                 </Link>
@@ -682,31 +683,31 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                   variant="ghost"
                   size="sm"
                   onClick={toggleSidebar}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 text-white hover:bg-[#235458]"
                 >
-                  <Menu className="h-5 w-5 text-[#4E5964]" />
+                  <Menu className="h-5 w-5" />
                   <span className="sr-only">Menu</span>
                 </Button>
                 
                 <div className="flex items-center gap-1">
                   <Link 
                     href={`/module/${moduleIdNum}`}
-                    className="text-[#2A6B70] hover:text-[#235458] font-medium"
+                    className="text-white hover:text-white/80 font-medium"
                   >
                     Module {moduleIdNum}
                   </Link>
-                  <ChevronRight className="h-4 w-4 text-[#4E5964]" />
-                  <span className="font-medium text-[#4E5964] max-w-[400px] truncate inline-block">
+                  <ChevronRight className="h-4 w-4 text-white/60" />
+                  <span className="font-medium text-white max-w-[400px] truncate inline-block">
                     {levelData?.title || `Level ${levelIdNum}`}
                   </span>
                 </div>
               </div>
               
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={toggleFullScreen}
-                className="h-8 flex items-center gap-1 text-[#5B8A9D]"
+                className="h-8 flex items-center gap-1 bg-transparent text-white border-white/20 hover:bg-[#235458]"
               >
                 <span className="hidden sm:inline">Fullscreen</span>
                 <Maximize2 className="h-4 w-4" />
@@ -717,9 +718,9 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
           {/* Main Editor Content */}
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 md:gap-4 overflow-hidden p-4">
             {/* Left Column - Instructions & Editor */}
-            <div className="flex flex-col h-full overflow-hidden">
+            <div className="flex flex-col h-full overflow-hidden min-h-0">
               {/* Task Instructions Card */}
-              <Card className="bg-white shadow-sm border-slate-200 mb-4">
+              <Card className="bg-white shadow-sm border-slate-200 mb-4 overflow-hidden">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -746,7 +747,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                   </div>
                   
                   {isMessageExpanded && (
-                    <div className="mt-3 text-[#4E5964]">
+                    <div className="mt-3 text-[#4E5964] overflow-y-auto max-h-[200px]">
                       <p>{taskMessage}</p>
                       
                       {levelData?.hintMessage && showHint && (
@@ -764,7 +765,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
               </Card>
               
               {/* SQL Editor Card */}
-              <Card className="flex-1 flex flex-col border-slate-200 overflow-hidden bg-slate-900">
+              <Card className="flex-1 flex flex-col border-slate-200 overflow-hidden bg-slate-900 min-h-0">
                 <div className="flex items-center justify-between p-2 border-b border-slate-800">
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-slate-400">SQL Editor</span>
@@ -784,6 +785,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                     extensions={[sql()]}
                     onChange={(value) => setSqlCode(value)}
                     height="100%"
+                    className="h-full"
                     basicSetup={{
                       lineNumbers: true,
                       foldGutter: true,
@@ -799,7 +801,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                       "w-full py-2 text-white flex items-center justify-center gap-2",
                       isExecuting 
                         ? "bg-[#68A4A1]/70 cursor-not-allowed" 
-                        : "bg-[#5B8A9D] hover:bg-[#4A7688]"
+                        : "bg-[#2A6B70] hover:bg-[#235458]"
                     )}
                   >
                     {isExecuting ? (
@@ -819,9 +821,9 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
             </div>
 
             {/* Right Column - Results */}
-            <div className="h-full overflow-hidden flex flex-col">
-              <Card className="h-full bg-white shadow-sm border-slate-200 flex flex-col overflow-hidden">
-                <CardContent className="p-4 flex flex-col flex-1 overflow-hidden">
+            <div className="h-full overflow-hidden flex flex-col min-h-0">
+              <Card className="h-full bg-white shadow-sm border-slate-200 flex flex-col overflow-hidden min-h-0">
+                <CardContent className="p-4 flex flex-col flex-1 overflow-hidden min-h-0">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-semibold text-[#2E3A45] flex items-center gap-2">
                       <Monitor className="h-4 w-4 text-[#5B8A9D]" />
@@ -833,7 +835,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                       </span>
                     )}
                   </div>
-                  <div className="flex-1 relative overflow-hidden">
+                  <div className="flex-1 relative overflow-hidden min-h-0">
                     <QueryResultsTable results={queryResults} error={sqlError} />
                   </div>
                 </CardContent>
