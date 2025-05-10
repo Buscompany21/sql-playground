@@ -39,6 +39,9 @@ import {
   X,
   Circle,
   CircleDot,
+  PanelRight,
+  PanelLeft,
+  GripVertical,
 } from 'lucide-react'
 import Link from 'next/link'
 import { getModuleLevels } from '../config/moduleConfig'
@@ -61,7 +64,7 @@ const ModuleSidebar = ({
       animate={{ x: 0 }}
       exit={{ x: "-100%" }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="fixed inset-y-0 left-0 z-50 w-96 bg-white shadow-lg flex flex-col overflow-hidden"
+      className="fixed inset-y-0 left-0 z-[1000] w-96 bg-white shadow-lg flex flex-col overflow-hidden"
     >
       <div className="flex items-center justify-between p-4 border-b">
         <Link href="/" className="flex items-center gap-2 text-[#2A6B70] font-medium">
@@ -251,7 +254,7 @@ const QueryResultsTable = ({ results, error }) => {
 // Level progress indicator
 const LevelProgressIndicator = ({ currentLevel, maxLevels, onLevelClick }) => {
   return (
-    <div className="flex items-center justify-center space-x-2 py-2 bg-[#E6F2F2] rounded-md px-2">
+    <div className="flex items-center space-x-2">
       {[...Array(maxLevels)].map((_, index) => {
         const levelNumber = index + 1;
         const isCurrentLevel = levelNumber === currentLevel;
@@ -325,10 +328,20 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
   const [isExecuting, setIsExecuting] = useState(false);
   const [levelData, setLevelData] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  // Fullscreen specific state variables
+  const [fsInstructionsVisible, setFsInstructionsVisible] = useState(false);
+  const [fsResultsVisible, setFsResultsVisible] = useState(false);
+  const [editorWidth, setEditorWidth] = useState('65%');
+  const [resultsWidth, setResultsWidth] = useState('35%');
+  const [isResizing, setIsResizing] = useState(false);
+  const [initialX, setInitialX] = useState(0);
 
-  // Refs for editor
+  // Refs for editor and resizing
   const editorRef = useRef(null);
   const fullScreenContainerRef = useRef(null);
+  const editorContainerRef = useRef(null);
+  const resizableDividerRef = useRef(null);
 
   // API URLs
   const sqlSpellApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/sqlspell`;
@@ -336,7 +349,16 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
 
   // Toggle fullscreen
   const toggleFullScreen = () => {
-    setIsFullScreen(prev => !prev);
+    const isEntering = !isFullScreen;
+    setIsFullScreen(isEntering);
+    
+    // Reset panel states when entering fullscreen
+    if (isEntering) {
+      setFsInstructionsVisible(false);
+      setFsResultsVisible(false);
+      setEditorWidth('65%');
+      setResultsWidth('35%');
+    }
   };
 
   // Handle fullscreen effect
@@ -359,6 +381,54 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
       document.body.style.overflow = '';
     };
   }, [isFullScreen]);
+  
+  // Handle resizing in fullscreen mode - improved implementation
+  useEffect(() => {
+    if (!isFullScreen || !fsResultsVisible) return;
+    
+    const handleMouseMove = (e) => {
+      if (!isResizing) return;
+      
+      const containerWidth = fullScreenContainerRef.current?.clientWidth || 0;
+      const newX = e.clientX;
+      
+      // Calculate percentages based on container width
+      const editorWidthPercent = (newX / containerWidth) * 100;
+      const resultsWidthPercent = 100 - editorWidthPercent;
+      
+      // Enforce minimum widths (20% for each pane)
+      if (editorWidthPercent < 20 || resultsWidthPercent < 20) return;
+      
+      // Set the new widths
+      setEditorWidth(`${editorWidthPercent}%`);
+      setResultsWidth(`${resultsWidthPercent}%`);
+    };
+    
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      document.body.style.cursor = 'default';
+    };
+    
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing, initialX, isFullScreen, fsResultsVisible]);
+  
+  // Handle resizer mousedown - simplified
+  const handleResizerMouseDown = (e) => {
+    if (!isFullScreen || !fsResultsVisible) return;
+    
+    setIsResizing(true);
+    setInitialX(e.clientX);
+    document.body.style.cursor = 'col-resize';
+    e.preventDefault(); // Prevent text selection during resize
+  };
 
   // Fetch level data
   useEffect(() => {
@@ -422,11 +492,14 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
         const { output, passed, message } = result;
         setQueryResults(output);
         
+        // In fullscreen mode, show results when query is executed
+        if (isFullScreen) {
+          setFsResultsVisible(true);
+        }
+        
         if (passed) {
           setTaskMessage(message || 'You passed the level! 🎉');
           handleSuccess();
-          
-          // Note: Removed auto-progression
         }
       }
     } catch (error) {
@@ -436,6 +509,14 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
     } finally {
       setIsExecuting(false);
     }
+  };
+
+  // Toggle elements
+  const toggleMessageBox = () => setIsMessageExpanded(prev => !prev);
+  const toggleHint = () => setShowHint(prev => !prev);
+  const toggleSidebar = () => {
+    console.log("Toggling sidebar, current state:", !isSidebarOpen, "fullscreen:", isFullScreen);
+    setIsSidebarOpen(prev => !prev);
   };
 
   // Navigate between levels
@@ -454,15 +535,9 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
     }
   };
 
-  // Toggle elements
-  const toggleMessageBox = () => setIsMessageExpanded(prev => !prev);
-  const toggleHint = () => setShowHint(prev => !prev);
-  const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
-
   // Success handling
   const handleSuccess = () => {
     setShowSuccess(true);
-    // Auto-dismiss after 3 seconds
     setTimeout(() => setShowSuccess(false), 3000);
   };
 
@@ -483,94 +558,107 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
       {/* Fullscreen Editor Container */}
       {isFullScreen && (
         <div 
-          className="fixed inset-0 z-50 flex flex-col bg-white"
           ref={fullScreenContainerRef}
+          className="fixed inset-0 z-[900] bg-white flex flex-col overflow-hidden"
         >
           {/* Fullscreen Top Bar */}
-          <div className="bg-[#2A6B70] text-white py-2 px-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <Link href="/" className="p-1.5 rounded-md hover:bg-[#235458] transition-colors">
-                  <Home className="h-4 w-4 text-white" />
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleSidebar}
-                  className="h-8 w-8 p-0 text-white hover:bg-[#235458]"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-                <div className="h-4 w-px bg-white/20 mx-2"></div>
-                <div className="text-sm">
-                  <Link 
-                    href={`/module/${moduleIdNum}`}
-                    className="text-white hover:text-white/80 font-medium"
-                  >
-                    Module {moduleIdNum}
-                  </Link>
-                  <span className="text-white/60 mx-1">·</span>
-                  <span className="font-medium">
-                    Level {levelIdNum}
-                  </span>
-                  <span className="text-white/60 mx-1">·</span>
-                  <span className="text-white/80 font-normal max-w-[300px] truncate inline-block">
-                    {levelData?.title || 'SQL Query'}
-                  </span>
-                </div>
-              </div>
-            </div>
+          <div className="bg-[#2A6B70] text-white py-2 px-4 flex items-center justify-between border-b">
             <div className="flex items-center gap-2">
+              <Link href="/">
+                <Button variant="ghost" size="sm" className="h-8 mr-1 text-white hover:bg-[#235458]">
+                  <Home className="h-4 w-4" />
+                  <span className="sr-only">Home</span>
+                </Button>
+              </Link>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={toggleFullScreen}
-                className="h-8 flex items-center gap-1 bg-transparent text-white border-white/20 hover:bg-[#235458] hover:text-white"
+                onClick={toggleSidebar}
+                className="h-8 w-8 p-0 text-white hover:bg-[#235458]"
               >
-                <Minimize2 className="h-3.5 w-3.5" />
-                <span>Exit Fullscreen</span>
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Menu</span>
               </Button>
-            </div>
-          </div>
-          
-          {/* Fullscreen Main Content */}
-          <div className="flex-1 flex overflow-hidden">
-            {/* Left Panel - Instructions */}
-            <div className="w-[300px] border-r border-slate-200 flex flex-col bg-white overflow-hidden">
-              <div className="p-3 border-b border-slate-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-[#5B8A9D]" />
-                  <h3 className="font-medium text-sm text-[#2E3A45]">Instructions</h3>
-                </div>
-                {levelData?.hintMessage && (
-                  <button
-                    onClick={toggleHint}
-                    className="text-xs flex items-center gap-1 px-2 py-1 rounded hover:bg-[#E6F2F2] transition-colors text-[#5B8A9D]"
-                  >
-                    <HelpCircle className="h-3 w-3" />
-                    <span>{showHint ? "Hide hint" : "Show hint"}</span>
-                  </button>
-                )}
-              </div>
               
-              <div className="p-4 overflow-y-auto flex-1 text-sm">
-                <p className="text-[#2E3A45]">{taskMessage}</p>
-                
-                {levelData?.hintMessage && showHint && (
-                  <div className="mt-4 p-3 rounded bg-[#E9F1F5] border border-[#5B8A9D]/20 text-[#5B8A9D]">
-                    <div className="flex items-center gap-2 mb-1 text-[#5B8A9D] text-xs font-medium">
-                      <MessageSquare className="h-3 w-3" />
-                      <span>Hint</span>
-                    </div>
-                    <p>{levelData.hintMessage}</p>
-                  </div>
-                )}
+              <div className="flex items-center gap-1">
+                <Link 
+                  href={`/module/${moduleIdNum}`}
+                  className="text-white hover:text-white/80 font-medium"
+                >
+                  Module {moduleIdNum}
+                </Link>
+                <ChevronRight className="h-4 w-4 text-white/60" />
+                <span className="font-medium text-white max-w-[300px] truncate inline-block">
+                  {levelData?.title || `Level ${levelIdNum}`}
+                </span>
               </div>
             </div>
             
-            {/* Middle Panel - SQL Editor */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-hidden bg-[#0F172A]">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleFullScreen}
+              className="relative h-8 group flex items-center gap-1.5 bg-transparent text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200"
+              aria-label="Exit Fullscreen"
+            >
+              <Minimize2 className="h-4.5 w-4.5" />
+              <span className="hidden sm:inline text-sm font-medium opacity-0 group-hover:opacity-100 -ml-1 transition-opacity duration-200">Exit</span>
+            </Button>
+          </div>
+          
+          {/* Main Content Area - Flexible Layout */}
+          <div className="flex flex-1 overflow-hidden">
+            {/* Instructions Panel */}
+            <AnimatePresence>
+              {fsInstructionsVisible && (
+                <motion.div
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: "300px", opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="h-full border-r border-slate-200 flex flex-col bg-white overflow-hidden"
+                >
+                  <div className="p-3 border-b border-slate-200 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4 text-[#5B8A9D]" />
+                      <h3 className="font-medium text-sm text-[#2E3A45]">Instructions</h3>
+                    </div>
+                    {levelData?.hintMessage && (
+                      <button
+                        onClick={toggleHint}
+                        className="text-xs flex items-center gap-1 px-2 py-1 rounded hover:bg-[#E6F2F2] transition-colors text-[#5B8A9D]"
+                      >
+                        <HelpCircle className="h-3 w-3" />
+                        <span>{showHint ? "Hide hint" : "Show hint"}</span>
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="p-4 overflow-y-auto flex-1 text-sm">
+                    <p className="text-[#2E3A45]">{taskMessage}</p>
+                    
+                    {levelData?.hintMessage && showHint && (
+                      <div className="mt-4 p-3 rounded bg-[#E9F1F5] border border-[#5B8A9D]/20 text-[#5B8A9D]">
+                        <div className="flex items-center gap-2 mb-1 text-[#5B8A9D] text-xs font-medium">
+                          <MessageSquare className="h-3 w-3" />
+                          <span>Hint</span>
+                        </div>
+                        <p>{levelData.hintMessage}</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            {/* SQL Editor Panel - Dark Theme */}
+            <div
+              ref={editorContainerRef}
+              style={{ width: fsResultsVisible ? editorWidth : '100%' }}
+              className="h-full overflow-hidden flex flex-col min-w-0"
+            >
+              {/* Use a consistent dark background matching VSCode theme */}
+              <div className="flex-1 bg-[#1e1e1e] overflow-hidden">
                 <CodeMirror
                   value={sqlCode}
                   theme={vscodeDark}
@@ -578,90 +666,148 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                   onChange={(value) => setSqlCode(value)}
                   height="100%"
                   className="h-full"
+                  foldGutter={false}
+                  indentWithTab={false}
                   basicSetup={{
                     lineNumbers: true,
-                    foldGutter: true,
                     highlightActiveLine: true,
                     highlightSelectionMatches: true,
+                    closeBrackets: true,
+                    autocompletion: true,
+                    history: true,
+                    highlightActiveLineGutter: true,
+                    drawSelection: true,
+                    indentOnInput: true,
+                    bracketMatching: true,
+                    syntaxHighlighting: true,
+                    foldGutter: false,
+                    foldGUI: false,
+                    tabSize: 2,
+                    placeholder: "Enter your SQL query here..."
                   }}
                 />
               </div>
-              
-              <div className="p-3 bg-slate-800 border-t border-slate-700">
-                <Button 
-                  onClick={handleExecute}
-                  disabled={isExecuting}
-                  className={cn(
-                    "w-full py-2 text-white flex items-center justify-center gap-2",
-                    isExecuting 
-                      ? "bg-[#68A4A1]/70 cursor-not-allowed" 
-                      : "bg-[#2A6B70] hover:bg-[#235458]"
-                  )}
-                >
-                  {isExecuting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Executing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <PlayCircle className="h-4 w-4" />
-                      <span>Execute Query</span>
-                    </>
-                  )}
-                </Button>
-              </div>
             </div>
             
-            {/* Right Panel - Results */}
-            <div className="w-[400px] border-l border-slate-200 bg-white flex flex-col overflow-hidden">
-              <div className="p-3 border-b border-slate-200 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Monitor className="h-4 w-4 text-[#5B8A9D]" />
-                  <h3 className="font-medium text-sm text-[#2E3A45]">Query Results</h3>
-                </div>
-                {queryResults?.length > 0 && (
-                  <span className="text-xs px-1.5 py-0.5 bg-[#E6F2F2] text-[#2A6B70] rounded">
-                    {queryResults.length} {queryResults.length === 1 ? 'row' : 'rows'}
-                  </span>
-                )}
+            {/* Resizable divider */}
+            {fsResultsVisible && (
+              <div 
+                className="h-full w-[6px] bg-slate-200 hover:bg-[#2A6B70] cursor-col-resize flex items-center justify-center z-10"
+                onMouseDown={handleResizerMouseDown}
+                ref={resizableDividerRef}
+              >
+                <GripVertical className="h-6 w-6 text-slate-400" />
               </div>
-              
-              <div className="flex-1 relative overflow-hidden">
-                <QueryResultsTable results={queryResults} error={sqlError} />
-              </div>
-            </div>
+            )}
+            
+            {/* Right Panel - Results - Collapsible */}
+            <AnimatePresence>
+              {fsResultsVisible && (
+                <motion.div
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: resultsWidth, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="h-full border-l border-slate-200 flex flex-col bg-white overflow-hidden"
+                >
+                  <div className="p-3 border-b border-slate-200 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Monitor className="h-4 w-4 text-[#5B8A9D]" />
+                      <h3 className="font-medium text-sm text-[#2E3A45]">Query Results</h3>
+                    </div>
+                    {queryResults?.length > 0 && (
+                      <span className="text-xs px-1.5 py-0.5 bg-[#E6F2F2] text-[#2A6B70] rounded">
+                        {queryResults.length} {queryResults.length === 1 ? 'row' : 'rows'}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 relative overflow-hidden">
+                    <QueryResultsTable results={queryResults} error={sqlError} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           
-          {/* Fullscreen Bottom Navigation */}
-          <div className="border-t border-slate-200 py-3 px-6 bg-white flex items-center justify-between">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => handleNavigation('back')}
-              disabled={levelIdNum <= 1}
-              className="h-8 gap-1"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Previous Level</span>
-            </Button>
-            
-            <LevelProgressIndicator
-              currentLevel={levelIdNum}
-              maxLevels={maxLevels}
-              onLevelClick={handleLevelClick}
-            />
-            
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => handleNavigation('next')}
-              disabled={levelIdNum >= maxLevels}
-              className="h-8 gap-1"
-            >
-              <span>Next Level</span>
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+          {/* Fullscreen Bottom Bar - combined execution controls and navigation */}
+          <div className="border-t border-slate-200 py-2 px-4 bg-white flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={handleExecute}
+                disabled={isExecuting}
+                className={cn(
+                  "py-2 px-4 h-9 text-white flex items-center justify-center gap-2",
+                  isExecuting 
+                    ? "bg-[#68A4A1]/70 cursor-not-allowed" 
+                    : "bg-[#2A6B70] hover:bg-[#235458]"
+                )}
+              >
+                {isExecuting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Executing...</span>
+                  </>
+                ) : (
+                  <>
+                    <PlayCircle className="h-4 w-4" />
+                    <span>Execute Query</span>
+                  </>
+                )}
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setFsInstructionsVisible(prev => !prev)}
+                className="h-9 text-slate-700 border-slate-300 hover:bg-slate-100"
+              >
+                {fsInstructionsVisible ? <PanelLeft className="h-4 w-4" /> : <BookOpen className="h-4 w-4" />}
+                <span className="ml-1">{fsInstructionsVisible ? "Hide Instructions" : "Show Instructions"}</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setFsResultsVisible(prev => !prev)}
+                className="h-9 text-slate-700 border-slate-300 hover:bg-slate-100"
+              >
+                {fsResultsVisible ? <PanelRight className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+                <span className="ml-1">{fsResultsVisible ? "Hide Results" : "Show Results"}</span>
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleNavigation('back')}
+                disabled={levelIdNum <= 1}
+                className="h-9 gap-1 text-slate-700 border-slate-300 hover:bg-slate-100"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Previous</span>
+              </Button>
+              
+              <div className="hidden sm:flex items-center">
+                <LevelProgressIndicator
+                  currentLevel={levelIdNum}
+                  maxLevels={maxLevels}
+                  onLevelClick={handleLevelClick}
+                />
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleNavigation('next')}
+                disabled={levelIdNum >= maxLevels}
+                className="h-9 gap-1 text-slate-700 border-slate-300 hover:bg-slate-100"
+              >
+                <span>Next</span>
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -704,13 +850,14 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
               </div>
               
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={toggleFullScreen}
-                className="h-8 flex items-center gap-1 bg-transparent text-white border-white/20 hover:bg-[#235458]"
+                className="relative h-8 group flex items-center gap-1.5 bg-transparent text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200"
+                aria-label="Enter Fullscreen"
               >
-                <span className="hidden sm:inline">Fullscreen</span>
-                <Maximize2 className="h-4 w-4" />
+                <Maximize2 className="h-4.5 w-4.5" />
+                <span className="hidden sm:inline text-sm font-medium opacity-0 group-hover:opacity-100 -ml-1 transition-opacity duration-200">Expand</span>
               </Button>
             </div>
           </header>
@@ -765,20 +912,10 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
               </Card>
               
               {/* SQL Editor Card */}
-              <Card className="flex-1 flex flex-col border-slate-200 overflow-hidden bg-slate-900 min-h-0">
-                <div className="flex items-center justify-between p-2 border-b border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400">SQL Editor</span>
-                  </div>
-                  <button
-                    onClick={toggleFullScreen}
-                    className="p-1 rounded hover:bg-slate-800 transition-colors text-slate-400"
-                  >
-                    <Maximize2 className="h-4 w-4" />
-                  </button>
-                </div>
+              <Card className="flex-1 flex flex-col border-slate-200 overflow-hidden min-h-0">
+                {/* Remove the top bar completely - no header for the editor */}
                 
-                <div className="flex-1 overflow-hidden min-h-0" ref={editorRef}>
+                <div className="flex-1 overflow-hidden min-h-0 bg-[#1e1e1e]" ref={editorRef}>
                   <CodeMirror
                     value={sqlCode}
                     theme={vscodeDark}
@@ -786,14 +923,29 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                     onChange={(value) => setSqlCode(value)}
                     height="100%"
                     className="h-full"
+                    foldGutter={false}
+                    indentWithTab={false}
                     basicSetup={{
                       lineNumbers: true,
-                      foldGutter: true,
+                      highlightActiveLine: true,
+                      highlightSelectionMatches: true,
+                      closeBrackets: true,
+                      autocompletion: true,
+                      history: true,
+                      highlightActiveLineGutter: true,
+                      drawSelection: true,
+                      indentOnInput: true,
+                      bracketMatching: true,
+                      syntaxHighlighting: true,
+                      foldGutter: false,
+                      foldGUI: false,
+                      tabSize: 2,
+                      placeholder: "Enter your SQL query here..."
                     }}
                   />
                 </div>
                 
-                <div className="p-3 bg-slate-800 border-t border-slate-700">
+                <div className="p-3 bg-[#1e1e1e] border-t border-[#2d2d2d]">
                   <Button 
                     onClick={handleExecute}
                     disabled={isExecuting}
@@ -867,7 +1019,7 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
               size="sm"
               onClick={() => handleNavigation('next')}
               disabled={levelIdNum >= maxLevels}
-              className="h-8 gap-1"
+              className="h-9 gap-1 text-slate-700 border-slate-300 hover:bg-slate-100"
             >
               <span>Next</span>
               <ArrowRight className="h-4 w-4" />
