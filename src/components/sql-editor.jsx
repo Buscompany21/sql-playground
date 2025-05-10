@@ -56,6 +56,20 @@ const ModuleSidebar = ({
   activeModuleId, 
   activeLevelId
 }) => {
+  // Track which module is currently expanded (if any)
+  const [expandedModuleId, setExpandedModuleId] = useState(activeModuleId);
+  
+  // Function to toggle a module's expanded state
+  const toggleModule = (moduleId) => {
+    if (expandedModuleId === moduleId) {
+      // If clicking on already expanded module, collapse it
+      setExpandedModuleId(null);
+    } else {
+      // Otherwise, expand this module and collapse any other
+      setExpandedModuleId(moduleId);
+    }
+  };
+  
   if (!isOpen) return null;
   
   return (
@@ -93,6 +107,8 @@ const ModuleSidebar = ({
                 moduleData={module}
                 activeModuleId={activeModuleId}
                 activeLevelId={activeLevelId}
+                isExpanded={expandedModuleId === id}
+                onToggle={() => toggleModule(id)}
               />
             ))}
           </div>
@@ -103,15 +119,21 @@ const ModuleSidebar = ({
 };
 
 // Individual module navigation item with expandable levels
-const ModuleNavigationItem = ({ moduleId, moduleData, activeModuleId, activeLevelId }) => {
-  const [isExpanded, setIsExpanded] = useState(moduleId === activeModuleId);
+const ModuleNavigationItem = ({ 
+  moduleId, 
+  moduleData, 
+  activeModuleId, 
+  activeLevelId,
+  isExpanded,
+  onToggle
+}) => {
   const maxLevels = moduleData.levels || 0;
   const isActive = moduleId === activeModuleId;
   
   return (
     <div className="border rounded-md overflow-hidden">
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={onToggle}
         className={cn(
           "w-full px-3 py-2.5 flex items-center justify-between text-left transition-colors",
           isActive 
@@ -485,17 +507,17 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
       const responseData = await response.json();
       const result = responseData.body ? JSON.parse(responseData.body) : responseData;
   
+      // In fullscreen mode, always show results panel regardless of success or error
+      if (isFullScreen) {
+        setFsResultsVisible(true);
+      }
+  
       if (result.error) {
         setSqlError(result.error);
         setQueryResults([]);
       } else {
         const { output, passed, message } = result;
         setQueryResults(output);
-        
-        // In fullscreen mode, show results when query is executed
-        if (isFullScreen) {
-          setFsResultsVisible(true);
-        }
         
         if (passed) {
           setTaskMessage(message || 'You passed the level! 🎉');
@@ -506,6 +528,11 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
       console.error('Error executing query:', error);
       setSqlError(`Error executing query: ${error.message}`);
       setQueryResults([]);
+      
+      // Also show results panel for caught errors in fullscreen mode
+      if (isFullScreen) {
+        setFsResultsVisible(true);
+      }
     } finally {
       setIsExecuting(false);
     }
@@ -570,25 +597,18 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                   <span className="sr-only">Home</span>
                 </Button>
               </Link>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleSidebar}
-                className="h-8 w-8 p-0 text-white hover:bg-[#235458]"
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Menu</span>
-              </Button>
-              
               <div className="flex items-center gap-1">
-                <Link 
-                  href={`/module/${moduleIdNum}`}
-                  className="text-white hover:text-white/80 font-medium"
+                <span 
+                  onClick={toggleSidebar}
+                  className="text-white hover:text-white/80 font-medium cursor-pointer"
                 >
                   Module {moduleIdNum}
-                </Link>
+                </span>
                 <ChevronRight className="h-4 w-4 text-white/60" />
-                <span className="font-medium text-white max-w-[300px] truncate inline-block">
+                <span 
+                  onClick={toggleSidebar}
+                  className="font-medium text-white max-w-[300px] truncate inline-block cursor-pointer hover:text-white/80"
+                >
                   {levelData?.title || `Level ${levelIdNum}`}
                 </span>
               </div>
@@ -608,53 +628,51 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
           
           {/* Main Content Area - Flexible Layout */}
           <div className="flex flex-1 overflow-hidden">
-            {/* Instructions Panel */}
-            <AnimatePresence>
-              {fsInstructionsVisible && (
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: "300px", opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="h-full border-r border-slate-200 flex flex-col bg-white overflow-hidden"
-                >
-                  <div className="p-3 border-b border-slate-200 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <BookOpen className="h-4 w-4 text-[#5B8A9D]" />
-                      <h3 className="font-medium text-sm text-[#2E3A45]">Instructions</h3>
-                    </div>
-                    {levelData?.hintMessage && (
-                      <button
-                        onClick={toggleHint}
-                        className="text-xs flex items-center gap-1 px-2 py-1 rounded hover:bg-[#E6F2F2] transition-colors text-[#5B8A9D]"
-                      >
-                        <HelpCircle className="h-3 w-3" />
-                        <span>{showHint ? "Hide hint" : "Show hint"}</span>
-                      </button>
-                    )}
+            {/* Instructions Panel - Cleaner Animation */}
+            {fsInstructionsVisible && (
+              <div
+                className="h-full border-r border-slate-200 flex flex-col bg-white overflow-hidden"
+                style={{ width: "300px" }}
+              >
+                <div className="p-3 border-b border-slate-200 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-[#5B8A9D]" />
+                    <h3 className="font-medium text-sm text-[#2E3A45]">Instructions</h3>
                   </div>
+                  {levelData?.hintMessage && (
+                    <button
+                      onClick={toggleHint}
+                      className="text-xs flex items-center gap-1 px-2 py-1 rounded hover:bg-[#E6F2F2] transition-colors text-[#5B8A9D]"
+                    >
+                      <HelpCircle className="h-3 w-3" />
+                      <span>{showHint ? "Hide hint" : "Show hint"}</span>
+                    </button>
+                  )}
+                </div>
+                
+                <div className="p-4 overflow-y-auto flex-1 text-sm">
+                  <p className="text-[#2E3A45]">{taskMessage}</p>
                   
-                  <div className="p-4 overflow-y-auto flex-1 text-sm">
-                    <p className="text-[#2E3A45]">{taskMessage}</p>
-                    
-                    {levelData?.hintMessage && showHint && (
-                      <div className="mt-4 p-3 rounded bg-[#E9F1F5] border border-[#5B8A9D]/20 text-[#5B8A9D]">
-                        <div className="flex items-center gap-2 mb-1 text-[#5B8A9D] text-xs font-medium">
-                          <MessageSquare className="h-3 w-3" />
-                          <span>Hint</span>
-                        </div>
-                        <p>{levelData.hintMessage}</p>
+                  {levelData?.hintMessage && showHint && (
+                    <div className="mt-4 p-3 rounded bg-[#E9F1F5] border border-[#5B8A9D]/20 text-[#5B8A9D]">
+                      <div className="flex items-center gap-2 mb-1 text-[#5B8A9D] text-xs font-medium">
+                        <MessageSquare className="h-3 w-3" />
+                        <span>Hint</span>
                       </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                      <p>{levelData.hintMessage}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             
             {/* SQL Editor Panel - Dark Theme */}
             <div
               ref={editorContainerRef}
-              style={{ width: fsResultsVisible ? editorWidth : '100%' }}
+              style={{ 
+                width: fsResultsVisible ? editorWidth : '100%',
+                transition: 'width 0.1s ease-out' 
+              }}
               className="h-full overflow-hidden flex flex-col min-w-0"
             >
               {/* Use a consistent dark background matching VSCode theme */}
@@ -700,34 +718,29 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
               </div>
             )}
             
-            {/* Right Panel - Results - Collapsible */}
-            <AnimatePresence>
-              {fsResultsVisible && (
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: resultsWidth, opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="h-full border-l border-slate-200 flex flex-col bg-white overflow-hidden"
-                >
-                  <div className="p-3 border-b border-slate-200 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Monitor className="h-4 w-4 text-[#5B8A9D]" />
-                      <h3 className="font-medium text-sm text-[#2E3A45]">Query Results</h3>
-                    </div>
-                    {queryResults?.length > 0 && (
-                      <span className="text-xs px-1.5 py-0.5 bg-[#E6F2F2] text-[#2A6B70] rounded">
-                        {queryResults.length} {queryResults.length === 1 ? 'row' : 'rows'}
-                      </span>
-                    )}
+            {/* Right Panel - Results - Cleaner Animation */}
+            {fsResultsVisible && (
+              <div
+                className="h-full border-l border-slate-200 flex flex-col bg-white overflow-hidden"
+                style={{ width: resultsWidth }}
+              >
+                <div className="p-3 border-b border-slate-200 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Monitor className="h-4 w-4 text-[#5B8A9D]" />
+                    <h3 className="font-medium text-sm text-[#2E3A45]">Query Results</h3>
                   </div>
-                  
-                  <div className="flex-1 relative overflow-hidden">
-                    <QueryResultsTable results={queryResults} error={sqlError} />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {queryResults?.length > 0 && (
+                    <span className="text-xs px-1.5 py-0.5 bg-[#E6F2F2] text-[#2A6B70] rounded">
+                      {queryResults.length} {queryResults.length === 1 ? 'row' : 'rows'}
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex-1 relative overflow-hidden">
+                  <QueryResultsTable results={queryResults} error={sqlError} />
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Fullscreen Bottom Bar - combined execution controls and navigation */}
@@ -759,7 +772,18 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setFsInstructionsVisible(prev => !prev)}
+                onClick={() => {
+                  setFsInstructionsVisible(prev => !prev);
+                  // Give a tiny delay to ensure smooth transition
+                  if (fsResultsVisible && !fsInstructionsVisible) {
+                    setTimeout(() => {
+                      // Adjust editor width when both panels are visible
+                      if (editorContainerRef.current) {
+                        editorContainerRef.current.style.transition = 'width 0.1s ease-out';
+                      }
+                    }, 10);
+                  }
+                }}
                 className="h-9 text-slate-700 border-slate-300 hover:bg-slate-100"
               >
                 {fsInstructionsVisible ? <PanelLeft className="h-4 w-4" /> : <BookOpen className="h-4 w-4" />}
@@ -769,7 +793,13 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setFsResultsVisible(prev => !prev)}
+                onClick={() => {
+                  setFsResultsVisible(prev => !prev);
+                  // Give a tiny delay to ensure smooth transition
+                  if (editorContainerRef.current) {
+                    editorContainerRef.current.style.transition = 'width 0.1s ease-out';
+                  }
+                }}
                 className="h-9 text-slate-700 border-slate-300 hover:bg-slate-100"
               >
                 {fsResultsVisible ? <PanelRight className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
@@ -825,25 +855,18 @@ export function SQLEditor({ moduleId, levelId, lesson, onComplete, hasNextLesson
                     <span className="sr-only">Home</span>
                   </Button>
                 </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleSidebar}
-                  className="h-8 w-8 p-0 text-white hover:bg-[#235458]"
-                >
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Menu</span>
-                </Button>
-                
                 <div className="flex items-center gap-1">
-                  <Link 
-                    href={`/module/${moduleIdNum}`}
-                    className="text-white hover:text-white/80 font-medium"
+                  <span
+                    onClick={toggleSidebar}
+                    className="text-white hover:text-white/80 font-medium cursor-pointer"
                   >
                     Module {moduleIdNum}
-                  </Link>
+                  </span>
                   <ChevronRight className="h-4 w-4 text-white/60" />
-                  <span className="font-medium text-white max-w-[400px] truncate inline-block">
+                  <span
+                    onClick={toggleSidebar}
+                    className="font-medium text-white max-w-[400px] truncate inline-block cursor-pointer hover:text-white/80"
+                  >
                     {levelData?.title || `Level ${levelIdNum}`}
                   </span>
                 </div>
