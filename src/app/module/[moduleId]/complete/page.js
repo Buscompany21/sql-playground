@@ -3,6 +3,14 @@ import { AppLayout } from '../../../../components/AppLayout'
 import { CheckCircle, BookOpen, ArrowRight } from 'lucide-react'
 import { moduleConfig } from '../../../../config/moduleConfig'
 
+// Generate static params for all module IDs at build time
+export function generateStaticParams() {
+  // Get all module IDs from the config
+  return Object.keys(moduleConfig).map(moduleId => ({
+    moduleId: moduleId
+  }))
+}
+
 export default function ModuleComplete({ params }) {
   const { moduleId } = params
   const moduleData = moduleConfig[moduleId] || {
@@ -42,7 +50,7 @@ export default function ModuleComplete({ params }) {
             </h2>
             
             <p className="text-[#4E5964] mb-8 max-w-md mx-auto">
-              You've successfully completed all lessons in this module and mastered the SQL concepts it covers.
+              You&apos;ve successfully completed all lessons in this module and mastered the SQL concepts it covers.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">

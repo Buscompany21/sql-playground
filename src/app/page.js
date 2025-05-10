@@ -31,11 +31,11 @@ export default function Home() {
               
               <div className="space-y-3 text-left">
                 <p className="text-white/90 leading-relaxed">
-                  <span className="font-bold text-white">You dream of becoming a famous singer</span>, and to get your foot in the door, you've landed an internship at one of the world's top music labels: <span className="italic">Stellar Sound Records</span>.
+                  <span className="font-bold text-white">You dream of becoming a famous singer</span>, and to get your foot in the door, you&apos;ve landed an internship at one of the world&apos;s top music labels: <span className="italic">Stellar Sound Records</span>.
                 </p>
                 
                 <p className="text-white/90 leading-relaxed">
-                  As a junior data analyst, you'll use SQL to explore hit songs, uncover trends, and help the label make decisions—all while secretly hoping your name ends up on this list one day.
+                  As a junior data analyst, you&apos;ll use SQL to explore hit songs, uncover trends, and help the label make decisions—all while secretly hoping your name ends up on this list one day.
                 </p>
               </div>
             </div>

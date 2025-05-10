@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { AnimatePresence } from 'framer-motion'
 import { getModuleLevels } from '../../config/moduleConfig'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { GripVertical } from 'lucide-react'
 
 // Import components
 import { Sidebar } from './Sidebar'

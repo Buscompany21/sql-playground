@@ -10,9 +10,9 @@ import { moduleConfig, curriculumStoryline } from '../config/moduleConfig'
 
 export function ModuleStoryline({ moduleId, onContinue }) {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const module = moduleConfig[moduleId]
+  const moduleData = moduleConfig[moduleId]
   
-  if (!module || !module.storyline) {
+  if (!moduleData || !moduleData.storyline) {
     return null
   }
 
@@ -37,12 +37,12 @@ export function ModuleStoryline({ moduleId, onContinue }) {
               <div className="flex items-center text-[#5B8A9D] mt-2 text-sm">
                 <span className="font-medium">Module {moduleId}</span>
                 <ChevronRight className="h-4 w-4 mx-1" />
-                <span className="font-medium">{module.title}</span>
+                <span className="font-medium">{moduleData.title}</span>
               </div>
             </div>
             <div className="hidden md:flex items-center mt-2 md:mt-0">
               <div className="bg-[#E6F2F2] text-[#2A6B70] text-xs font-medium px-3 py-1.5 rounded-full">
-                {module.levels} Lessons
+                {moduleData.levels} Lessons
               </div>
             </div>
           </div>
@@ -61,7 +61,7 @@ export function ModuleStoryline({ moduleId, onContinue }) {
                 <div className="absolute inset-0 flex items-center justify-center bg-[#f8fafa] p-4">
                   <div className="relative w-full h-full">
                     <Image
-                      src={module.storyline.image}
+                      src={moduleData.storyline.image}
                       alt={`Module ${moduleId} storyline illustration`}
                       fill
                       sizes="(max-width: 768px) 100vw, 40vw"
@@ -83,7 +83,7 @@ export function ModuleStoryline({ moduleId, onContinue }) {
               </h2>
               
               <p className="text-[#4E5964] leading-relaxed mb-6">
-                {module.storyline.text}
+                {moduleData.storyline.text}
               </p>
               
               <div className="mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
@@ -108,9 +108,9 @@ export function ModuleStoryline({ moduleId, onContinue }) {
 }
 
 export function ModuleStorylinePreview({ moduleId }) {
-  const module = moduleConfig[moduleId]
+  const moduleData = moduleConfig[moduleId]
   
-  if (!module || !module.storyline) {
+  if (!moduleData || !moduleData.storyline) {
     return null
   }
 
@@ -120,11 +120,11 @@ export function ModuleStorylinePreview({ moduleId }) {
       <div className="bg-gradient-to-r from-[#235458] to-[#2A6B70] px-5 py-4 border-b border-slate-200 flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-white/80 text-xs font-medium uppercase tracking-wider">Module {moduleId}</span>
-          <h3 className="font-bold text-white text-lg mt-1">{module.title}</h3>
+          <h3 className="font-bold text-white text-lg mt-1">{moduleData.title}</h3>
         </div>
         <div className="bg-white/20 px-3 py-1 rounded-full">
           <span className="text-white text-xs font-medium">
-            {module.levels} {module.levels === 1 ? 'Lesson' : 'Lessons'}
+            {moduleData.levels} {moduleData.levels === 1 ? 'Lesson' : 'Lessons'}
           </span>
         </div>
       </div>
@@ -132,7 +132,7 @@ export function ModuleStorylinePreview({ moduleId }) {
       {/* Content area */}
       <div className="p-5 flex-1 flex flex-col">
         <p className="text-sm text-[#4E5964] line-clamp-4 flex-grow">
-          {module.storyline.text}
+          {moduleData.storyline.text}
         </p>
         
         <div className="mt-5 flex justify-end">
