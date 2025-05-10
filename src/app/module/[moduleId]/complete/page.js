@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { AppLayout } from '../../../../components/AppLayout'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, BookOpen, ArrowRight } from 'lucide-react'
 import { moduleConfig } from '../../../../config/moduleConfig'
 
 export default function ModuleComplete({ params }) {
@@ -16,48 +16,53 @@ export default function ModuleComplete({ params }) {
   
   return (
     <AppLayout>
-      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <div className="bg-white shadow-sm rounded-lg p-8 text-center">
-          <div className="flex justify-center mb-6">
-            <CheckCircle className="h-20 w-20 text-[#68A4A1]" />
-          </div>
-          
-          <h1 className="text-3xl font-bold text-[#2E3A45] mb-4">
-            Module Complete!
-          </h1>
-          
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-[#2E3A45] mb-2">
+      <div className="w-full max-w-5xl mx-auto pt-8">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden border border-slate-200">
+          {/* Header */}
+          <div className="bg-white px-6 py-5 border-b border-slate-200">
+            <div className="flex items-center gap-2">
+              <div className="bg-[#E6F2F2] p-2 rounded-full">
+                <BookOpen className="h-5 w-5 text-[#2A6B70]" />
+              </div>
+              <h1 className="text-xl font-bold text-[#2E3A45]">Module {moduleId} Complete</h1>
+            </div>
+            <div className="mt-2 text-sm text-[#5B8A9D] font-medium">
               {moduleData.title}
-            </h2>
-            <p className="text-[#4E5964]">
-              Congratulations! You've successfully completed this module.
-            </p>
+            </div>
           </div>
           
-          <div className="grid gap-4 max-w-md mx-auto">
-            {nextModuleId ? (
-              <Link
-                href={`/module/${nextModuleId}`}
-                className="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#2A6B70] hover:bg-[#235458] shadow-sm transition-colors"
+          {/* Content */}
+          <div className="p-8 text-center">
+            <div className="h-20 w-20 bg-[#E6F2F2] rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="h-10 w-10 text-[#3D9D7C]" />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-[#2E3A45] mb-4">
+              Congratulations!
+            </h2>
+            
+            <p className="text-[#4E5964] mb-8 max-w-md mx-auto">
+              You've successfully completed all lessons in this module and mastered the SQL concepts it covers.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <Link 
+                href="/" 
+                className="px-5 py-2.5 rounded-md border border-slate-200 text-[#5B8A9D] hover:bg-[#E9F1F5] transition-colors"
               >
-                Continue to Next Module
+                Return to Home
               </Link>
-            ) : null}
-            
-            <Link
-              href="/"
-              className="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-[#2E3A45] bg-white hover:bg-gray-50 border-gray-200 shadow-sm transition-colors"
-            >
-              Return to Dashboard
-            </Link>
-            
-            <Link
-              href={`/module/${moduleId}`}
-              className="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#5B8A9D] hover:bg-[#4A7688] shadow-sm transition-colors"
-            >
-              Restart This Module
-            </Link>
+              
+              {nextModuleId && (
+                <Link 
+                  href={`/module/${nextModuleId}`} 
+                  className="px-5 py-2.5 rounded-md bg-[#2A6B70] hover:bg-[#235458] text-white transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <span>Next Module</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>

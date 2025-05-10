@@ -5,7 +5,7 @@ export const moduleConfig = {
     levels: 5,
     storyline: {
       text: "It's your first week at Stellar Sound Records, and you're eager to prove yourself. Your manager hands you a login to the music database and says, \"Let's see what you can do!\" Time to dig into the data and show them you've got star potential—even behind the scenes.",
-      image: "/images/storyline/module1.jpg"
+      image: "/images/storyline/module1.png"
     }
   },
   '2': {
@@ -14,7 +14,7 @@ export const moduleConfig = {
     levels: 5,
     storyline: {
       text: "Now that you've mastered the basics, you're trusted with more specific tasks. The team needs help finding songs for marketing campaigns, playlists, and artist highlights. You're learning that asking the right questions—just like writing a hit song—is everything.",
-      image: "/images/storyline/module2.jpg"
+      image: "/images/storyline/module2.png"
     }
   },
   '3': {
@@ -23,7 +23,7 @@ export const moduleConfig = {
     levels: 5,
     storyline: {
       text: "The work is getting more detailed. You're analyzing patterns, filtering across different dates and keywords, and helping teams curate niche content. Every new skill gets you closer to understanding how data drives decisions in the music industry.",
-      image: "/images/storyline/module3.jpg"
+      image: "/images/storyline/module3.png"
     }
   },
   '4': {
@@ -32,13 +32,26 @@ export const moduleConfig = {
     levels: 5,
     storyline: {
       text: "Since you have been doing such great work, you've been promoted from intern to Junior Analyst. You're not just pulling data—you're uncovering insights. Whether it's finding the most popular genres or tracking artist releases, your work is influencing what gets produced, promoted, and played. You're becoming a true data star behind the stars.",
-      image: "/images/storyline/module4.jpg"
+      image: "/images/storyline/module4.png"
     }
   },
   '5': {
     title: "Database Design",
     description: "Master database schema design and relationships",
-    levels: 5
+    levels: 5,
+    storyline: {
+      text: "As your role at Stellar Sound Records grows, the label entrusts you with designing a new database for an upcoming music festival. You'll need to model relationships between artists, venues, and performances, ensuring all the festival's data is perfectly organized.",
+      image: "/images/storyline/module5.png"
+    }
+  },
+  '6': {
+    title: "Advanced Joins and Subqueries",
+    description: "Master complex database operations with advanced joins and subqueries",
+    levels: 5,
+    storyline: {
+      text: "Congratulations! You've been promoted to Senior Data Analyst. The CEO has a special project just for you: analyzing cross-platform performance and artist collaboration patterns. This complex analysis will require your most advanced SQL skills yet, connecting data across multiple systems.",
+      image: "/images/storyline/module6.png"
+    }
   }
 }
 

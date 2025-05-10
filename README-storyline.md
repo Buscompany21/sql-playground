@@ -52,7 +52,7 @@ export const curriculumStoryline = {
 
 1. Prepare square images (recommended size: 600x600px)
 2. Save them in the `/public/images/storyline/` directory
-3. Name them to match the path in your module configuration (e.g., `module1.jpg`)
+3. Name them to match the path in your module configuration (e.g., `module1.png`)
 
 ### 3. Add Storyline Content for New Modules
 
