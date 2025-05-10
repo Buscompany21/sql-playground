@@ -5,18 +5,18 @@ import { useRouter } from 'next/navigation'
 import { moduleConfig } from '../../../../config/moduleConfig'
 import { SQLEditor } from '../../../../components/sql-editor'
 
-export default function LevelClient({ params }) {
+export default function LessonClient({ params }) {
   const router = useRouter()
-  const { moduleId, levelId } = params
+  const { moduleId, lessonId } = params
   const [levelData, setLevelData] = useState(null)
 
-  const numericLevelId = parseInt(levelId)
+  const numericLessonId = parseInt(lessonId)
   const moduleData = moduleConfig[moduleId]
   
   // Fetch level data for the title
   useEffect(() => {
     const fetchLevelData = async () => {
-      const moduleLevelID = `${moduleId}${numericLevelId}`
+      const moduleLevelID = `${moduleId}${numericLessonId}`
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/leveldata`, {
           method: 'POST',
@@ -36,19 +36,26 @@ export default function LevelClient({ params }) {
     }
     
     fetchLevelData()
-  }, [moduleId, numericLevelId])
+  }, [moduleId, numericLessonId])
 
   if (!moduleData) {
     router.push('/')
     return null
   }
 
-  const nextLevelId = numericLevelId + 1
-  const hasNextLevel = nextLevelId <= moduleData.levels
+  const lesson = moduleData.lessons?.find(l => l.id === numericLessonId)
+
+  if (!lesson) {
+    router.push(`/module/${moduleId}`)
+    return null
+  }
+
+  const nextLessonId = numericLessonId + 1
+  const hasNextLesson = moduleData.lessons?.some(l => l.id === nextLessonId)
   
   const handleComplete = () => {
-    if (hasNextLevel) {
-      router.push(`/module/${moduleId}/${nextLevelId}`)
+    if (hasNextLesson) {
+      router.push(`/module/${moduleId}/${nextLessonId}`)
     } else {
       router.push(`/module/${moduleId}/complete`)
     }
@@ -57,12 +64,12 @@ export default function LevelClient({ params }) {
   return (
     <div className="h-full flex flex-col">
       <SQLEditor
-        key={`${moduleId}-${levelId}`}
+        key={`${moduleId}-${lessonId}`}
         moduleId={moduleId}
-        levelId={numericLevelId}
-        lesson={levelData}
+        levelId={numericLessonId}
+        lesson={lesson}
         onComplete={handleComplete}
-        hasNextLesson={hasNextLevel}
+        hasNextLesson={hasNextLesson}
       />
     </div>
   )
