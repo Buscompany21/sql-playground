@@ -1,64 +1,88 @@
+'use client'
+
 import Link from 'next/link';
-import { moduleConfig } from '../config/moduleConfig';
+import { moduleConfig, curriculumStoryline } from '../config/moduleConfig';
+import { ModuleStorylinePreview } from '../components/ModuleStoryline';
+import { AppLayout } from '../components/AppLayout';
+import { Button } from '../components/ui/button';
+import { ArrowRight, BookOpen } from 'lucide-react';
 
 export default function Home() {
+  // Function to handle smooth scrolling to modules section
+  const scrollToModules = () => {
+    document.getElementById('modules-section').scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-[#faf8ff]">
-      <main className="container mx-auto px-6 py-24">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center space-y-3 mb-20">
-            <h1 className="text-4xl font-bold text-[#2d1576]">
-              SQL Learning Path
+    <AppLayout fullWidth={true}>
+      {/* Hero Section with improved colors */}
+      <section className="bg-gradient-to-b from-[#235458] to-[#2A6B70] text-white">
+        <div className="container mx-auto px-4 md:px-6 py-14 md:py-20">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-5 text-white drop-shadow-sm">
+              {curriculumStoryline.title}
             </h1>
-            <p className="text-lg text-[#7c3aed]">
-              Master database queries through guided exercises
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {Object.entries(moduleConfig).map(([id, module]) => (
-              <Link 
-                key={id}
-                href={`/module/${id}/1/`}
-                className="block group"
+            
+            {/* Storyline Container */}
+            <div className="bg-white/10 backdrop-blur-sm p-5 md:p-6 rounded-lg border border-white/20 shadow-lg mb-8 max-w-2xl mx-auto">
+              <div className="flex items-center justify-center mb-3">
+                <h2 className="text-lg md:text-xl font-medium text-white">Your Story Begins</h2>
+              </div>
+              
+              <div className="space-y-3 text-left">
+                <p className="text-white/90 leading-relaxed">
+                  <span className="font-bold text-white">You dream of becoming a famous singer</span>, and to get your foot in the door, you&apos;ve landed an internship at one of the world&apos;s top music labels: <span className="italic">Stellar Sound Records</span>.
+                </p>
+                
+                <p className="text-white/90 leading-relaxed">
+                  As a junior data analyst, you&apos;ll use SQL to explore hit songs, uncover trends, and help the label make decisions—all while secretly hoping your name ends up on this list one day.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex justify-center">
+              <Button 
+                size="lg"
+                className="bg-[#5B8A9D] hover:bg-[#4A7688] text-white px-8 py-5 shadow-lg transition-all duration-200"
+                asChild
               >
-                <div className="p-8 rounded-2xl bg-white/50 hover:bg-white/80 border border-purple-100 
-                              transition-all duration-300 hover:border-purple-200 
-                              hover:shadow-[0_0_50px_rgba(124,58,237,0.1)] 
-                              hover:-translate-y-0.5">
-                  <div className="flex items-start justify-between gap-8">
-                    <div className="space-y-4 flex-1">
-                      <div className="flex items-center gap-3 text-[#7c3aed]">
-                        <span className="font-medium">Module {id}</span>
-                        <span>·</span>
-                        <span>{module.levels} Levels</span>
-                      </div>
-                      
-                      <div>
-                        <h2 className="text-2xl font-semibold text-[#2d1576] mb-2 
-                                     group-hover:text-[#3a1b8c] transition-colors">
-                          {module.title}
-                        </h2>
-                        <p className="text-[#7c3aed] leading-relaxed">
-                          {module.description}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-[#7c3aed] opacity-60 group-hover:opacity-100 
-                                  group-hover:translate-x-1 transition-all pt-1">
-                      →
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center text-[#7c3aed]">
-            {Object.values(moduleConfig).reduce((acc, module) => acc + module.levels, 0)} total lessons
+                <Link href="/module/1">
+                  <span className="flex items-center gap-2">
+                    Start Learning
+                    <ArrowRight className="h-5 w-5" />
+                  </span>
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
-      </main>
-    </div>
+      </section>
+      
+      {/* Modules Section with improved colors */}
+      <section id="modules-section" className="bg-[#f8fafa] py-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-[#2E3A45] mb-4">Your Learning Journey</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              {Object.entries(moduleConfig).map(([id, module]) => (
+                <div key={id} className="flex flex-col h-full">
+                  <ModuleStorylinePreview moduleId={id} />
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-center">
+              <div className="inline-flex items-center bg-[#E9F1F5] px-6 py-3 rounded-full text-[#5B8A9D] font-medium shadow-sm">
+                <span className="mr-2">{Object.values(moduleConfig).reduce((acc, module) => acc + module.levels, 0)} total lessons</span>
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </AppLayout>
   );
 }
