@@ -84,14 +84,6 @@ This component shows a preview of the module storyline on the homepage, includin
 
 This small component appears at the top of each lesson, providing context about which part of the storyline the current lesson belongs to.
 
-## Best Practices
-
-1. **Keep Storylines Concise**: Focus on quality over quantity - make each storyline engaging but brief.
-2. **Consistent Tone**: Maintain a consistent voice and tone across all storylines.
-3. **Relevant Images**: Choose images that visually reinforce the storyline content.
-4. **Progressive Narrative**: Structure storylines to progress logically across modules.
-5. **Inclusive Language**: Ensure storylines are accessible and relatable to all learners.
-
 ## Troubleshooting
 
 - **Images Not Showing**: Ensure images are in the correct directory and named correctly in the configuration.
