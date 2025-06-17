@@ -1,5 +1,5 @@
 import { Card, CardContent } from '../ui/card'
-import { Monitor, Database } from 'lucide-react'
+import { Monitor, Database, Maximize2 } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "../ui/table"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
+import { Button } from '../ui/button'
 
 // Query results component to display SQL results or errors
 function QueryResultsTable({ results, error }) {
@@ -77,7 +78,7 @@ function QueryResultsTable({ results, error }) {
   )
 }
 
-export function ResultsPanel({ results, error, isFullScreen, width }) {
+export default function ResultsPanel({ results, error, isFullScreen, width, toggleFullScreen, toggleResultsPanel }) {
   // Fullscreen version
   if (isFullScreen) {
     return (
@@ -107,18 +108,30 @@ export function ResultsPanel({ results, error, isFullScreen, width }) {
   // Regular mode version
   return (
     <Card className="h-full bg-white shadow-sm border-slate-200 flex flex-col overflow-hidden min-h-0">
-      <CardContent className="p-4 flex flex-col flex-1 overflow-hidden min-h-0">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold text-[#2E3A45] flex items-center gap-2">
-            <Monitor className="h-4 w-4 text-[#5B8A9D]" />
-            <span>Query Results</span>
-          </h3>
+      <div className="flex justify-between items-center px-4 py-3 border-b border-slate-200">
+        <h3 className="font-semibold text-[#2E3A45] flex items-center gap-2">
+          <Monitor className="h-4 w-4 text-[#5B8A9D]" />
+          <span>Query Results</span>
+        </h3>
+        <div className="flex items-center gap-1">
           {results?.length > 0 && (
-            <span className="text-xs px-2 py-1 bg-[#E6F2F2] text-[#2A6B70] rounded-full">
+            <span className="text-xs px-2 py-1 bg-[#E6F2F2] text-[#2A6B70] rounded-full mr-2">
               {results.length} {results.length === 1 ? 'row' : 'rows'}
             </span>
           )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleFullScreen}
+            className="h-7 w-7 p-0 hover:bg-slate-100"
+            title="Expand results to full screen"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </Button>
         </div>
+      </div>
+      
+      <CardContent className="p-0 flex flex-col flex-1 overflow-hidden min-h-0">
         <div className="flex-1 relative overflow-hidden min-h-0">
           <QueryResultsTable results={results} error={error} />
         </div>

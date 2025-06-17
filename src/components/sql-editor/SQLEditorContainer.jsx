@@ -10,12 +10,12 @@ import { GripVertical } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { EditorHeader } from './EditorHeader'
 import { InstructionsPanel } from './InstructionsPanel'
-import { SQLEditorPanel } from './SQLEditorPanel'
-import { ResultsPanel } from './ResultsPanel'
+import SQLEditorPanel from './SQLEditorPanel'
+import ResultsPanel from './ResultsPanel'
 import { FooterNavigation } from './FooterNavigation'
 import { SuccessNotification } from './SuccessNotification'
 
-export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasNextLesson }) {
+export default function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasNextLesson }) {
   // Convert moduleId and levelId to numbers if they're strings
   const moduleIdNum = typeof moduleId === 'string' ? parseInt(moduleId) : moduleId;
   const levelIdNum = typeof levelId === 'string' ? parseInt(levelId) : levelId;
@@ -59,16 +59,44 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
 
   // Toggle fullscreen
   const toggleFullScreen = () => {
-    const isEntering = !isFullScreen;
-    setIsFullScreen(isEntering);
-    
-    // Reset panel states when entering fullscreen
-    if (isEntering) {
-      setFsInstructionsVisible(false);
-      setFsResultsVisible(false);
-      setEditorWidth('65%');
-      setResultsWidth('35%');
-    }
+    // First set fullscreen state
+    setIsFullScreen(prevState => {
+      const isEntering = !prevState;
+      
+      // Then update panel states
+      if (isEntering) {
+        // Use setTimeout to ensure state updates happen after the fullscreen render
+        setTimeout(() => {
+          setFsInstructionsVisible(false);
+          setFsResultsVisible(false);
+          setEditorWidth('65%');
+          setResultsWidth('35%');
+        }, 0);
+      }
+      
+      return isEntering;
+    });
+  };
+  
+  // Toggle fullscreen with results showing
+  const toggleFullScreenWithResults = () => {
+    // First set fullscreen state
+    setIsFullScreen(prevState => {
+      const isEntering = !prevState;
+      
+      // Then update panel states
+      if (isEntering) {
+        // Use setTimeout to ensure state updates happen after the fullscreen render
+        setTimeout(() => {
+          setFsInstructionsVisible(false);
+          setFsResultsVisible(true);
+          setEditorWidth('50%');
+          setResultsWidth('50%');
+        }, 0);
+      }
+      
+      return isEntering;
+    });
   };
 
   // Handle fullscreen effect
@@ -205,7 +233,13 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
   
       // In fullscreen mode, always show results panel regardless of success or error
       if (isFullScreen) {
-        setFsResultsVisible(true);
+        // Use setTimeout to ensure this happens in the next render cycle
+        setTimeout(() => {
+          setFsResultsVisible(true);
+          // Balance the panels
+          setEditorWidth('50%');
+          setResultsWidth('50%');
+        }, 0);
       }
   
       if (result.error) {
@@ -342,6 +376,8 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
               isFullScreen={true}
               width={fsResultsVisible ? editorWidth : '100%'}
               editorRef={editorContainerRef}
+              isExecuting={isExecuting}
+              handleExecute={handleExecute}
             />
             
             {/* Resizable divider */}
@@ -362,6 +398,8 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
                 error={sqlError}
                 isFullScreen={true}
                 width={resultsWidth}
+                toggleResultsPanel={toggleResultsPanel}
+                toggleFullScreen={toggleFullScreen}
               />
             )}
           </div>
@@ -411,6 +449,7 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
                 isFullScreen={false}
                 isExecuting={isExecuting}
                 handleExecute={handleExecute}
+                toggleFullScreen={toggleFullScreen}
               />
             </div>
 
@@ -419,6 +458,8 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
               results={queryResults}
               error={sqlError}
               isFullScreen={false}
+              toggleFullScreen={toggleFullScreenWithResults}
+              toggleResultsPanel={toggleResultsPanel}
             />
           </div>
           

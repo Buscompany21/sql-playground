@@ -19,24 +19,35 @@ export default function Home() {
       <section className="bg-gradient-to-b from-[#235458] to-[#2A6B70] text-white">
         <div className="container mx-auto px-4 md:px-6 py-14 md:py-20">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-5 text-white drop-shadow-sm">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight mb-8 text-white drop-shadow-sm">
               {curriculumStoryline.title}
             </h1>
             
-            {/* Storyline Container */}
-            <div className="bg-white/10 backdrop-blur-sm p-5 md:p-6 rounded-lg border border-white/20 shadow-lg mb-8 max-w-2xl mx-auto">
-              <div className="flex items-center justify-center mb-3">
-                <h2 className="text-lg md:text-xl font-medium text-white">Your Story Begins</h2>
+            <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch mb-8">
+              {/* Story Image and Text Container - both with same max width */}
+              <div className="flex-1 max-w-sm">
+                <img 
+                  src="/images/storyline/startstory.png" 
+                  alt="Start Story" 
+                  className="w-full h-auto rounded-lg shadow-lg"
+                />
               </div>
               
-              <div className="space-y-3 text-left">
-                <p className="text-white/90 leading-relaxed">
-                  <span className="font-bold text-white">You dream of becoming a famous singer</span>, and to get your foot in the door, you&apos;ve landed an internship at one of the world&apos;s top music labels: <span className="italic">Stellar Sound Records</span>.
-                </p>
+              {/* Storyline Container */}
+              <div className="flex-1 max-w-sm bg-white/10 backdrop-blur-sm p-5 md:p-6 rounded-lg border border-white/20 shadow-lg text-left">
+                <div className="flex items-center justify-center mb-3">
+                  <h2 className="text-lg md:text-xl font-medium text-white">Your Story Begins</h2>
+                </div>
                 
-                <p className="text-white/90 leading-relaxed">
-                  As a junior data analyst, you&apos;ll use SQL to explore hit songs, uncover trends, and help the label make decisions—all while secretly hoping your name ends up on this list one day.
-                </p>
+                <div className="space-y-3 text-left">
+                  <p className="text-white/90 leading-relaxed">
+                    <span className="font-bold text-white">You dream of becoming a famous singer</span>, and to get your foot in the door, you&apos;ve landed an internship at one of the world&apos;s top music labels: <span className="italic">Stellar Sound Records</span>.
+                  </p>
+                  
+                  <p className="text-white/90 leading-relaxed">
+                    As a junior data analyst, you&apos;ll use SQL to explore hit songs, uncover trends, and help the label make decisions—all while secretly hoping your name ends up on this list one day.
+                  </p>
+                </div>
               </div>
             </div>
             
