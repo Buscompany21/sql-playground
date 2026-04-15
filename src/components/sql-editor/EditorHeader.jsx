@@ -1,15 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '../ui/button'
-import { Maximize2, Minimize2, ChevronRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 
 export function EditorHeader({ 
   isFullScreen, 
   moduleId, 
   levelId, 
   levelData, 
-  toggleSidebar, 
-  toggleFullScreen 
+  toggleSidebar 
 }) {
   return (
     <header className={`
@@ -49,23 +47,6 @@ export function EditorHeader({
             </span>
           </div>
         </div>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleFullScreen}
-          className="relative h-8 group flex items-center gap-1.5 bg-transparent text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200"
-          aria-label={isFullScreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-        >
-          {isFullScreen ? (
-            <Minimize2 className="h-4.5 w-4.5" />
-          ) : (
-            <Maximize2 className="h-4.5 w-4.5" />
-          )}
-          <span className="hidden sm:inline text-sm font-medium opacity-0 group-hover:opacity-100 -ml-1 transition-opacity duration-200">
-            {isFullScreen ? "Exit" : "Expand"}
-          </span>
-        </Button>
       </div>
     </header>
   );

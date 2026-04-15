@@ -1,0 +1,65 @@
+{
+  "moduleId": 9,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Module 9 Level 1",
+      "task": "Return songs released in 2023; keep query simple for index-style filtering.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE release_year = 2023;",
+      "hintMessage": "Filter with equality on release_year.",
+      "successMessage": "Nice targeted filter.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Module 9 Level 2",
+      "task": "Return performances for venue_id 1 ordered by set_time.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM festival_performances WHERE venue_id = 1 ORDER BY set_time;",
+      "hintMessage": "Use WHERE on venue_id and ORDER BY set_time.",
+      "successMessage": "Great selective query.",
+      "table": [
+        "festival_performances"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Module 9 Level 3",
+      "task": "Return venues in Chicago.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM venues WHERE city = 'Chicago';",
+      "hintMessage": "Filter city = 'Chicago'.",
+      "successMessage": "City lookup complete.",
+      "table": [
+        "venues"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Module 9 Level 4",
+      "task": "Return songs with weeks_on_chart between 15 and 25.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE weeks_on_chart BETWEEN 15 AND 25;",
+      "hintMessage": "Use BETWEEN for the range.",
+      "successMessage": "Range query done.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Module 9 Level 5",
+      "task": "Return headliner performances ordered by venue_id then set_time.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM festival_performances WHERE headliner = 1 ORDER BY venue_id, set_time;",
+      "hintMessage": "Filter first, then sort by two columns.",
+      "successMessage": "Excellent final filter.",
+      "table": [
+        "festival_performances"
+      ]
+    }
+  ]
+}

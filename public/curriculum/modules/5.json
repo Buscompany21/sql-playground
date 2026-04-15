@@ -1,0 +1,65 @@
+{
+  "moduleId": 5,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Create a Table for New Artists",
+      "task": "The label wants to keep track of new artists they meet. Help them by creating a new table called new_artists with columns for name, genre, city, and state. All of the columns will be varchars, then query your table to see the new columns.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "CREATE TABLE new_artists (\nname VARCHAR(100),\ngenre VARCHAR(50),\ncity VARCHAR(100),\nstate VARCHAR(100)\n);",
+      "hintMessage": "Use CREATE TABLE and define four columns with types. Don’t forget to include the character count for varchar: VARCHAR(100).",
+      "successMessage": "Table created! Your team can now log all the up-and-coming talent.",
+      "table": [
+        "new_artists"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Insert a New Artist",
+      "task": "A new artist named Luna Ray just got scouted! She’s a pop singer from Austin, TX. Add her info to the new_artists table then query the table.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "INSERT INTO new_artists (name, genre, city, state)\nVALUES ('Luna Ray', 'Pop', 'Austin', 'TX');",
+      "hintMessage": "Insert values into all four columns. Remember that strings need to be in quotes and that the row of data should be surrounded by parenthesis.",
+      "successMessage": "Nice work! Luna Ray has officially been added.",
+      "table": [
+        "new_artists"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Insert Multiple Artists",
+      "task": "You’ve just met two more artists: Blaze Carter (Hip-Hop, Detroit, MI) and Isla Sky (Indie, Portland, OR). Add them both in one statement.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "INSERT INTO new_artists (name, genre, city, state)\nVALUES\n('Blaze Carter', 'Hip-Hop', 'Detroit', 'MI'),\n('Isla Sky', 'Indie', 'Portland', 'OR');",
+      "hintMessage": "Use commas to separate rows in your insert and each row should be surrounded with parenthesis.",
+      "successMessage": "Awesome! Your table is growing with fresh new talent.",
+      "table": [
+        "new_artists"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Create a Table for Song Submissions",
+      "task": "The team needs a table to track demo submissions. Create a demo_songs table with song_title, artist_name, and submission_date. Then query the table to see the new columns.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "CREATE TABLE demo_songs (\nsong_title VARCHAR(100),\nartist_name VARCHAR(100),\nsubmission_date DATE\n);",
+      "hintMessage": "Define the data types clearly.",
+      "successMessage": "Great! Now they can keep track of demo submissions easily.",
+      "table": [
+        "demo_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Add Demo Submissions",
+      "task": "You’ve received two demos: “Sunset City” by Luna Ray (2024-06-01) and “Bounce Back” by Blaze Carter (2024-06-02). Add them to the demo_songs table.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "INSERT INTO demo_songs (song_title, artist_name, submission_date)\nVALUES\n('Sunset City', 'Luna Ray', '2024-06-01'),\n('Bounce Back', 'Blaze Carter', '2024-06-02');",
+      "hintMessage": "Format your dates as YYYY-MM-DD.",
+      "successMessage": "Done! Your entries are live in the system.",
+      "table": [
+        "demo_songs"
+      ]
+    }
+  ]
+}

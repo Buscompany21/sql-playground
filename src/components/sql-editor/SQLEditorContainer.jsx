@@ -2,9 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import { AnimatePresence } from 'framer-motion'
-import { getModuleLevels } from '../../config/moduleConfig'
+import { getModuleLevels, getNextModuleId } from '../../config/moduleConfig'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { GripVertical } from 'lucide-react'
+import { fetchLevelDefinition, getPreviewTableName, stripLevelForClient } from '../../lib/curriculum/fetchLevel'
+import { loadSchemaSql } from '../../lib/curriculum/schemaCache'
+import { executeUserSql, executePreviewQuery } from '../../lib/curriculum/executeUserSql'
 
 // Import components
 import { Sidebar } from './Sidebar'
@@ -14,14 +17,19 @@ import { SQLEditorPanel } from './SQLEditorPanel'
 import { ResultsPanel } from './ResultsPanel'
 import { FooterNavigation } from './FooterNavigation'
 import { SuccessNotification } from './SuccessNotification'
+import { FailureNotification } from './FailureNotification'
 
-export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasNextLesson }) {
+export function SQLEditorContainer({ moduleId, levelId }) {
   // Convert moduleId and levelId to numbers if they're strings
   const moduleIdNum = typeof moduleId === 'string' ? parseInt(moduleId) : moduleId;
   const levelIdNum = typeof levelId === 'string' ? parseInt(levelId) : levelId;
   
   // Get module data
   const maxLevels = getModuleLevels(moduleIdNum.toString());
+  const nextModuleId = getNextModuleId(moduleIdNum.toString());
+  const canGoNext = levelIdNum < maxLevels || nextModuleId != null;
+
+  const levelDefinitionRef = useRef(null);
 
   // State variables
   const [sqlCode, setSqlCode] = useState('');
@@ -30,9 +38,13 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
   const [taskMessage, setTaskMessage] = useState('Loading...');
   const [isMessageExpanded, setIsMessageExpanded] = useState(true);
   const [showHint, setShowHint] = useState(false);
+  const [showSolution, setShowSolution] = useState(false);
+  const [canShowSolution, setCanShowSolution] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showFailure, setShowFailure] = useState(false);
+  const [failureMessage, setFailureMessage] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
   const [levelData, setLevelData] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -52,10 +64,6 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
   
   // State for managing fullscreen persistence
   const [fullscreenState, setFullscreenState] = useLocalStorage('sqlEditorFullscreen', null);
-
-  // API URLs
-  const sqlSpellApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/sqlspell`;
-  const levelsApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/leveldata`;
 
   // Toggle fullscreen
   const toggleFullScreen = () => {
@@ -140,37 +148,59 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
     e.preventDefault(); // Prevent text selection during resize
   };
 
-  // Fetch level data
+  // Load level content from public/curriculum/modules (see fetchLevel.js)
   useEffect(() => {
-    const fetchLevelData = async () => {
-      const moduleLevelID = `${moduleIdNum}${levelIdNum}`;
-  
+    let cancelled = false;
+
+    const load = async () => {
+      levelDefinitionRef.current = null;
+      setTaskMessage('Loading...');
+      setSqlError(null);
+      setQueryResults([]);
+      setSuccessMessage('');
+      setShowFailure(false);
+      setFailureMessage('');
+      setShowSolution(false);
+      setCanShowSolution(false);
       try {
-        const response = await fetch(levelsApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ moduleLevelID }),
+        const full = await fetchLevelDefinition(moduleIdNum, levelIdNum);
+        if (cancelled) return;
+        levelDefinitionRef.current = full;
+        setLevelData(stripLevelForClient(full));
+        setSqlCode(full.initialCode || '');
+        setTaskMessage(full.task);
+
+        const schemaSql = await loadSchemaSql(moduleIdNum);
+        if (cancelled) return;
+
+        const tableName = getPreviewTableName(full);
+        if (!tableName) return;
+
+        const preview = await executePreviewQuery({
+          schemaSql,
+          query: `SELECT * FROM ${tableName};`,
         });
-  
-        const data = await response.json();
-  
-        if (response.ok) {
-          setLevelData(data);
-          setSqlCode(data.initialCode || '');
-          setTaskMessage(data.task);
+        if (cancelled) return;
+
+        if (preview.error) {
+          setSqlError(preview.error);
+          setQueryResults([]);
         } else {
-          setTaskMessage(`Error: ${data.error || 'Failed to fetch level data.'}`);
+          setQueryResults(preview.output);
         }
       } catch (error) {
-        console.error('Error fetching level data:', error);
-        setTaskMessage(`Error fetching level data: ${error.message}`);
+        if (cancelled) return;
+        console.error('Error loading level:', error);
+        setLevelData(null);
+        setTaskMessage(`Error loading level: ${error.message}`);
       }
     };
-  
-    fetchLevelData();
-  }, [moduleIdNum, levelIdNum, levelsApiUrl]);
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [moduleIdNum, levelIdNum]);
   
   // Effect to persist fullscreen state
   useEffect(() => {
@@ -180,52 +210,62 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
     }
   }, [fullscreenState, moduleIdNum, levelIdNum]);
 
-  // Execute SQL query
+  // Execute SQL locally (sql.js) using schema + solution from curriculum files
   const handleExecute = async () => {
     setIsExecuting(true);
     setSqlError(null);
-  
+    setShowFailure(false);
+
+    const level = levelDefinitionRef.current;
+    if (!level) {
+      setSqlError('Level is still loading.');
+      setIsExecuting(false);
+      return;
+    }
+
+    if (!sqlCode.trim()) {
+      setSqlError('SQL query cannot be empty');
+      setIsExecuting(false);
+      return;
+    }
+
     try {
-      const payload = {
-        moduleId: moduleIdNum,
-        levelId: levelIdNum,
-        sqlCode,
-      };
-  
-      const response = await fetch(sqlSpellApiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+      const schemaSql = await loadSchemaSql(moduleIdNum);
+      const result = await executeUserSql({
+        schemaSql,
+        userQuery: sqlCode,
+        level,
       });
-  
-      const responseData = await response.json();
-      const result = responseData.body ? JSON.parse(responseData.body) : responseData;
-  
-      // In fullscreen mode, always show results panel regardless of success or error
+
       if (isFullScreen) {
         setFsResultsVisible(true);
       }
-  
+
       if (result.error) {
+        setCanShowSolution(true);
         setSqlError(result.error);
         setQueryResults([]);
+        handleFailure();
       } else {
         const { output, passed, message } = result;
         setQueryResults(output);
-        
+
         if (passed) {
-          setTaskMessage(message || 'You passed the level! 🎉');
+          const nextSuccessMessage = message || level.successMessage || 'You passed the level! 🎉';
+          setSuccessMessage(nextSuccessMessage);
+          setShowFailure(false);
           handleSuccess();
+        } else if (message) {
+          setCanShowSolution(true);
+          handleFailure();
         }
       }
     } catch (error) {
       console.error('Error executing query:', error);
       setSqlError(`Error executing query: ${error.message}`);
       setQueryResults([]);
-      
-      // Also show results panel for caught errors in fullscreen mode
+      handleFailure();
+
       if (isFullScreen) {
         setFsResultsVisible(true);
       }
@@ -241,20 +281,34 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
     setIsSidebarOpen(prev => !prev);
   };
 
-  // Navigate between levels
+  // Navigate between levels (and from last level to the next module landing page)
   const handleNavigation = (direction) => {
-    // Save fullscreen state before navigation
-    if (isFullScreen) {
-      setFullscreenState({
-        moduleId: moduleIdNum,
-        levelId: direction === 'next' ? levelIdNum + 1 : levelIdNum - 1
-      });
+    if (direction === 'next') {
+      if (levelIdNum < maxLevels) {
+        if (isFullScreen) {
+          setFullscreenState({
+            moduleId: moduleIdNum,
+            levelId: levelIdNum + 1
+          });
+        }
+        window.location.href = `/module/${moduleIdNum}/${levelIdNum + 1}/`;
+      } else if (nextModuleId) {
+        if (isFullScreen) {
+          setFullscreenState(null);
+        }
+        window.location.href = `/module/${nextModuleId}/`;
+      }
+      return;
     }
-    
+
     if (direction === 'back' && levelIdNum > 1) {
+      if (isFullScreen) {
+        setFullscreenState({
+          moduleId: moduleIdNum,
+          levelId: levelIdNum - 1
+        });
+      }
       window.location.href = `/module/${moduleIdNum}/${levelIdNum - 1}/`;
-    } else if (direction === 'next' && levelIdNum < maxLevels) {
-      window.location.href = `/module/${moduleIdNum}/${levelIdNum + 1}/`;
     }
   };
 
@@ -275,7 +329,13 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
   // Success handling
   const handleSuccess = () => {
     setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
+    setTimeout(() => setShowSuccess(false), 5000);
+  };
+  
+  const handleFailure = () => {
+    setFailureMessage('Not quite right. Check out the hint or solution if needed.');
+    setShowFailure(true);
+    setTimeout(() => setShowFailure(false), 3000);
   };
   
   // Panel visibility toggles
@@ -319,7 +379,6 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
             levelId={levelIdNum}
             levelData={levelData}
             toggleSidebar={toggleSidebar}
-            toggleFullScreen={toggleFullScreen}
           />
           
           <div className="flex flex-1 overflow-hidden">
@@ -330,6 +389,10 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
                 levelData={levelData}
                 showHint={showHint}
                 toggleHint={toggleHint}
+                canShowSolution={canShowSolution}
+                showSolution={showSolution}
+                toggleSolution={() => setShowSolution(prev => !prev)}
+                solutionText={levelDefinitionRef.current?.solution || ''}
                 isFullScreen={true}
                 width="300px"
               />
@@ -342,6 +405,7 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
               isFullScreen={true}
               width={fsResultsVisible ? editorWidth : '100%'}
               editorRef={editorContainerRef}
+              toggleFullScreen={toggleFullScreen}
             />
             
             {/* Resizable divider */}
@@ -371,6 +435,7 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
             moduleId={moduleIdNum}
             levelId={levelIdNum}
             maxLevels={maxLevels}
+            canGoNext={canGoNext}
             isExecuting={isExecuting}
             handleExecute={handleExecute}
             handleNavigation={handleNavigation}
@@ -389,7 +454,6 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
             levelId={levelIdNum}
             levelData={levelData}
             toggleSidebar={toggleSidebar}
-            toggleFullScreen={toggleFullScreen}
           />
           
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 md:gap-4 overflow-hidden p-4">
@@ -400,6 +464,10 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
                 levelData={levelData}
                 showHint={showHint}
                 toggleHint={toggleHint}
+                canShowSolution={canShowSolution}
+                showSolution={showSolution}
+                toggleSolution={() => setShowSolution(prev => !prev)}
+                solutionText={levelDefinitionRef.current?.solution || ''}
                 isMessageExpanded={isMessageExpanded}
                 toggleMessageBox={toggleMessageBox}
                 isFullScreen={false}
@@ -411,6 +479,7 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
                 isFullScreen={false}
                 isExecuting={isExecuting}
                 handleExecute={handleExecute}
+                toggleFullScreen={toggleFullScreen}
               />
             </div>
 
@@ -427,6 +496,7 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
             moduleId={moduleIdNum}
             levelId={levelIdNum}
             maxLevels={maxLevels}
+            canGoNext={canGoNext}
             handleNavigation={handleNavigation}
             handleLevelClick={handleLevelClick}
           />
@@ -434,7 +504,8 @@ export function SQLEditorContainer({ moduleId, levelId, lesson, onComplete, hasN
       )}
       
       {/* Success Notification */}
-      <SuccessNotification isVisible={showSuccess} />
+      <SuccessNotification isVisible={showSuccess} message={successMessage} />
+      <FailureNotification isVisible={showFailure} message={failureMessage} />
     </div>
   );
 } 

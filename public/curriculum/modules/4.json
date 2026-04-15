@@ -1,0 +1,65 @@
+{
+  "moduleId": 4,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Total Spotify Streams",
+      "task": "Your boss needs to know the total number of Spotify streams across the Top 50 chart. Calculate the sum and rename the column to total_spotify_streams.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT SUM(spotify_streams) AS total_spotify_streams FROM top_songs;",
+      "hintMessage": "Use SUM() and give it an alias with AS.",
+      "successMessage": "Nice! Now your boss has the total numbers.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Shortest Song by Artist",
+      "task": "In order to make a tiktok, someone on the social media team is asking about Benson Boone’s shortest song. Help find it by filtering the artist and using MIN() to find the shortest duration.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT MIN(duration_ms) AS shortest_song FROM top_songs WHERE artist = 'Benson Boone';",
+      "hintMessage": "Filter with `WHERE artist = 'Benson Boone'`, then use `MIN(duration_ms)` (optionally `AS shortest_song`).",
+      "successMessage": "Perfect, now the team can make the tiktok.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Song Count by Genre",
+      "task": "A genre specialist wants to know how many songs fall under each genre. Use COUNT() with GROUP BY, and name your new column song_count.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT genre, COUNT(*) AS song_count FROM top_songs GROUP BY genre;",
+      "hintMessage": "Use GROUP BY to count rows by category.",
+      "successMessage": "Perfect breakdown! Now we know what genres dominate.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Average Song Duration by Album",
+      "task": "Audio engineers are curious-what’s the average duration of songs per album? Use AVG() with GROUP BY.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT album_name, AVG(duration_ms) FROM top_songs GROUP BY album_name;",
+      "hintMessage": "Use `AVG(duration_ms)` with `GROUP BY album_name`. Put `album_name` first in the `SELECT` list so the result columns match the expected order.",
+      "successMessage": "You’ve just delivered real insights for the engineers.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Most Recent Release by Artist",
+      "task": "Leadership wants a list of the most recent releases by each artist. Show the artist and their latest release date, sorted with the newest songs at the top.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist, MAX(release_date) AS max_release_date FROM top_songs GROUP BY artist ORDER BY max_release_date DESC;",
+      "hintMessage": "Use MAX() and GROUP BY, and sort with ORDER BY.",
+      "successMessage": "This view is super helpful for scouting new releases.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "moduleId": 10,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Module 10 Level 1",
+      "task": "Show each artist from top_songs with total chart weeks.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist_name, SUM(weeks_on_chart) AS total_weeks FROM top_songs GROUP BY artist_name;",
+      "hintMessage": "Group by artist_name and SUM weeks_on_chart.",
+      "successMessage": "Great aggregate report.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Module 10 Level 2",
+      "task": "Show each venue with count of performances.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT v.name, COUNT(fp.id) AS performance_count FROM venues v LEFT JOIN festival_performances fp ON v.id = fp.venue_id GROUP BY v.name;",
+      "hintMessage": "LEFT JOIN venues to performances and count ids.",
+      "successMessage": "Venue report complete.",
+      "table": [
+        "venues",
+        "festival_performances"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Module 10 Level 3",
+      "task": "Show artists that appear in both songs and performances.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT DISTINCT ts.artist_name FROM top_songs ts JOIN festival_performances fp ON ts.artist_name = fp.artist_name;",
+      "hintMessage": "Join on artist_name and keep DISTINCT.",
+      "successMessage": "Cross-dataset match found.",
+      "table": [
+        "top_songs",
+        "festival_performances"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Module 10 Level 4",
+      "task": "Show average chart weeks by genre ordered high to low.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT genre, AVG(weeks_on_chart) AS avg_weeks FROM top_songs GROUP BY genre ORDER BY avg_weeks DESC;",
+      "hintMessage": "Aggregate by genre, then order by the alias.",
+      "successMessage": "Genre performance summary done.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Module 10 Level 5",
+      "task": "Show headliner artists that also have songs in top_songs.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT DISTINCT fp.artist_name FROM festival_performances fp JOIN top_songs ts ON fp.artist_name = ts.artist_name WHERE fp.headliner = 1;",
+      "hintMessage": "Join by artist_name and filter headliner = 1.",
+      "successMessage": "Capstone query complete.",
+      "table": [
+        "festival_performances",
+        "top_songs"
+      ]
+    }
+  ]
+}

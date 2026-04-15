@@ -1,0 +1,70 @@
+{
+  "moduleId": 6,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Join Artist and Demo Tables",
+      "task": "Your manager wants to see each demo alongside the artist’s genre. Join new_artists and demo_songs using the artist’s name.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT demo_songs.song_title, demo_songs.artist_name, new_artists.genre\nFROM demo_songs\nJOIN new_artists ON demo_songs.artist_name = new_artists.name;",
+      "hintMessage": "Match names using JOIN ... ON.",
+      "successMessage": "Nailed it! Now everyone can see the demos by genre.",
+      "table": [
+        "demo_songs",
+        "new_artists"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Join with City and State",
+      "task": "The team wants to organize upcoming demo sessions by city. List each demo with the artist’s city and state.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT demo_songs.song_title, new_artists.city, new_artists.state\nFROM demo_songs\nJOIN new_artists ON demo_songs.artist_name = new_artists.name;",
+      "hintMessage": "Pull location columns from new_artists.",
+      "successMessage": "Great! Now they know where everyone’s from.",
+      "table": [
+        "demo_songs",
+        "new_artists"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Filter Joined Results",
+      "task": "Someone is requesting all Indie demos. Filter your joined results so only Indie genre songs appear.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT demo_songs.song_title, new_artists.genre\nFROM demo_songs\nJOIN new_artists ON demo_songs.artist_name = new_artists.name\nWHERE new_artists.genre = 'Indie';",
+      "hintMessage": "Add WHERE after the JOIN to filter the final result.",
+      "successMessage": "Clean and filtered! Just what the team needed.",
+      "table": [
+        "demo_songs",
+        "new_artists"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Add Submission Dates to Joined View",
+      "task": "Add the submission_date column to your join so the team can schedule listening sessions in order.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT demo_songs.song_title, demo_songs.submission_date, new_artists.genre\nFROM demo_songs\nJOIN new_artists ON demo_songs.artist_name = new_artists.name;",
+      "hintMessage": "You can select columns from both tables in the same query.",
+      "successMessage": "Nicely done! Now everything’s sorted with dates.",
+      "table": [
+        "demo_songs",
+        "new_artists"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Order Joined Results by Submission Date",
+      "task": "For the next team meeting, order the demo list from newest to oldest. Show the title, artist, and date.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT demo_songs.song_title, demo_songs.artist_name, demo_songs.submission_date\nFROM demo_songs\nJOIN new_artists ON demo_songs.artist_name = new_artists.name\nORDER BY demo_songs.submission_date DESC;",
+      "hintMessage": "Use ORDER BY at the end to sort your results.",
+      "successMessage": "Perfect! The team will love this clean, organized list.",
+      "table": [
+        "demo_songs",
+        "new_artists"
+      ]
+    }
+  ]
+}

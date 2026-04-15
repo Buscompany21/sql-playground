@@ -52,19 +52,57 @@ export const moduleConfig = {
       text: "Congratulations! You've been promoted to Senior Data Analyst. The CEO has a special project just for you: analyzing cross-platform performance and artist collaboration patterns. This complex analysis will require your most advanced SQL skills yet, connecting data across multiple systems.",
       image: "/images/storyline/module6.png"
     }
+  },
+  '7': {
+    title: "Window Functions",
+    description: "Use ranking, running totals, and analytic functions over result sets",
+    levels: 5,
+    storyline: {
+      text: "The analytics team needs leaderboards, rolling charts, and per-artist rankings without losing row-level detail. Window functions let you compute sophisticated metrics in a single query—perfect for Stellar Sound's streaming dashboards and year-end awards.",
+      image: "/images/storyline/Module7.png"
+    }
+  },
+  '8': {
+    title: "Common Table Expressions (CTEs)",
+    description: "Structure complex queries with readable, reusable CTEs",
+    levels: 5,
+    storyline: {
+      text: "Your reports are getting layered: festival lineups, royalty splits, and tour schedules all need to build on each other. CTEs help you break big problems into clear steps so the whole team can follow your logic—and trust the numbers.",
+      image: "/images/storyline/Module8.png"
+    }
+  },
+  '9': {
+    title: "Indexes and Query Performance",
+    description: "Understand how indexes affect speed and how to tune queries",
+    levels: 5,
+    storyline: {
+      text: "Dashboards are slowing down right before release week. You're partnering with engineering to see which queries scan too much data and how indexing keeps fans and execs from waiting on the insights they need.",
+      image: "/images/storyline/Module9.png"
+    }
+  },
+  '10': {
+    title: "Advanced Analytics and Reporting",
+    description: "Combine techniques for executive-ready analysis and summaries",
+    levels: 5,
+    storyline: {
+      text: "You've become the go-to analyst for board-ready metrics: revenue trends, market share, and artist growth. This capstone-style work pulls together everything you've learned so leadership can steer Stellar Sound with confidence.",
+      image: "/images/storyline/Module10.png"
+    }
   }
 }
 
-// Add the overall storyline context
 export const curriculumStoryline = {
   title: "TOP SONGS SQL CURRICULUM",
-  introduction: "You dream of becoming a famous singer, and to get your foot in the door, you've landed an internship at one of the world's top music labels: Stellar Sound Records. As a junior data analyst, you'll use SQL to explore hit songs, uncover trends, and help the label make decisions—all while secretly hoping your name ends up on this list one day."
 }
 
 export const getModuleLevels = (moduleId) => {
   return moduleConfig[moduleId]?.levels || 5 // default to 5 levels if not specified
 }
 
-export const getAllModules = () => {
-  return Object.keys(moduleConfig).map(id => ({ moduleId: id }))
+/** Next module id in curriculum order, or null if `moduleId` is the last module. */
+export const getNextModuleId = (moduleId) => {
+  const ids = Object.keys(moduleConfig).sort((a, b) => Number(a) - Number(b))
+  const idx = ids.indexOf(String(moduleId))
+  if (idx === -1 || idx === ids.length - 1) return null
+  return ids[idx + 1]
 } 

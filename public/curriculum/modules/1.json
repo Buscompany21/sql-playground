@@ -1,0 +1,65 @@
+{
+  "moduleId": 1,
+  "levels": [
+    {
+      "id": 1,
+      "title": "First Day on the Job",
+      "task": "Your supervisor wants a quick overview of the latest top hits. \"Can you pull up everything from our top_songs database?\" she asks. It's your first task-just show the entire table so you can get familiar with the data.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs;",
+      "hintMessage": "Use SELECT * to grab all the columns and FROM top_songs to choose the table.",
+      "successMessage": "Great job! You've successfully retrieved the entire top songs list.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Select Specific Column",
+      "task": "You've been asked to help with a playlist curation project. Your boss wants you to alphabetize the song titles so the creative team can browse ideas easily. Show the songs column in alphabetical order.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name FROM top_songs ORDER BY track_name;",
+      "hintMessage": "Select the title column with `SELECT track_name`, then sort with `ORDER BY track_name`.",
+      "successMessage": "Perfect! The team can now browse songs in alphabetical order.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Select Distinct",
+      "task": "The A&R team (the team responsible for finding new artists) wants to see which artists are in the Top 50 chart. They don’t want repeats-just one mention per artist.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT DISTINCT artist FROM top_songs;",
+      "hintMessage": "Use `SELECT DISTINCT artist FROM top_songs` so each artist appears once.",
+      "successMessage": "Nicely done! Now the A&R team has a clean list of artists to review.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Sorting with ORDER BY",
+      "task": "Your boss is curious about how release timing affects popularity. She asks you to organize the songs by release date so she can look for trends. Provide a list that shows the most recent release dates first.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, artist, release_date FROM top_songs ORDER BY release_date DESC;",
+      "hintMessage": "Use ORDER BY release_date. Add DESC to get the most recent songs first.",
+      "successMessage": "Awesome work! Your boss is already spotting some interesting patterns.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Select with ORDER BY",
+      "task": "Another intern is building an artist spotlight wall. She needs a list of all top songs, but sorted by artist so she can group them visually. Can you help her get that list?",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, artist FROM top_songs ORDER BY artist;",
+      "hintMessage": "You can sort alphabetically using ORDER BY artist.",
+      "successMessage": "Spot-on! Your intern friend says this will make her job way easier.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

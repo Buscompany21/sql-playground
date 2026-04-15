@@ -1,0 +1,67 @@
+{
+  "moduleId": 8,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Module 8 Level 1",
+      "task": "Use a CTE to select pop songs and return all columns.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "WITH pop_songs AS (SELECT * FROM top_songs WHERE genre = 'Pop') SELECT * FROM pop_songs;",
+      "hintMessage": "Define a CTE with WITH and select from it.",
+      "successMessage": "CTE basics done.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Module 8 Level 2",
+      "task": "Use a CTE to count performances per venue, then show venue names and counts.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "WITH perf_counts AS (SELECT venue_id, COUNT(*) AS cnt FROM festival_performances GROUP BY venue_id) SELECT v.name, p.cnt FROM perf_counts p JOIN venues v ON p.venue_id = v.id;",
+      "hintMessage": "Build counts in a CTE, then join to venues.",
+      "successMessage": "Great CTE join.",
+      "table": [
+        "festival_performances",
+        "venues"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Module 8 Level 3",
+      "task": "Use two CTEs to return artists who have songs and performances (by name match).",
+      "initialCode": "-- Write your query here\n",
+      "solution": "WITH song_artists AS (SELECT DISTINCT artist_name FROM top_songs), perf_artists AS (SELECT DISTINCT artist_name FROM festival_performances) SELECT s.artist_name FROM song_artists s JOIN perf_artists p ON s.artist_name = p.artist_name;",
+      "hintMessage": "Create one CTE per source and join them.",
+      "successMessage": "Two-CTE flow works.",
+      "table": [
+        "top_songs",
+        "festival_performances"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Module 8 Level 4",
+      "task": "Use a CTE to return high-capacity venues (> 3000).",
+      "initialCode": "-- Write your query here\n",
+      "solution": "WITH big_venues AS (SELECT * FROM venues WHERE capacity > 3000) SELECT * FROM big_venues;",
+      "hintMessage": "Filter inside the CTE, then select from it.",
+      "successMessage": "CTE filtering complete.",
+      "table": [
+        "venues"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Module 8 Level 5",
+      "task": "Use a CTE to sort top_songs by weeks_on_chart descending and return title + weeks.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "WITH ranked_songs AS (SELECT track_name, weeks_on_chart FROM top_songs ORDER BY weeks_on_chart DESC) SELECT * FROM ranked_songs;",
+      "hintMessage": "Put the ordered projection in the CTE.",
+      "successMessage": "Great CTE structure.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "moduleId": 7,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Module 7 Level 1",
+      "task": "Rank venues by capacity.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT name, capacity, RANK() OVER (ORDER BY capacity DESC) AS capacity_rank FROM venues;",
+      "hintMessage": "Use RANK() OVER with ORDER BY capacity DESC.",
+      "successMessage": "Window rank complete.",
+      "table": [
+        "venues"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Module 7 Level 2",
+      "task": "Assign row numbers to performances by set_time.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist_name, set_time, ROW_NUMBER() OVER (ORDER BY set_time) AS row_num FROM festival_performances;",
+      "hintMessage": "Use ROW_NUMBER() OVER (ORDER BY set_time).",
+      "successMessage": "Row numbering works.",
+      "table": [
+        "festival_performances"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Module 7 Level 3",
+      "task": "Show running count of performances by set_time.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist_name, set_time, COUNT(*) OVER (ORDER BY set_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_count FROM festival_performances;",
+      "hintMessage": "Use COUNT() OVER with an ordered frame.",
+      "successMessage": "Running total built.",
+      "table": [
+        "festival_performances"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Module 7 Level 4",
+      "task": "Show each performer and the total number of performances.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist_name, COUNT(*) OVER () AS total_performances FROM festival_performances;",
+      "hintMessage": "COUNT(*) OVER () repeats the grand total.",
+      "successMessage": "Global window aggregate done.",
+      "table": [
+        "festival_performances"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Module 7 Level 5",
+      "task": "Show venues and compare each capacity to the previous one.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT name, capacity, LAG(capacity) OVER (ORDER BY capacity DESC) AS previous_capacity FROM venues;",
+      "hintMessage": "Use LAG with ORDER BY capacity DESC.",
+      "successMessage": "Lag comparison complete.",
+      "table": [
+        "venues"
+      ]
+    }
+  ]
+}

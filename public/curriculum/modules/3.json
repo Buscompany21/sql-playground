@@ -1,0 +1,65 @@
+{
+  "moduleId": 3,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Filter with BETWEEN for Dates",
+      "task": "One department wants to analyze trends from 2023. Find all songs that were released anytime during the year 2023.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE release_date BETWEEN '2023-01-01' AND '2023-12-31';",
+      "hintMessage": "Use BETWEEN to capture a range between two dates.",
+      "successMessage": "Right on target! You've isolated the 2023 hits.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Using LIKE with Wildcards",
+      "task": "Marketing is creating a visual playlist around the color pink. Find any songs with \"pink\" in the title.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name FROM top_songs WHERE track_name LIKE '%PINK%';",
+      "hintMessage": "Use `WHERE track_name LIKE '%pink%'` (SQLite’s `LIKE` ignores case for ASCII letters here).",
+      "successMessage": "You got it! Pink-themed playlist coming right up.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Albums Starting with f",
+      "task": "To prepare for the month of February, the design team is making a f-themed music magazine. Help them find all albums that start with the letter f.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE album_name LIKE 'F%';",
+      "hintMessage": "Use `LIKE 'F%'` (or `LIKE 'f%'`) so only names starting with F match; `%` is the wildcard for “anything after.”",
+      "successMessage": "Done! You’ve filtered albums for the design feature.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Songs Released in May 2024",
+      "task": "To celebrate the start of spring, a seasonal campaign needs all songs released in May 2024. Help the team by finding them by using a wildcard.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE release_date LIKE '2024-05-%';",
+      "hintMessage": "Use LIKE with a date pattern like '2024-05-%'.",
+      "successMessage": "Perfect! The May playlist is ready to go.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Select with IN",
+      "task": "You’re building a comparison between Taylor Swift, Beyoncé, and Kendrick Lamar. Pull all their songs from the table.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE artist IN ('Taylor Swift', 'Beyoncé', 'Kendrick Lamar');",
+      "hintMessage": "Use IN to filter for multiple values in one column.",
+      "successMessage": "Excellent! You’ve got every chart entry for those three artists in one place.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

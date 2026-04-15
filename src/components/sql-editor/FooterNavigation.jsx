@@ -17,6 +17,7 @@ export function FooterNavigation({
   moduleId,
   levelId,
   maxLevels,
+  canGoNext = true,
   isExecuting,
   handleExecute,
   handleNavigation,
@@ -99,7 +100,7 @@ export function FooterNavigation({
             variant="outline" 
             size="sm"
             onClick={() => handleNavigation('next')}
-            disabled={levelId >= maxLevels}
+            disabled={!canGoNext}
             className="h-9 gap-1 text-slate-700 border-slate-300 hover:bg-slate-100"
           >
             <span>Next</span>
@@ -134,7 +135,7 @@ export function FooterNavigation({
         variant="outline" 
         size="sm"
         onClick={() => handleNavigation('next')}
-        disabled={levelId >= maxLevels}
+        disabled={!canGoNext}
         className="h-9 gap-1 text-slate-700 border-slate-300 hover:bg-slate-100"
       >
         <span>Next</span>

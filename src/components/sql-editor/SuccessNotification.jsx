@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle2 } from 'lucide-react'
 
-export function SuccessNotification({ isVisible }) {
+export function SuccessNotification({ isVisible, message }) {
   if (!isVisible) return null;
   
   return (
@@ -17,7 +17,7 @@ export function SuccessNotification({ isVisible }) {
         </div>
         <div>
           <p className="font-medium text-[#2E3A45]">Success!</p>
-          <p className="text-xs text-[#4E5964]">Ready to proceed to next level</p>
+          <p className="text-xs text-[#4E5964]">{message || 'Ready to proceed to next level'}</p>
         </div>
       </motion.div>
     </AnimatePresence>
