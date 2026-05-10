@@ -15,7 +15,6 @@ export default function ModuleComplete({ params }) {
   const { moduleId } = params
   const moduleData = moduleConfig[moduleId] || {
     title: 'Unknown Module',
-    description: 'This module could not be found.'
   }
   
   const nextModuleId = Object.keys(moduleConfig).find(id => 

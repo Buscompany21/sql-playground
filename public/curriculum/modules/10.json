@@ -3,64 +3,61 @@
   "levels": [
     {
       "id": 1,
-      "title": "Module 10 Level 1",
-      "task": "Show each artist from top_songs with total chart weeks.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT artist_name, SUM(weeks_on_chart) AS total_weeks FROM top_songs GROUP BY artist_name;",
-      "hintMessage": "Group by artist_name and SUM weeks_on_chart.",
-      "successMessage": "Great aggregate report.",
+      "title": "Artists with more than one hit (HAVING)",
+      "task": "Stellar Sound wants a short report: each artist and how many chart songs they have, but only if they have 2 or more songs. Columns artist and song_count (COUNT(*)). Use HAVING COUNT(*) >= 2. ORDER BY song_count high to low, then artist A–Z. This site checks names and order.",
+      "initialCode": "-- GROUP BY artist HAVING COUNT(*) >= 2\n",
+      "solution": "SELECT artist, COUNT(*) AS song_count\nFROM top_songs\nGROUP BY artist\nHAVING COUNT(*) >= 2\nORDER BY song_count DESC, artist;",
+      "hintMessage": "WHERE runs before GROUP BY. HAVING runs after the count—use it to drop small groups.",
+      "successMessage": "Great! HAVING keeps only artists with enough songs on the chart.",
       "table": [
         "top_songs"
       ]
     },
     {
       "id": 2,
-      "title": "Module 10 Level 2",
-      "task": "Show each venue with count of performances.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT v.name, COUNT(fp.id) AS performance_count FROM venues v LEFT JOIN festival_performances fp ON v.id = fp.venue_id GROUP BY v.name;",
-      "hintMessage": "LEFT JOIN venues to performances and count ids.",
-      "successMessage": "Venue report complete.",
+      "title": "Very new acts (MIN + HAVING)",
+      "task": "A&R at Stellar Sound wants artists whose first chart date is after 2024-03-01. Show artist and earliest_release = MIN(release_date). Use HAVING on that MIN date. Sort by artist A–Z.",
+      "initialCode": "-- SELECT artist, MIN(release_date) AS earliest_release ... GROUP BY artist HAVING ...\n",
+      "solution": "SELECT artist, MIN(release_date) AS earliest_release\nFROM top_songs\nGROUP BY artist\nHAVING MIN(release_date) > '2024-03-01'\nORDER BY artist;",
+      "hintMessage": "Put the date test in HAVING with MIN(release_date), not only in WHERE on one row.",
+      "successMessage": "Great! Every artist here is new on the chart after that date.",
       "table": [
-        "venues",
-        "festival_performances"
+        "top_songs"
       ]
     },
     {
       "id": 3,
-      "title": "Module 10 Level 3",
-      "task": "Show artists that appear in both songs and performances.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT DISTINCT ts.artist_name FROM top_songs ts JOIN festival_performances fp ON ts.artist_name = fp.artist_name;",
-      "hintMessage": "Join on artist_name and keep DISTINCT.",
-      "successMessage": "Cross-dataset match found.",
+      "title": "CASE: two spotlight labels",
+      "task": "Marketing at Stellar Sound needs simple tags. Columns: track_name, artist, spotlight. CASE: if artist is Beyoncé OR artist starts with Dua Lip (LIKE 'Dua Lip%'), spotlight = 'Pop Princess'. Else 'Other'. Only ids 1003, 5, 6, 1005. ORDER BY id. Copy the quoted words exactly.",
+      "initialCode": "-- CASE WHEN artist = 'Beyoncé' OR artist LIKE 'Dua Lip%' THEN ... ELSE ... END\n",
+      "solution": "SELECT track_name, artist,\n  CASE\n    WHEN artist = 'Beyoncé' OR artist LIKE 'Dua Lip%' THEN 'Pop Princess'\n    ELSE 'Other'\n  END AS spotlight\nFROM top_songs\nWHERE id IN (1003, 5, 6, 1005)\nORDER BY id;",
+      "hintMessage": "CASE checks each WHEN in order; use the Beyoncé and Dua tests before ELSE.",
+      "successMessage": "Nice! CASE turns many values into two easy labels.",
       "table": [
-        "top_songs",
-        "festival_performances"
+        "top_songs"
       ]
     },
     {
       "id": 4,
-      "title": "Module 10 Level 4",
-      "task": "Show average chart weeks by genre ordered high to low.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT genre, AVG(weeks_on_chart) AS avg_weeks FROM top_songs GROUP BY genre ORDER BY avg_weeks DESC;",
-      "hintMessage": "Aggregate by genre, then order by the alias.",
-      "successMessage": "Genre performance summary done.",
+      "title": "CASE: Top 3 or not",
+      "task": "The newsletter team at Stellar Sound needs tiers. For ids 1001–1005: show id, track_name, chart_status. If id is 1001, 1002, or 1003, chart_status = 'Top 3'. Else chart_status = 'Honorable Mention'. ORDER BY id. Match spelling exactly.",
+      "initialCode": "-- CASE WHEN id IN (1001, 1002, 1003) THEN 'Top 3' ELSE ... END\n",
+      "solution": "SELECT id, track_name,\n  CASE\n    WHEN id IN (1001, 1002, 1003) THEN 'Top 3'\n    ELSE 'Honorable Mention'\n  END AS chart_status\nFROM top_songs\nWHERE id BETWEEN 1001 AND 1005\nORDER BY id;",
+      "hintMessage": "WHERE id BETWEEN 1001 AND 1005 keeps the list short. CASE picks the tier text.",
+      "successMessage": "Perfect! Simple tiers help posters and web banners.",
       "table": [
         "top_songs"
       ]
     },
     {
       "id": 5,
-      "title": "Module 10 Level 5",
-      "task": "Show headliner artists that also have songs in top_songs.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT DISTINCT fp.artist_name FROM festival_performances fp JOIN top_songs ts ON fp.artist_name = ts.artist_name WHERE fp.headliner = 1;",
-      "hintMessage": "Join by artist_name and filter headliner = 1.",
-      "successMessage": "Capstone query complete.",
+      "title": "Count songs before and after April",
+      "task": "Extra practice at Stellar Sound: only artists Sabrina Carpenter, Taylor Swift, Kendrick Lamar. For each artist show artist, before_april (SUM of 1 when release_date < 2024-04-01 else 0), from_april_on (SUM of 1 when release_date >= 2024-04-01 else 0). GROUP BY artist. ORDER BY artist. No extra columns.",
+      "initialCode": "-- Filter artists IN (...); SUM(CASE ...) for each bucket\n",
+      "solution": "SELECT artist,\n  SUM(CASE WHEN release_date < '2024-04-01' THEN 1 ELSE 0 END) AS before_april,\n  SUM(CASE WHEN release_date >= '2024-04-01' THEN 1 ELSE 0 END) AS from_april_on\nFROM top_songs\nWHERE artist IN ('Sabrina Carpenter', 'Taylor Swift', 'Kendrick Lamar')\nGROUP BY artist\nORDER BY artist;",
+      "hintMessage": "Each CASE gives 1 or 0 per song; SUM adds them inside each artist group.",
+      "successMessage": "Strong work! You split counts by date in one grouped query.",
       "table": [
-        "festival_performances",
         "top_songs"
       ]
     }

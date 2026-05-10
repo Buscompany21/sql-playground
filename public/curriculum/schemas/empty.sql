@@ -1,0 +1,2 @@
+-- Module 5 starts from an empty database so learners can run CREATE TABLE
+-- and INSERT statements without "table already exists" errors.

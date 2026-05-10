@@ -3,24 +3,24 @@
   "levels": [
     {
       "id": 1,
-      "title": "Module 8 Level 1",
-      "task": "Use a CTE to select pop songs and return all columns.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "WITH pop_songs AS (SELECT * FROM top_songs WHERE genre = 'Pop') SELECT * FROM pop_songs;",
-      "hintMessage": "Define a CTE with WITH and select from it.",
-      "successMessage": "CTE basics done.",
+      "title": "Warm up with a Pop CTE",
+      "task": "At Stellar Sound, build a CTE named pop_songs with every column from top_songs where genre = 'Pop'. Your last line must be SELECT * FROM pop_songs ORDER BY weeks_on_chart DESC, track_name. (Only that last SELECT is checked; columns follow the chart table.)",
+      "initialCode": "-- WITH pop_songs AS (...) SELECT * FROM pop_songs ORDER BY ...\n",
+      "solution": "WITH pop_songs AS (\n  SELECT * FROM top_songs WHERE genre = 'Pop'\n)\nSELECT * FROM pop_songs\nORDER BY weeks_on_chart DESC, track_name;",
+      "hintMessage": "WITH pop_songs AS ( ... ) then SELECT from pop_songs. Think of the CTE as a short saved step.",
+      "successMessage": "Nice! The team can read the Pop step before the final sort.",
       "table": [
         "top_songs"
       ]
     },
     {
       "id": 2,
-      "title": "Module 8 Level 2",
-      "task": "Use a CTE to count performances per venue, then show venue names and counts.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "WITH perf_counts AS (SELECT venue_id, COUNT(*) AS cnt FROM festival_performances GROUP BY venue_id) SELECT v.name, p.cnt FROM perf_counts p JOIN venues v ON p.venue_id = v.id;",
-      "hintMessage": "Build counts in a CTE, then join to venues.",
-      "successMessage": "Great CTE join.",
+      "title": "CTE counts, then join venues",
+      "task": "Stellar Sound is counting festival sets per venue. CTE perf_counts: SELECT venue_id, COUNT(*) AS cnt FROM festival_performances GROUP BY venue_id. Join to venues. Show venue name then cnt in that order. ORDER BY cnt high to low, then name A–Z.",
+      "initialCode": "-- WITH perf_counts AS (SELECT venue_id, COUNT(*) AS cnt ... GROUP BY venue_id)\n",
+      "solution": "WITH perf_counts AS (\n  SELECT venue_id, COUNT(*) AS cnt\n  FROM festival_performances\n  GROUP BY venue_id\n)\nSELECT v.name, p.cnt\nFROM perf_counts p\nJOIN venues v ON p.venue_id = v.id\nORDER BY p.cnt DESC, v.name;",
+      "hintMessage": "Count inside the CTE, then JOIN venues ON venue_id = id.",
+      "successMessage": "Perfect! Count first, then add the venue names.",
       "table": [
         "festival_performances",
         "venues"
@@ -28,12 +28,12 @@
     },
     {
       "id": 3,
-      "title": "Module 8 Level 3",
-      "task": "Use two CTEs to return artists who have songs and performances (by name match).",
-      "initialCode": "-- Write your query here\n",
-      "solution": "WITH song_artists AS (SELECT DISTINCT artist_name FROM top_songs), perf_artists AS (SELECT DISTINCT artist_name FROM festival_performances) SELECT s.artist_name FROM song_artists s JOIN perf_artists p ON s.artist_name = p.artist_name;",
-      "hintMessage": "Create one CTE per source and join them.",
-      "successMessage": "Two-CTE flow works.",
+      "title": "Two CTEs: chart artists who also play live",
+      "task": "Stellar Sound wants names that appear on the chart and on the festival stage. CTE song_artists: DISTINCT artist from top_songs. CTE perf_artists: DISTINCT artist_name from festival_performances. Join where names match. Final answer: one column artist, sorted A–Z.",
+      "initialCode": "-- WITH song_artists AS (...), perf_artists AS (...) SELECT ... JOIN ...\n",
+      "solution": "WITH song_artists AS (\n  SELECT DISTINCT artist FROM top_songs\n),\nperf_artists AS (\n  SELECT DISTINCT artist_name FROM festival_performances\n)\nSELECT s.artist\nFROM song_artists s\nJOIN perf_artists p ON s.artist = p.artist_name\nORDER BY s.artist;",
+      "hintMessage": "Join ON s.artist = p.artist_name. SELECT only s.artist. ORDER BY s.artist.",
+      "successMessage": "Great! You matched chart names with live show names.",
       "table": [
         "top_songs",
         "festival_performances"
@@ -41,24 +41,24 @@
     },
     {
       "id": 4,
-      "title": "Module 8 Level 4",
-      "task": "Use a CTE to return high-capacity venues (> 3000).",
-      "initialCode": "-- Write your query here\n",
-      "solution": "WITH big_venues AS (SELECT * FROM venues WHERE capacity > 3000) SELECT * FROM big_venues;",
-      "hintMessage": "Filter inside the CTE, then select from it.",
-      "successMessage": "CTE filtering complete.",
+      "title": "CTE: only big rooms",
+      "task": "The tour office at Stellar Sound wants venues over 3000 seats. WITH big_venues AS (SELECT * FROM venues WHERE capacity > 3000) then SELECT * FROM big_venues ORDER BY capacity DESC, name A–Z.",
+      "initialCode": "-- WITH big_venues AS (SELECT * FROM venues WHERE ...) SELECT * FROM big_venues ...\n",
+      "solution": "WITH big_venues AS (\n  SELECT * FROM venues WHERE capacity > 3000\n)\nSELECT * FROM big_venues\nORDER BY capacity DESC, name;",
+      "hintMessage": "Filter inside the CTE, then select from it with a clear ORDER BY.",
+      "successMessage": "Good! The CTE hides the filter so the last line stays short.",
       "table": [
         "venues"
       ]
     },
     {
       "id": 5,
-      "title": "Module 8 Level 5",
-      "task": "Use a CTE to sort top_songs by weeks_on_chart descending and return title + weeks.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "WITH ranked_songs AS (SELECT track_name, weeks_on_chart FROM top_songs ORDER BY weeks_on_chart DESC) SELECT * FROM ranked_songs;",
-      "hintMessage": "Put the ordered projection in the CTE.",
-      "successMessage": "Great CTE structure.",
+      "title": "CTE: small chart snapshot",
+      "task": "Stellar Sound needs just two columns for a slide. CTE chart_snapshot AS (SELECT track_name, weeks_on_chart FROM top_songs). Then SELECT * FROM chart_snapshot ORDER BY weeks_on_chart DESC, track_name A–Z.",
+      "initialCode": "-- WITH chart_snapshot AS (SELECT track_name, weeks_on_chart FROM top_songs)\n",
+      "solution": "WITH chart_snapshot AS (\n  SELECT track_name, weeks_on_chart FROM top_songs\n)\nSELECT * FROM chart_snapshot\nORDER BY weeks_on_chart DESC, track_name;",
+      "hintMessage": "Put ORDER BY in the last SELECT so the order always matches the answer checker.",
+      "successMessage": "Nice! You can reuse this small snapshot in longer homework later.",
       "table": [
         "top_songs"
       ]

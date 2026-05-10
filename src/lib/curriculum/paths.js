@@ -18,13 +18,16 @@ export function curriculumSchemaUrls(moduleId) {
   if (m >= 1 && m <= 4) {
     return [withBasePath('/curriculum/schemas/top_songs.sql')]
   }
-  if (m >= 5 && m <= 7) {
+  if (m === 5) {
     return [
-      withBasePath('/curriculum/schemas/new_artists.sql'),
-      withBasePath('/curriculum/schemas/demo_songs.sql'),
+      withBasePath('/curriculum/schemas/empty.sql'),
+      withBasePath('/curriculum/schemas/top_songs.sql'),
     ]
   }
-  if (m >= 8 && m <= 10) {
+  if (m === 6) {
+    return [withBasePath('/curriculum/schemas/top_songs.sql')]
+  }
+  if (m >= 7 && m <= 10) {
     return [
       withBasePath('/curriculum/schemas/top_songs.sql'),
       withBasePath('/curriculum/schemas/venues.sql'),

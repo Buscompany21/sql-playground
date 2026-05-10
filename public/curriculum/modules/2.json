@@ -4,11 +4,11 @@
     {
       "id": 1,
       "title": "Select with WHERE",
-      "task": "The promotions team is building a highlight reel just for Sabrina Carpenter. Find all the songs she has on the chart so they can prep the materials.",
+      "task": "The promotions team at Stellar Sound is making a highlight video for Sabrina Carpenter. List every column for all her songs on the chart so they can prepare the clips.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE artist = 'Sabrina Carpenter';",
-      "hintMessage": "Use WHERE artist = 'Sabrina Carpenter' to filter.",
-      "successMessage": "Awesome! You just pulled everything Sabrina-related.",
+      "solution": "SELECT * FROM top_songs WHERE artist = 'Sabrina Carpenter' ORDER BY id;",
+      "hintMessage": "Use WHERE artist = 'Sabrina Carpenter'. Add ORDER BY id so the row order matches the answer checker.",
+      "successMessage": "Great! You listed all of her songs.",
       "table": [
         "top_songs"
       ]
@@ -16,11 +16,11 @@
     {
       "id": 2,
       "title": "Select with WHERE Greater Than",
-      "task": "Your manager wants to know which songs have over 2 billion Spotify streams-these are top-tier hits the label wants to spotlight.",
+      "task": "Your manager at Stellar Sound wants the biggest streaming hits: songs with more than 2 billion Spotify streams.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE spotify_streams > 2000000000;",
-      "hintMessage": "Use > to find values greater than 2,000,000,000.",
-      "successMessage": "You nailed it! These songs are the cream of the crop.",
+      "solution": "SELECT * FROM top_songs WHERE spotify_streams > 2000000000 ORDER BY spotify_streams DESC, id;",
+      "hintMessage": "Use WHERE spotify_streams > 2000000000, then ORDER BY spotify_streams DESC, id.",
+      "successMessage": "Well done! These are the strongest numbers on the chart.",
       "table": [
         "top_songs"
       ]
@@ -28,10 +28,10 @@
     {
       "id": 3,
       "title": "Select with WHERE Dates",
-      "task": "A famous blogger is writing a blog post about music before covid and how covid shifted the music industry. Can you find all songs released before January 1st, 2020?",
+      "task": "A music blog is writing about older songs vs newer ones. At Stellar Sound they still use the same table—list every song with release_date before January 1, 2020.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT track_name, artist, release_date FROM top_songs WHERE release_date < '2020-01-01';",
-      "hintMessage": "Compare dates using < '2020-01-01'.",
+      "solution": "SELECT track_name, artist, release_date FROM top_songs WHERE release_date < '2020-01-01' ORDER BY release_date, id;",
+      "hintMessage": "Compare dates with < '2020-01-01'. Use ORDER BY release_date, id so your rows match the answer checker.",
       "successMessage": "Nice work! Now they’ve got all the data they need.",
       "table": [
         "top_songs"
@@ -40,11 +40,11 @@
     {
       "id": 4,
       "title": "Select with WHERE for Two Elements",
-      "task": "Your team is preparing a report with their suggested artists for Coachella but they want to exclude the genres Country and Folk from their list. Can you give me all the artists that aren’t country or folk? Don’t forget to remove duplicates.",
+      "task": "Your team at Stellar Sound is picking artists for a big outdoor festival. They want every artist name, but not Country and not Folk. Each artist should appear only once.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT DISTINCT artist FROM top_songs WHERE genre != 'Country' AND genre != 'Folk';",
-      "hintMessage": "Use AND to combine multiple exclusions, use != for not equal to, and use DISTINCT to remove duplicates.",
-      "successMessage": "Great filtering! Those artists are all set for Coachella.",
+      "solution": "SELECT DISTINCT artist FROM top_songs WHERE genre != 'Country' AND genre != 'Folk' ORDER BY artist;",
+      "hintMessage": "Use DISTINCT artist, filter with genre != 'Country' AND genre != 'Folk', then ORDER BY artist.",
+      "successMessage": "Great! The festival list has no Country or Folk artists.",
       "table": [
         "top_songs"
       ]
@@ -52,10 +52,10 @@
     {
       "id": 5,
       "title": "Select with WHERE for 2 Different Elements",
-      "task": "You’ve been asked to do a feature on Morgan Wallen’s most streamed album. Start by finding songs where the artist is Morgan Wallen and the album is \"One Thing At A Time\".",
+      "task": "The magazine team is writing about Morgan Wallen’s biggest album. At Stellar Sound, pull songs where the artist is Morgan Wallen and the album is \"One Thing At A Time\".",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT track_name, artist, album_name FROM top_songs WHERE artist = 'Morgan Wallen' AND album_name = 'One Thing At A Time';",
-      "hintMessage": "Combine both conditions using AND.",
+      "solution": "SELECT track_name, artist, album_name FROM top_songs WHERE artist = 'Morgan Wallen' AND album_name = 'One Thing At A Time' ORDER BY track_name;",
+      "hintMessage": "Use AND for artist and album_name. ORDER BY track_name so the answer checker gets the same order.",
       "successMessage": "Perfect! Now the feature can highlight just the right songs.",
       "table": [
         "top_songs"

@@ -3,60 +3,60 @@
   "levels": [
     {
       "id": 1,
-      "title": "Module 7 Level 1",
-      "task": "Rank venues by capacity.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT name, capacity, RANK() OVER (ORDER BY capacity DESC) AS capacity_rank FROM venues;",
-      "hintMessage": "Use RANK() OVER with ORDER BY capacity DESC.",
-      "successMessage": "Window rank complete.",
+      "title": "Chart rank inside each genre",
+      "task": "Stellar Sound wants ranks inside each genre on the chart. Show track_name, genre, weeks_on_chart, and chart_rank using RANK() OVER (PARTITION BY genre ORDER BY weeks_on_chart DESC). Sort the answer by genre A–Z, then chart_rank small to large, then track_name A–Z. This site checks column order and row order.",
+      "initialCode": "-- RANK() OVER (PARTITION BY genre ORDER BY weeks_on_chart DESC) AS chart_rank\n",
+      "solution": "SELECT track_name, genre, weeks_on_chart,\n  RANK() OVER (PARTITION BY genre ORDER BY weeks_on_chart DESC) AS chart_rank\nFROM top_songs\nORDER BY genre, chart_rank, track_name;",
+      "hintMessage": "Name the window column chart_rank. Final ORDER BY genre, chart_rank, track_name (all going up, no DESC on those three).",
+      "successMessage": "Great! Ranks restart inside each genre—useful for charts and show lineups.",
       "table": [
-        "venues"
+        "top_songs"
       ]
     },
     {
       "id": 2,
-      "title": "Module 7 Level 2",
-      "task": "Assign row numbers to performances by set_time.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT artist_name, set_time, ROW_NUMBER() OVER (ORDER BY set_time) AS row_num FROM festival_performances;",
-      "hintMessage": "Use ROW_NUMBER() OVER (ORDER BY set_time).",
-      "successMessage": "Row numbering works.",
+      "title": "Show order at the summer festival",
+      "task": "Stellar Sound is also running a summer festival. From festival_performances, show artist_name, set_time, and slot_number = ROW_NUMBER() OVER (ORDER BY set_time). Sort the final list by slot_number from 1 up.",
+      "initialCode": "-- ROW_NUMBER() OVER (ORDER BY set_time) AS slot_number\n",
+      "solution": "SELECT artist_name, set_time,\n  ROW_NUMBER() OVER (ORDER BY set_time) AS slot_number\nFROM festival_performances\nORDER BY slot_number;",
+      "hintMessage": "Column order: artist_name, set_time, slot_number. ORDER BY slot_number ascending.",
+      "successMessage": "Nice! The crew can see who plays in what order.",
       "table": [
         "festival_performances"
       ]
     },
     {
       "id": 3,
-      "title": "Module 7 Level 3",
-      "task": "Show running count of performances by set_time.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT artist_name, set_time, COUNT(*) OVER (ORDER BY set_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_count FROM festival_performances;",
-      "hintMessage": "Use COUNT() OVER with an ordered frame.",
-      "successMessage": "Running total built.",
+      "title": "Same total on every festival row",
+      "task": "Still for the festival table: on every line, show artist_name and total_performances = COUNT(*) OVER () with empty (). That repeats the full count of shows. Sort by artist_name A–Z.",
+      "initialCode": "-- COUNT(*) OVER () AS total_performances\n",
+      "solution": "SELECT artist_name,\n  COUNT(*) OVER () AS total_performances\nFROM festival_performances\nORDER BY artist_name;",
+      "hintMessage": "Name the column total_performances. Use COUNT(*) OVER () with nothing between the parentheses.",
+      "successMessage": "Great! The same total appears on each row so readers do not scroll to count.",
       "table": [
         "festival_performances"
       ]
     },
     {
       "id": 4,
-      "title": "Module 7 Level 4",
-      "task": "Show each performer and the total number of performances.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT artist_name, COUNT(*) OVER () AS total_performances FROM festival_performances;",
-      "hintMessage": "COUNT(*) OVER () repeats the grand total.",
-      "successMessage": "Global window aggregate done.",
+      "title": "Running count through the night",
+      "task": "For the festival schedule, show artist_name, set_time, and running_count = COUNT(*) OVER (ORDER BY set_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW). Copy the OVER part carefully. Sort by set_time only.",
+      "initialCode": "-- COUNT(*) OVER (ORDER BY set_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n",
+      "solution": "SELECT artist_name, set_time,\n  COUNT(*) OVER (\n    ORDER BY set_time\n    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n  ) AS running_count\nFROM festival_performances\nORDER BY set_time;",
+      "hintMessage": "Name it running_count. The long ROWS BETWEEN... part must match the answer. ORDER BY set_time.",
+      "successMessage": "Good! The count grows each time another act starts.",
       "table": [
         "festival_performances"
       ]
     },
     {
       "id": 5,
-      "title": "Module 7 Level 5",
-      "task": "Show venues and compare each capacity to the previous one.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT name, capacity, LAG(capacity) OVER (ORDER BY capacity DESC) AS previous_capacity FROM venues;",
-      "hintMessage": "Use LAG with ORDER BY capacity DESC.",
-      "successMessage": "Lag comparison complete.",
+      "title": "Compare each room to the next bigger one",
+      "task": "Stellar Sound is checking room sizes. From venues, show name, capacity, and previous_capacity = LAG(capacity) OVER (ORDER BY capacity DESC). Sort by capacity high to low, then name A–Z.",
+      "initialCode": "-- LAG(capacity) OVER (ORDER BY capacity DESC) AS previous_capacity\n",
+      "solution": "SELECT name, capacity,\n  LAG(capacity) OVER (ORDER BY capacity DESC) AS previous_capacity\nFROM venues\nORDER BY capacity DESC, name;",
+      "hintMessage": "LAG uses ORDER BY capacity DESC inside OVER. Outside, ORDER BY capacity DESC, name.",
+      "successMessage": "Great! LAG shows the size of the next bigger room in the sorted list.",
       "table": [
         "venues"
       ]

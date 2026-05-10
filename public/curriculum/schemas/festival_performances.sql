@@ -7,10 +7,11 @@ CREATE TABLE festival_performances (
 );
 
 INSERT INTO festival_performances (venue_id, artist_name, set_time, headliner) VALUES
-  (1, 'Luna Rivers', '19:00', 1),
-  (1, 'The Velvet Keys', '17:30', 0),
-  (2, 'Maya Chen', '20:15', 1),
-  (2, 'Coastal Kids', '18:00', 0),
-  (3, 'Jordan Blake', '21:00', 1),
-  (3, 'Neko Pulse', '16:45', 0),
-  (4, 'Sofia Alvarez', '19:30', 1);
+  (1, 'Sabrina Carpenter', '19:00', 1),
+  (1, 'Taylor Swift', '17:30', 0),
+  (2, 'Taylor Swift', '20:15', 1),
+  (2, 'Beyoncé', '18:00', 0),
+  (3, 'Kendrick Lamar', '21:00', 1),
+  (3, 'Morgan Wallen', '16:45', 0),
+  (4, 'Benson Boone', '19:30', 1),
+  (4, 'Lany', '15:00', 0);

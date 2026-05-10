@@ -3,62 +3,64 @@
   "levels": [
     {
       "id": 1,
-      "title": "Create a Table for New Artists",
-      "task": "The label wants to keep track of new artists they meet. Help them by creating a new table called new_artists with columns for name, genre, city, and state. All of the columns will be varchars, then query your table to see the new columns.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "CREATE TABLE new_artists (\nname VARCHAR(100),\ngenre VARCHAR(50),\ncity VARCHAR(100),\nstate VARCHAR(100)\n);",
-      "hintMessage": "Use CREATE TABLE and define four columns with types. Don’t forget to include the character count for varchar: VARCHAR(100).",
-      "successMessage": "Table created! Your team can now log all the up-and-coming talent.",
+      "title": "Create a scouting table (CREATE + INSERT)",
+      "task": "Stellar Sound is scouting talent in Austin, Phnom Penh, and Detroit. The practice database is almost empty (top_songs is already there for later lessons). Create table new_artists with name VARCHAR(100), genre VARCHAR(50), city VARCHAR(100), state VARCHAR(100). Insert Luna Ray (Pop, Austin, TX), Sothea (Indie, Phnom Penh, KH), and Blaze Carter (Hip-Hop, Detroit, MI). Your last line must be: SELECT * FROM new_artists ORDER BY name; (This site checks only that last result—same columns and row order as the answer.)",
+      "initialCode": "-- CREATE TABLE, INSERT three artists, then SELECT * FROM new_artists ORDER BY name;\n",
+      "solution": "CREATE TABLE new_artists (\n  name VARCHAR(100),\n  genre VARCHAR(50),\n  city VARCHAR(100),\n  state VARCHAR(100)\n);\nINSERT INTO new_artists (name, genre, city, state) VALUES\n  ('Luna Ray', 'Pop', 'Austin', 'TX'),\n  ('Sothea', 'Indie', 'Phnom Penh', 'KH'),\n  ('Blaze Carter', 'Hip-Hop', 'Detroit', 'MI');\nSELECT * FROM new_artists ORDER BY name;",
+      "hintMessage": "You can run CREATE and INSERT first, but end with SELECT * FROM new_artists ORDER BY name. Only the last query is checked.",
+      "successMessage": "Nice! The scouting table is ready for the next open-mic or campus night.",
       "table": [
+        "top_songs",
         "new_artists"
       ]
     },
     {
       "id": 2,
-      "title": "Insert a New Artist",
-      "task": "A new artist named Luna Ray just got scouted! She’s a pop singer from Austin, TX. Add her info to the new_artists table then query the table.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "INSERT INTO new_artists (name, genre, city, state)\nVALUES ('Luna Ray', 'Pop', 'Austin', 'TX');",
-      "hintMessage": "Insert values into all four columns. Remember that strings need to be in quotes and that the row of data should be surrounded by parenthesis.",
-      "successMessage": "Nice work! Luna Ray has officially been added.",
+      "title": "Track demo submissions (CREATE + INSERT)",
+      "task": "Still at Stellar Sound on a fresh database: create demo_songs with song_title VARCHAR(100), artist_name VARCHAR(100), submission_date DATE. Add 'Sunset City' by Luna Ray (2024-06-01) and 'River Lights' by Sothea (2024-06-02). End with: SELECT * FROM demo_songs ORDER BY submission_date; so the row order matches the answer.",
+      "initialCode": "-- CREATE demo_songs, INSERT two rows, then SELECT * ORDER BY submission_date\n",
+      "solution": "CREATE TABLE demo_songs (\n  song_title VARCHAR(100),\n  artist_name VARCHAR(100),\n  submission_date DATE\n);\nINSERT INTO demo_songs (song_title, artist_name, submission_date) VALUES\n  ('Sunset City', 'Luna Ray', '2024-06-01'),\n  ('River Lights', 'Sothea', '2024-06-02');\nSELECT * FROM demo_songs ORDER BY submission_date;",
+      "hintMessage": "Dates look like 'YYYY-MM-DD'. Your last line must be SELECT * FROM demo_songs ORDER BY submission_date (oldest date first).",
+      "successMessage": "Good! Demos are saved in date order for the listening team.",
       "table": [
-        "new_artists"
+        "top_songs",
+        "demo_songs"
       ]
     },
     {
       "id": 3,
-      "title": "Insert Multiple Artists",
-      "task": "You’ve just met two more artists: Blaze Carter (Hip-Hop, Detroit, MI) and Isla Sky (Indie, Portland, OR). Add them both in one statement.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "INSERT INTO new_artists (name, genre, city, state)\nVALUES\n('Blaze Carter', 'Hip-Hop', 'Detroit', 'MI'),\n('Isla Sky', 'Indie', 'Portland', 'OR');",
-      "hintMessage": "Use commas to separate rows in your insert and each row should be surrounded with parenthesis.",
-      "successMessage": "Awesome! Your table is growing with fresh new talent.",
+      "title": "Fix a chart typo (UPDATE)",
+      "task": "Back on the live chart at Stellar Sound: song id 1003 has a typo—artist reads 'Dua Lipppa' but should be 'Dua Lipa'. Run UPDATE top_songs SET artist = 'Dua Lipa' WHERE id = 1003; then finish with SELECT id, track_name, artist FROM top_songs WHERE id = 1003; (Those three columns, in that order.)",
+      "initialCode": "-- UPDATE ... WHERE id = 1003;\n-- SELECT id, track_name, artist FROM top_songs WHERE id = 1003;\n",
+      "solution": "UPDATE top_songs SET artist = 'Dua Lipa' WHERE id = 1003;\nSELECT id, track_name, artist FROM top_songs WHERE id = 1003;",
+      "hintMessage": "The last SELECT must show id, track_name, artist for id 1003. The UPDATE line is not checked—only the final table you print.",
+      "successMessage": "Nice! The name is fixed for fans everywhere.",
       "table": [
-        "new_artists"
+        "top_songs"
       ]
     },
     {
       "id": 4,
-      "title": "Create a Table for Song Submissions",
-      "task": "The team needs a table to track demo submissions. Create a demo_songs table with song_title, artist_name, and submission_date. Then query the table to see the new columns.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "CREATE TABLE demo_songs (\nsong_title VARCHAR(100),\nartist_name VARCHAR(100),\nsubmission_date DATE\n);",
-      "hintMessage": "Define the data types clearly.",
-      "successMessage": "Great! Now they can keep track of demo submissions easily.",
+      "title": "Remove very old songs (DELETE)",
+      "task": "Stellar Sound is cleaning the export: remove songs released before February 1, 2015. Run DELETE FROM top_songs WHERE release_date < '2015-02-01'; then end with SELECT COUNT(*) AS remaining_songs FROM top_songs; (The count column must be named remaining_songs.)",
+      "initialCode": "-- DELETE ...;\n-- SELECT COUNT(*) AS remaining_songs FROM top_songs;\n",
+      "solution": "DELETE FROM top_songs WHERE release_date < '2015-02-01';\nSELECT COUNT(*) AS remaining_songs FROM top_songs;",
+      "hintMessage": "Dates are text—use < '2015-02-01'. The last SELECT must name the count remaining_songs.",
+      "successMessage": "Great! Old rows are gone and the new count matches the answer.",
       "table": [
-        "demo_songs"
+        "top_songs"
       ]
     },
     {
       "id": 5,
-      "title": "Add Demo Submissions",
-      "task": "You’ve received two demos: “Sunset City” by Luna Ray (2024-06-01) and “Bounce Back” by Blaze Carter (2024-06-02). Add them to the demo_songs table.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "INSERT INTO demo_songs (song_title, artist_name, submission_date)\nVALUES\n('Sunset City', 'Luna Ray', '2024-06-01'),\n('Bounce Back', 'Blaze Carter', '2024-06-02');",
-      "hintMessage": "Format your dates as YYYY-MM-DD.",
-      "successMessage": "Done! Your entries are live in the system.",
+      "title": "Add a new hit (INSERT)",
+      "task": "A new single just hit the Stellar Sound chart. Insert one row into top_songs: id 1006, track_name 'Espresso', artist 'Sabrina Carpenter', genre 'Pop', release_date '2024-04-12', spotify_streams 2050000000, album_name 'Short n Sweet', duration_ms 175000, weeks_on_chart 1. End with SELECT * FROM top_songs WHERE id = 1006; (You should see one new row.)",
+      "initialCode": "-- INSERT ... VALUES (...);\n-- SELECT * FROM top_songs WHERE id = 1006;\n",
+      "solution": "INSERT INTO top_songs (id, track_name, artist, genre, release_date, spotify_streams, album_name, duration_ms, weeks_on_chart) VALUES (1006, 'Espresso', 'Sabrina Carpenter', 'Pop', '2024-04-12', 2050000000, 'Short n Sweet', 175000, 1);\nSELECT * FROM top_songs WHERE id = 1006;",
+      "hintMessage": "Put the columns in INSERT in the same order as the lesson answer. Last line: SELECT * ... WHERE id = 1006.",
+      "successMessage": "Perfect! The new song row is saved in the chart.",
       "table": [
-        "demo_songs"
+        "top_songs"
       ]
     }
   ]

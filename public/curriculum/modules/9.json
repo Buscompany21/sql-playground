@@ -3,60 +3,60 @@
   "levels": [
     {
       "id": 1,
-      "title": "Module 9 Level 1",
-      "task": "Return songs released in 2023; keep query simple for index-style filtering.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE release_year = 2023;",
-      "hintMessage": "Filter with equality on release_year.",
-      "successMessage": "Nice targeted filter.",
+      "title": "Songs from 2023 only",
+      "task": "The IT team at Stellar Sound is testing speed. Pull SELECT * for songs whose release_date is in 2023 (from '2023-01-01' through '2023-12-31'). ORDER BY release_date, then id. Small filters help big tables run fast later.",
+      "initialCode": "-- WHERE release_date between the first and last day of 2023\n",
+      "solution": "SELECT *\nFROM top_songs\nWHERE release_date >= '2023-01-01' AND release_date <= '2023-12-31'\nORDER BY release_date, id;",
+      "hintMessage": "Dates are text like '2023-04-11'. Use >= '2023-01-01' AND <= '2023-12-31'. ORDER BY release_date, id.",
+      "successMessage": "Great! You asked for one year only—not the whole table.",
       "table": [
         "top_songs"
       ]
     },
     {
       "id": 2,
-      "title": "Module 9 Level 2",
-      "task": "Return performances for venue_id 1 ordered by set_time.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM festival_performances WHERE venue_id = 1 ORDER BY set_time;",
-      "hintMessage": "Use WHERE on venue_id and ORDER BY set_time.",
-      "successMessage": "Great selective query.",
+      "title": "Shows at venue 1",
+      "task": "Festival ops at Stellar Sound needs every column for venue_id = 1, sorted by set_time. This is a small slice of the stage table.",
+      "initialCode": "-- SELECT * FROM festival_performances WHERE venue_id = 1 ORDER BY set_time\n",
+      "solution": "SELECT *\nFROM festival_performances\nWHERE venue_id = 1\nORDER BY set_time;",
+      "hintMessage": "WHERE venue_id = 1 then ORDER BY set_time.",
+      "successMessage": "Nice! Short WHERE lists stay quick when data grows.",
       "table": [
         "festival_performances"
       ]
     },
     {
       "id": 3,
-      "title": "Module 9 Level 3",
-      "task": "Return venues in Chicago.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM venues WHERE city = 'Chicago';",
-      "hintMessage": "Filter city = 'Chicago'.",
-      "successMessage": "City lookup complete.",
+      "title": "Venues in Chicago",
+      "task": "Tour planning at Stellar Sound: show every column for venues in Chicago. Sort by biggest capacity first, then venue name A–Z.",
+      "initialCode": "-- SELECT * FROM venues WHERE city = 'Chicago' ...\n",
+      "solution": "SELECT *\nFROM venues\nWHERE city = 'Chicago'\nORDER BY capacity DESC, name;",
+      "hintMessage": "WHERE city = 'Chicago' ORDER BY capacity DESC, name.",
+      "successMessage": "Good! City filters are common when crews plan travel between shows.",
       "table": [
         "venues"
       ]
     },
     {
       "id": 4,
-      "title": "Module 9 Level 4",
-      "task": "Return songs with weeks_on_chart between 15 and 25.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE weeks_on_chart BETWEEN 15 AND 25;",
-      "hintMessage": "Use BETWEEN for the range.",
-      "successMessage": "Range query done.",
+      "title": "Songs on the chart many weeks",
+      "task": "Radio partners at Stellar Sound want songs that stayed on the chart between 15 and 25 weeks (include 15 and 25). Show all columns. ORDER BY weeks_on_chart, then id.",
+      "initialCode": "-- WHERE weeks_on_chart BETWEEN 15 AND 25\n",
+      "solution": "SELECT *\nFROM top_songs\nWHERE weeks_on_chart BETWEEN 15 AND 25\nORDER BY weeks_on_chart, id;",
+      "hintMessage": "BETWEEN 15 AND 25 includes both 15 and 25. Add ORDER BY weeks_on_chart, id.",
+      "successMessage": "Great! BETWEEN picks a number range in one short line.",
       "table": [
         "top_songs"
       ]
     },
     {
       "id": 5,
-      "title": "Module 9 Level 5",
-      "task": "Return headliner performances ordered by venue_id then set_time.",
-      "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM festival_performances WHERE headliner = 1 ORDER BY venue_id, set_time;",
-      "hintMessage": "Filter first, then sort by two columns.",
-      "successMessage": "Excellent final filter.",
+      "title": "Headliner list",
+      "task": "Print day-of-show style: from festival_performances, every column where headliner = 1. Sort by venue_id, then set_time.",
+      "initialCode": "-- WHERE headliner = 1 ORDER BY venue_id, set_time\n",
+      "solution": "SELECT *\nFROM festival_performances\nWHERE headliner = 1\nORDER BY venue_id, set_time;",
+      "hintMessage": "headliner uses 1 for yes and 0 for no. Use WHERE headliner = 1. ORDER BY venue_id, set_time.",
+      "successMessage": "Perfect! You still need ORDER BY even when the story says \"main act first.\"",
       "table": [
         "festival_performances"
       ]

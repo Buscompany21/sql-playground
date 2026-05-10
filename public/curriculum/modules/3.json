@@ -4,11 +4,11 @@
     {
       "id": 1,
       "title": "Filter with BETWEEN for Dates",
-      "task": "One department wants to analyze trends from 2023. Find all songs that were released anytime during the year 2023.",
+      "task": "The planning team at Stellar Sound is studying 2023. Show all columns for every song released in the full year 2023. Use SELECT * and ORDER BY release_date, then id, so the row order is the same every time.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE release_date BETWEEN '2023-01-01' AND '2023-12-31';",
-      "hintMessage": "Use BETWEEN to capture a range between two dates.",
-      "successMessage": "Right on target! You've isolated the 2023 hits.",
+      "solution": "SELECT * FROM top_songs WHERE release_date BETWEEN '2023-01-01' AND '2023-12-31' ORDER BY release_date, id;",
+      "hintMessage": "Use BETWEEN '2023-01-01' AND '2023-12-31' on release_date. Finish with ORDER BY release_date, id.",
+      "successMessage": "Good work! You listed only the 2023 songs.",
       "table": [
         "top_songs"
       ]
@@ -16,11 +16,11 @@
     {
       "id": 2,
       "title": "Using LIKE with Wildcards",
-      "task": "Marketing is creating a visual playlist around the color pink. Find any songs with \"pink\" in the title.",
+      "task": "Marketing at Stellar Sound is making a pink-themed playlist poster. Find song titles that contain the word pink (any letters big or small).",
       "initialCode": "-- Write your query here\n",
       "solution": "SELECT track_name FROM top_songs WHERE track_name LIKE '%PINK%';",
-      "hintMessage": "Use `WHERE track_name LIKE '%pink%'` (SQLite’s `LIKE` ignores case for ASCII letters here).",
-      "successMessage": "You got it! Pink-themed playlist coming right up.",
+      "hintMessage": "Try WHERE track_name LIKE '%pink%' — here LIKE often treats A and a the same.",
+      "successMessage": "Nice! The pink playlist titles are ready.",
       "table": [
         "top_songs"
       ]
@@ -28,10 +28,10 @@
     {
       "id": 3,
       "title": "Albums Starting with f",
-      "task": "To prepare for the month of February, the design team is making a f-themed music magazine. Help them find all albums that start with the letter f.",
+      "task": "For a February magazine spread, the design team at Stellar Sound needs every row where the album name starts with the letter F.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE album_name LIKE 'F%';",
-      "hintMessage": "Use `LIKE 'F%'` (or `LIKE 'f%'`) so only names starting with F match; `%` is the wildcard for “anything after.”",
+      "solution": "SELECT * FROM top_songs WHERE album_name LIKE 'F%' ORDER BY album_name, id;",
+      "hintMessage": "Use LIKE 'F%'. Add ORDER BY album_name, id so the order matches the answer checker.",
       "successMessage": "Done! You’ve filtered albums for the design feature.",
       "table": [
         "top_songs"
@@ -40,10 +40,10 @@
     {
       "id": 4,
       "title": "Songs Released in May 2024",
-      "task": "To celebrate the start of spring, a seasonal campaign needs all songs released in May 2024. Help the team by finding them by using a wildcard.",
+      "task": "A spring ad campaign at Stellar Sound needs every song released in May 2024, in order by release date. Use a date pattern with LIKE.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE release_date LIKE '2024-05-%';",
-      "hintMessage": "Use LIKE with a date pattern like '2024-05-%'.",
+      "solution": "SELECT * FROM top_songs WHERE release_date LIKE '2024-05-%' ORDER BY release_date, id;",
+      "hintMessage": "Use LIKE with a date pattern like '2024-05-%'. Add ORDER BY release_date, id.",
       "successMessage": "Perfect! The May playlist is ready to go.",
       "table": [
         "top_songs"
@@ -52,11 +52,11 @@
     {
       "id": 5,
       "title": "Select with IN",
-      "task": "You’re building a comparison between Taylor Swift, Beyoncé, and Kendrick Lamar. Pull all their songs from the table.",
+      "task": "The research desk at Stellar Sound is comparing three stars: Taylor Swift, Beyoncé, and Kendrick Lamar. Pull all their songs from top_songs.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE artist IN ('Taylor Swift', 'Beyoncé', 'Kendrick Lamar');",
-      "hintMessage": "Use IN to filter for multiple values in one column.",
-      "successMessage": "Excellent! You’ve got every chart entry for those three artists in one place.",
+      "solution": "SELECT * FROM top_songs WHERE artist IN ('Taylor Swift', 'Beyoncé', 'Kendrick Lamar') ORDER BY artist, release_date, id;",
+      "hintMessage": "Use IN (...). ORDER BY artist, release_date, id so the answer checker sees the same order.",
+      "successMessage": "Great! All three artists are in one result table.",
       "table": [
         "top_songs"
       ]
