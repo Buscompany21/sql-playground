@@ -6,7 +6,7 @@ import { moduleConfig, curriculumStoryline } from '../config/moduleConfig';
 import { ModuleStorylinePreview } from '../components/ModuleStoryline';
 import { AppLayout } from '../components/AppLayout';
 import { Button } from '../components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -80,6 +80,47 @@ export default function Home() {
                   <ModuleStorylinePreview moduleId={id} />
                 </div>
               ))}
+            </div>
+
+            <div
+              id="ai-music-challenge"
+              className="rounded-lg border border-slate-200 bg-white shadow-md overflow-hidden scroll-mt-24"
+            >
+              <div className="bg-gradient-to-r from-[#235458] to-[#2A6B70] px-5 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/15 border border-white/20">
+                    <Sparkles className="h-4 w-4 text-white" aria-hidden />
+                  </span>
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wider text-white/80">
+                      Bonus · AI + data
+                    </p>
+                    <h3 className="font-bold text-white text-lg">AI Music Trend Challenge</h3>
+                  </div>
+                </div>
+                <span className="text-white/90 text-sm sm:text-right max-w-md">
+                  Launch a Stellar Sound TikTok channel—prompts, four missions, then a launch graphic.
+                </span>
+              </div>
+              <div className="p-5 md:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+                <p className="text-sm text-[#4E5964] leading-relaxed md:max-w-xl">
+                  Download trend data for Stellar Sound&apos;s new TikTok channel, work through
+                  simple prompt tips and four missions, then design a graphic with your top three
+                  picks.
+                </p>
+                <Button
+                  className="shrink-0 bg-[#2A6B70] hover:bg-[#235458] text-white"
+                  size="lg"
+                  asChild
+                >
+                  <Link href="/ai-music-trend-challenge">
+                    <span className="flex items-center gap-2">
+                      Open challenge
+                      <ArrowRight className="h-5 w-5" />
+                    </span>
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
