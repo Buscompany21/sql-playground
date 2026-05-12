@@ -27,57 +27,55 @@ const promptTips = [
   'Give context — explain where the data came from and what you are trying to figure out',
   'Be specific — mention exact column names, rows, dates, or categories you want analyzed',
   'Explain how you want the answer shown — bullets, charts, summaries, tables, or step-by-step explanations',
-  'Include lots of detail — clearly describe exactly what you want the AI to look for or compare',
+  'Add details — tell AI exactly which columns, comparisons, filters, or trends to analyze',
+  'Ask follow up questions — ask AI to explain the results in more detail or find specific examples',
+]
+
+const promptExamples = [
+  {
+    topic: 'Cooking',
+    fuzzy: 'Make a recipe.',
+    clearer:
+      'Make a 30-minute dinner recipe for 2 people using the chicken, rice, and broccoli I have in my fridge. Keep it kid-friendly and list ingredients with measurements.',
+  },
+  {
+    topic: 'Travel',
+    fuzzy: 'Plan a trip.',
+    clearer:
+      'Plan a 3-day weekend trip to Chicago in October for two adults who love food and museums. Budget is $600 total, and we want to walk or take transit.',
+  },
+  {
+    topic: 'Writing',
+    fuzzy: 'Write an email.',
+    clearer:
+      'Write a short, polite email to my landlord asking when the broken dishwasher will be fixed. Keep it under 5 sentences and ask for a specific date.',
+  },
 ]
 
 const missions = [
   {
     n: 1,
-    title: 'What is in the file?',
-    body: 'Use AI to read the CSV and explain each column. Ask again if you need simpler words. You only check that the list matches the file header.',
+    title: 'Get to know the data',
+    body: 'Open the CSV and ask AI to explain what is inside. Some of the column names may look confusing at first, and that is okay. AI can describe each one in simple words so you know what you are looking at.',
     icon: Telescope,
-    example: {
-      tipHeading: 'Prompt tip: ask AI to map the columns',
-      fuzzy: 'Deal with this.',
-      clearer:
-        'You work at Stellar Sound on a TikTok music launch. With the uploaded music trends CSV, list every column name. Under each name, add one short line: what it measures.',
-    },
   },
   {
     n: 2,
-    title: 'Find patterns',
-    body: 'Ask AI to scan the sheet for patterns (genre, mood_tag, region_top, peak_views_millions, etc.). Ask for tables or top lists. You only spot-check a few rows if you want.',
+    title: 'Look for patterns',
+    body: 'Now that you know what each column means, ask AI to find patterns across the file — for example: Which genres get the most views? Which moods appear most often? Which regions perform best? Ask for small subsets of data or a few examples so the results are easy to read.',
     icon: Sparkles,
-    example: {
-      tipHeading: 'Prompt tip: tell AI which columns to use',
-      fuzzy: 'What is trending?',
-      clearer:
-        'Using only the music trends CSV, look at genre and mood_tag. Which pair appears most? Give two sound_id values and list the columns you used.',
-    },
   },
   {
     n: 3,
-    title: 'Compare and explain',
-    body: 'Ask AI to pick two tracks and compare two metrics (example: peak_views_millions and avg_watch_pct). Ask follow-ups until the story is clear. You mainly fix prompts, not rows.',
+    title: 'Explore two patterns',
+    body: 'From the patterns you just found, pick the two that interest you the most. Ask AI a few follow-up questions about each one — for example: How strong is this pattern? Are there songs that do not fit? What might explain it? Keep asking until you can describe each pattern in your own words.',
     icon: MessageCircle,
-    example: {
-      tipHeading: 'Prompt tip: ask AI to compare two tracks',
-      fuzzy: 'Which songs are the best?',
-      clearer:
-        'Using only the music trends CSV, pick two tracks with different peak_views_millions. Compare them using avg_watch_pct. Summarize one idea the numbers support. Use only the file.',
-    },
   },
   {
     n: 4,
-    title: 'Make a chart',
-    body: 'Ask AI to plan or build one chart from your idea (axes, filters, labels). If the tool can draw it, use that. Add one or two sentences the AI can draft: what the chart shows for the TikTok channel.',
+    title: 'Build one chart',
+    body: 'From the two patterns you just explored, pick the one you find most interesting. Ask AI to create a chart or data visualization that shows the pattern. Have it include titles, labels, and a short caption that explains the chart in one sentence.',
     icon: BarChart3,
-    example: {
-      tipHeading: 'Prompt tip: ask AI to plan the chart first',
-      fuzzy: 'Make a graph.',
-      clearer:
-        'With the music trends CSV, suggest one chart for a Stellar Sound TikTok report: name each axis with real column names, one filter (example: genre or region_top), and one sentence about what we should learn.',
-    },
   },
 ]
 
@@ -119,8 +117,9 @@ export default function AiMusicTrendChallengePage() {
                   AI Music Trend Challenge
                 </h1>
                 <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-3xl">
-                  Stellar Sound Records is creating a TikTok channel and you are in charge of finding the best songs for the first 3 videos. You found a CSV file that contains the data you need to find the best songs.
-                  Use AI to analyze the data and find the best songs. 
+                Stellar Sound Records is launching a brand-new TikTok music channel. Your job is to act like a music data analyst and figure out which songs should be featured in the first 3 viral videos.
+                <br></br>
+                You found a CSV file filled with music trend data. Use AI to analyze the data, discover patterns, and help the team pick the best tracks. 
                 </p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Button
@@ -159,7 +158,7 @@ export default function AiMusicTrendChallengePage() {
                 Download the data
               </h2>
               <p className="text-[#4E5964] leading-relaxed mb-6">
-                Download the CSV and upload it to an AI tool. You will use this dataset for every step.
+                Download the CSV and upload it to an AI tool like ChatGPT, Claude, or Gemini.
               </p>
               <Button size="lg" asChild>
                 <a href={CSV_PATH} download>
@@ -201,6 +200,42 @@ export default function AiMusicTrendChallengePage() {
                   </ul>
                 </CardContent>
               </Card>
+
+              <div className="mt-8">
+                <h3 className="text-lg md:text-xl font-semibold text-[#2E3A45] mb-2">
+                  Examples
+                </h3>
+                <p className="text-sm text-[#4E5964] mb-4">
+                  Compare a vague prompt to a clearer one. The clearer version gives AI context,
+                  details, and a format to follow.
+                </p>
+                <div className="space-y-4">
+                  {promptExamples.map((ex) => (
+                    <div
+                      key={ex.topic}
+                      className="rounded-lg border border-slate-200 bg-white p-4 md:p-5"
+                    >
+                      <p className="text-xs font-bold uppercase tracking-wide text-[#2A6B70] mb-3">
+                        {ex.topic}
+                      </p>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-md border border-amber-200/90 bg-amber-50/90 p-3 text-sm">
+                          <p className="text-xs font-bold uppercase tracking-wide text-amber-800 mb-2">
+                            Avoid (too vague)
+                          </p>
+                          <p className="text-[#4E5964]">{ex.fuzzy}</p>
+                        </div>
+                        <div className="rounded-md border border-[#68A4A1]/50 bg-[#E6F2F2]/70 p-3 text-sm">
+                          <p className="text-xs font-bold uppercase tracking-wide text-[#235458] mb-2">
+                            Try (clearer)
+                          </p>
+                          <p className="text-[#4E5964]">{ex.clearer}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -211,12 +246,13 @@ export default function AiMusicTrendChallengePage() {
             <div className="max-w-4xl mx-auto">
               <StepBadge>Step 3</StepBadge>
               <h2 className="text-2xl md:text-3xl font-bold text-[#2E3A45] mt-3 mb-3">
-                Four steps
+                Find and explore patterns
               </h2>
               <p className="text-[#4E5964] leading-relaxed mb-8">
-                Do these four steps in order. For each step, let AI do the heavy work; you write
-                prompts, read the output, and ask again if needed. Keep answers you like for your
-                launch graphic. Each card ends with example prompts about the same music trends CSV.
+                Now it is time to use what you learned about good prompts on real Stellar Sound
+                data. Work through these four steps in order. AI will do most of the analysis, and
+                you guide it with clear questions. By the end, you will have explored the file,
+                found patterns that stand out, and built one chart to share with the team.
               </p>
               <div className="space-y-4">
                 {missions.map((m, idx) => {
@@ -230,7 +266,7 @@ export default function AiMusicTrendChallengePage() {
                       transition={{ duration: 0.22, delay: idx * 0.05 }}
                     >
                       <Card className="border-slate-200 shadow-sm overflow-hidden">
-                        <div className="flex flex-row items-start gap-4 p-5 md:p-6 pb-4">
+                        <div className="flex flex-row items-start gap-4 p-5 md:p-6">
                           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#2A6B70] text-white font-bold text-lg">
                             {m.n}
                           </div>
@@ -244,31 +280,6 @@ export default function AiMusicTrendChallengePage() {
                             <p className="text-sm text-[#4E5964] leading-relaxed">{m.body}</p>
                           </div>
                         </div>
-                        {m.example ? (
-                          <div className="border-t border-slate-200 bg-[#f8fafa] px-5 py-4 md:px-6 md:py-5">
-                            <p className="text-sm font-semibold text-[#2E3A45] mb-1">
-                              {m.example.tipHeading}
-                            </p>
-                            <p className="text-xs text-[#4E5964] mb-3">
-                              Same Stellar Sound TikTok music trends file as your challenge—rewrite
-                              for your own next prompt.
-                            </p>
-                            <div className="grid gap-3 sm:grid-cols-2">
-                              <div className="rounded-md border border-amber-200/90 bg-amber-50/90 p-3 text-sm">
-                                <p className="text-xs font-bold uppercase tracking-wide text-amber-800 mb-2">
-                                  Avoid (too vague)
-                                </p>
-                                <p className="text-[#4E5964]">{m.example.fuzzy}</p>
-                              </div>
-                              <div className="rounded-md border border-[#68A4A1]/50 bg-[#E6F2F2]/70 p-3 text-sm">
-                                <p className="text-xs font-bold uppercase tracking-wide text-[#235458] mb-2">
-                                  Try (clearer)
-                                </p>
-                                <p className="text-[#4E5964]">{m.example.clearer}</p>
-                              </div>
-                            </div>
-                          </div>
-                        ) : null}
                       </Card>
                     </motion.div>
                   )
@@ -285,28 +296,55 @@ export default function AiMusicTrendChallengePage() {
               <span className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white border border-white/25">
                 Step 4
               </span>
-              <div className="flex items-start gap-3 mt-4 mb-4">
+              <div className="flex items-start gap-3 mt-4 mb-6">
                 <div className="bg-white/15 p-2 rounded-full border border-white/20 shrink-0">
                   <Palette className="h-6 w-6 text-white" aria-hidden />
                 </div>
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold text-white">
-                    Launch graphic
+                    Build the launch poster
                   </h2>
                   <p className="text-white/88 mt-2 leading-relaxed">
-                    Make one image (poster or social post) for the new Stellar Sound TikTok channel.
-                    You can ask AI to draft short lines, layout ideas, or color notes—then you build
-                    the final graphic. Show your{' '}
-                    <span className="font-semibold text-white">three songs</span> from the CSV with
-                    the channel name and one line per song (from your AI-assisted analysis).
+                    Create the final campaign pitch the Stellar Sound executives will review before launch. You will do this with two prompts: first
+                    ask AI to recommend the songs, then ask AI to design the poster.
                   </p>
                 </div>
               </div>
-              <ul className="list-disc pl-5 space-y-2 text-white/90 marker:text-white/50 text-sm md:text-base mb-10">
-                <li>Channel name + one sentence: what is this channel?</li>
-                <li>Three songs from the file + one reason each (from your data work)</li>
-                <li>Colors and style that fit the mood you chose</li>
-              </ul>
+              <div className="space-y-4 mb-6">
+                <div className="rounded-lg border border-white/20 bg-white/10 p-4 md:p-5">
+                  <p className="text-xs font-bold uppercase tracking-wide text-white/85 mb-2">
+                    Prompt 1 — Recommend the songs
+                  </p>
+                  <p className="text-white/90 text-sm md:text-base leading-relaxed">
+                    Ask AI to look back at the patterns and trends from your earlier conversations
+                    and recommend 3 songs for the first week of videos. Have it explain in one
+                    short sentence why each song fits the patterns you found.
+                  </p>
+                </div>
+                <div className="rounded-lg border border-white/20 bg-white/10 p-4 md:p-5">
+                  <p className="text-xs font-bold uppercase tracking-wide text-white/85 mb-2">
+                    Prompt 2 — Design the poster
+                  </p>
+                  <p className="text-white/90 text-sm md:text-base leading-relaxed mb-3">
+                    Ask AI to create a poster that features those 3 songs. Be clear about both
+                    what it should include and how it should look.
+                  </p>
+                  <ul className="list-disc pl-5 space-y-2 text-white/85 marker:text-white/50 text-sm md:text-base">
+                    <li>
+                      <span className="font-semibold text-white">Include:</span> a clear title, the
+                      channel name, and a short line of context for each song
+                    </li>
+                    <li>
+                      <span className="font-semibold text-white">Design:</span> tell AI the mood,
+                      color palette, fonts, and layout style you want
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p className="text-white/90 text-sm md:text-base mb-10">
+                <span className="font-semibold text-white">Your final output:</span> one finished
+                launch poster you can share with the Stellar Sound team.
+              </p>
               <div className="flex flex-wrap gap-3">
                 <Button size="lg" className="bg-white text-[#235458] hover:bg-white/90" asChild>
                   <Link href="/module/1">

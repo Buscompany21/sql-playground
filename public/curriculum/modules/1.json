@@ -16,7 +16,7 @@
     {
       "id": 2,
       "title": "Select Specific Column",
-      "task": "You help the playlist team at Stellar Sound. Your boss wants all song titles in alphabetical order so the team can scan ideas fast. Return track_name in alphabetical order.",
+      "task": "You are asked to help the playlist team at Stellar Sound. They want all song titles in alphabetical order so the team can scan ideas fast. Return track_name in alphabetical order.",
       "initialCode": "-- Write your query here\n",
       "solution": "SELECT track_name FROM top_songs ORDER BY track_name;",
       "hintMessage": "Use SELECT track_name FROM top_songs ORDER BY track_name.",
@@ -40,10 +40,10 @@
     {
       "id": 4,
       "title": "Sorting with ORDER BY",
-      "task": "Your boss at Stellar Sound wants to study release dates. Show track_name, artist, release_date in that order. Put the newest release_date first (ORDER BY release_date DESC). If two songs share the same date, use a higher id first (add id DESC).",
+      "task": "Your boss is curious about how release timing affects popularity. She asks you to organize the songs by release date so she can look for trends. Provide a list that shows the most recent release dates first.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT track_name, artist, release_date FROM top_songs ORDER BY release_date DESC, id DESC;",
-      "hintMessage": "Use columns in this order: track_name, artist, release_date. Then ORDER BY release_date DESC, id DESC.",
+      "solution": "SELECT track_name, artist, release_date FROM top_songs ORDER BY release_date DESC;",
+      "hintMessage": "Use columns in this order: track_name, artist, release_date. Then ORDER BY release_date DESC.",
       "successMessage": "Great work! Your boss can now see which songs are newest first.",
       "table": [
         "top_songs"
@@ -52,7 +52,7 @@
     {
       "id": 5,
       "title": "Select with ORDER BY",
-      "task": "Another intern at Stellar Sound is building an artist wall. She needs track_name and artist for every row. Sort by artist and track_name.",
+      "task": "Another intern at Stellar Sound is building an artist spotlight wall. She wants to see only the track_name and artist. Sort by artist and track_name.",
       "initialCode": "-- Write your query here\n",
       "solution": "SELECT track_name, artist FROM top_songs ORDER BY artist, track_name;",
       "hintMessage": "SELECT track_name, artist then ORDER BY artist, track_name so the order is the same every time.",

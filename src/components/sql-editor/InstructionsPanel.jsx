@@ -50,7 +50,7 @@ export function InstructionsPanel({
         </div>
         
         <div className="p-4 overflow-y-auto flex-1 text-sm">
-          <p className="text-[#2E3A45]">{taskMessage}</p>
+          <p className="text-[#2E3A45] whitespace-pre-line">{taskMessage}</p>
           
           {levelData?.hintMessage && showHint && (
             <div className="mt-4 p-3 rounded bg-[#E9F1F5] border border-[#5B8A9D]/20 text-[#5B8A9D]">
@@ -58,7 +58,7 @@ export function InstructionsPanel({
                 <MessageSquare className="h-3 w-3" />
                 <span>Hint</span>
               </div>
-              <p>{levelData.hintMessage}</p>
+              <p className="whitespace-pre-line">{levelData.hintMessage}</p>
             </div>
           )}
 
@@ -117,7 +117,7 @@ export function InstructionsPanel({
         
         {isMessageExpanded && (
           <div className="mt-3 text-[#4E5964] overflow-y-auto max-h-[200px]">
-            <p>{taskMessage}</p>
+            <p className="whitespace-pre-line">{taskMessage}</p>
             
             {levelData?.hintMessage && showHint && (
               <div className="mt-3 p-3 text-sm bg-[#E9F1F5] rounded-md border border-[#5B8A9D]/20">
@@ -125,7 +125,7 @@ export function InstructionsPanel({
                   <MessageSquare className="h-4 w-4" />
                   <span>Hint</span>
                 </div>
-                <p className="text-[#5B8A9D]">{levelData.hintMessage}</p>
+                <p className="text-[#5B8A9D] whitespace-pre-line">{levelData.hintMessage}</p>
               </div>
             )}
 

@@ -3,62 +3,67 @@
   "levels": [
     {
       "id": 1,
-      "title": "Chart rank inside each genre",
-      "task": "Stellar Sound wants ranks inside each genre on the chart. Show track_name, genre, weeks_on_chart, and chart_rank using RANK() OVER (PARTITION BY genre ORDER BY weeks_on_chart DESC). Sort the answer by genre A–Z, then chart_rank small to large, then track_name A–Z. This site checks column order and row order.",
-      "initialCode": "-- RANK() OVER (PARTITION BY genre ORDER BY weeks_on_chart DESC) AS chart_rank\n",
-      "solution": "SELECT track_name, genre, weeks_on_chart,\n  RANK() OVER (PARTITION BY genre ORDER BY weeks_on_chart DESC) AS chart_rank\nFROM top_songs\nORDER BY genre, chart_rank, track_name;",
-      "hintMessage": "Name the window column chart_rank. Final ORDER BY genre, chart_rank, track_name (all going up, no DESC on those three).",
-      "successMessage": "Great! Ranks restart inside each genre—useful for charts and show lineups.",
+      "title": "Match songs to label info (INNER JOIN)",
+      "task": "At Stellar Sound, album labels live in album_info. Join it to the chart: show only track_name then label for song ids 1001 through 1005. Use INNER JOIN on album_name. Sort by track_name A–Z.",
+      "initialCode": "-- SELECT t.track_name, a.label ... INNER JOIN ... WHERE t.id BETWEEN 1001 AND 1005 ORDER BY t.track_name\n",
+      "solution": "SELECT t.track_name, a.label\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
+      "hintMessage": "First column track_name, second label. JOIN on album_name. ORDER BY t.track_name.",
+      "successMessage": "Great! INNER JOIN shows only songs that have a match in both tables.",
       "table": [
-        "top_songs"
+        "top_songs",
+        "album_info"
       ]
     },
     {
       "id": 2,
-      "title": "Show order at the summer festival",
-      "task": "Stellar Sound is also running a summer festival. From festival_performances, show artist_name, set_time, and slot_number = ROW_NUMBER() OVER (ORDER BY set_time). Sort the final list by slot_number from 1 up.",
-      "initialCode": "-- ROW_NUMBER() OVER (ORDER BY set_time) AS slot_number\n",
-      "solution": "SELECT artist_name, set_time,\n  ROW_NUMBER() OVER (ORDER BY set_time) AS slot_number\nFROM festival_performances\nORDER BY slot_number;",
-      "hintMessage": "Column order: artist_name, set_time, slot_number. ORDER BY slot_number ascending.",
-      "successMessage": "Nice! The crew can see who plays in what order.",
+      "title": "Count INNER JOIN rows",
+      "task": "Same song ids 1001–1005. Write one query with one column named match_count: count how many rows you get from INNER JOIN top_songs to album_info on album_name. The correct number is 3.",
+      "initialCode": "-- SELECT COUNT(*) AS match_count FROM top_songs t INNER JOIN album_info a ...\n",
+      "solution": "SELECT COUNT(*) AS match_count\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
+      "hintMessage": "The column name must be match_count. No extra columns. No ORDER BY.",
+      "successMessage": "Right! Three songs in that group have a matching album row.",
       "table": [
-        "festival_performances"
+        "top_songs",
+        "album_info"
       ]
     },
     {
       "id": 3,
-      "title": "Same total on every festival row",
-      "task": "Still for the festival table: on every line, show artist_name and total_performances = COUNT(*) OVER () with empty (). That repeats the full count of shows. Sort by artist_name A–Z.",
-      "initialCode": "-- COUNT(*) OVER () AS total_performances\n",
-      "solution": "SELECT artist_name,\n  COUNT(*) OVER () AS total_performances\nFROM festival_performances\nORDER BY artist_name;",
-      "hintMessage": "Name the column total_performances. Use COUNT(*) OVER () with nothing between the parentheses.",
-      "successMessage": "Great! The same total appears on each row so readers do not scroll to count.",
+      "title": "See missing labels (LEFT JOIN)",
+      "task": "Stellar Sound still uses ids 1001–1005 for training. LEFT JOIN album_info to top_songs on album_name. Show track_name and a second column named label (write a.label AS label). Sort by track_name. If there is no label row, the second cell is empty (NULL).",
+      "initialCode": "-- SELECT t.track_name, a.label AS label FROM top_songs t LEFT JOIN ...\n",
+      "solution": "SELECT t.track_name, a.label AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
+      "hintMessage": "Second column must be named label (use AS label). ORDER BY t.track_name. Five rows expected.",
+      "successMessage": "Good—LEFT JOIN keeps every song even when the label table has no match.",
       "table": [
-        "festival_performances"
+        "top_songs",
+        "album_info"
       ]
     },
     {
       "id": 4,
-      "title": "Running count through the night",
-      "task": "For the festival schedule, show artist_name, set_time, and running_count = COUNT(*) OVER (ORDER BY set_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW). Copy the OVER part carefully. Sort by set_time only.",
-      "initialCode": "-- COUNT(*) OVER (ORDER BY set_time ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n",
-      "solution": "SELECT artist_name, set_time,\n  COUNT(*) OVER (\n    ORDER BY set_time\n    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n  ) AS running_count\nFROM festival_performances\nORDER BY set_time;",
-      "hintMessage": "Name it running_count. The long ROWS BETWEEN... part must match the answer. ORDER BY set_time.",
-      "successMessage": "Good! The count grows each time another act starts.",
+      "title": "Count LEFT JOIN rows",
+      "task": "Same ids 1001–1005, same LEFT JOIN on album_name. One SELECT, one column left_join_rows = COUNT(*). You should get 5.",
+      "initialCode": "-- SELECT COUNT(*) AS left_join_rows FROM top_songs t LEFT JOIN album_info a ...\n",
+      "solution": "SELECT COUNT(*) AS left_join_rows\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
+      "hintMessage": "Name the count left_join_rows. One number, one row. No ORDER BY.",
+      "successMessage": "Yes! LEFT JOIN keeps all five songs—even when the label is missing.",
       "table": [
-        "festival_performances"
+        "top_songs",
+        "album_info"
       ]
     },
     {
       "id": 5,
-      "title": "Compare each room to the next bigger one",
-      "task": "Stellar Sound is checking room sizes. From venues, show name, capacity, and previous_capacity = LAG(capacity) OVER (ORDER BY capacity DESC). Sort by capacity high to low, then name A–Z.",
-      "initialCode": "-- LAG(capacity) OVER (ORDER BY capacity DESC) AS previous_capacity\n",
-      "solution": "SELECT name, capacity,\n  LAG(capacity) OVER (ORDER BY capacity DESC) AS previous_capacity\nFROM venues\nORDER BY capacity DESC, name;",
-      "hintMessage": "LAG uses ORDER BY capacity DESC inside OVER. Outside, ORDER BY capacity DESC, name.",
-      "successMessage": "Great! LAG shows the size of the next bigger room in the sorted list.",
+      "title": "Friendly labels with CASE",
+      "task": "Still at Stellar Sound, ids 1001–1005: show track_name and a column label. If the label is missing, show exactly the text 'No label info' (copy spelling). If it exists, show the real label. Use LEFT JOIN and CASE ... END AS label. Sort by track_name.",
+      "initialCode": "-- CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\n",
+      "solution": "SELECT t.track_name,\n  CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
+      "hintMessage": "CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label. Copy the words exactly. ORDER BY t.track_name.",
+      "successMessage": "Perfect! Now bosses can read the sheet without seeing blank cells.",
       "table": [
-        "venues"
+        "top_songs",
+        "album_info"
       ]
     }
   ]

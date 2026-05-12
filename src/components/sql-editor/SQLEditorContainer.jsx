@@ -170,7 +170,7 @@ export function SQLEditorContainer({ moduleId, levelId }) {
         setSqlCode(full.initialCode || '');
         setTaskMessage(full.task);
 
-        const schemaSql = await loadSchemaSql(moduleIdNum);
+        const schemaSql = await loadSchemaSql(moduleIdNum, full.schema);
         if (cancelled) return;
 
         const tableName = getPreviewTableName(full);
@@ -230,7 +230,7 @@ export function SQLEditorContainer({ moduleId, levelId }) {
     }
 
     try {
-      const schemaSql = await loadSchemaSql(moduleIdNum);
+      const schemaSql = await loadSchemaSql(moduleIdNum, level.schema);
       const result = await executeUserSql({
         schemaSql,
         userQuery: sqlCode,

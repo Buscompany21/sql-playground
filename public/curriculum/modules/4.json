@@ -4,10 +4,10 @@
     {
       "id": 1,
       "title": "Total Spotify Streams",
-      "task": "Your boss at Stellar Sound wants one number: the sum of all Spotify streams on the Top 50 chart. Return one row, one column, named exactly total_spotify_streams (use SUM).",
+      "task": "Your boss wants you to calculate one number: the sum of all Spotify streams on the Top 50 chart. Return one column named total_spotify_streams (use SUM).",
       "initialCode": "-- Write your query here\n",
       "solution": "SELECT SUM(spotify_streams) AS total_spotify_streams FROM top_songs;",
-      "hintMessage": "The column name must be total_spotify_streams. One SELECT is enough.",
+      "hintMessage": "Use SUM() to calculate the total and rename the column to total_spotify_streams.",
       "successMessage": "Nice! Now your boss has the total numbers.",
       "table": [
         "top_songs"
@@ -16,11 +16,11 @@
     {
       "id": 2,
       "title": "Shortest Song by Artist",
-      "task": "The social team at Stellar Sound is making a short video about Benson Boone. They need his shortest song length in milliseconds. Return one number column named exactly shortest_song (use MIN) for his rows only.",
+      "task": "The social team is making a TikTok about Benson Boone. Show his shortest song length by using MIN() and naming the column shortest_song.",
       "initialCode": "-- Write your query here\n",
       "solution": "SELECT MIN(duration_ms) AS shortest_song FROM top_songs WHERE artist = 'Benson Boone';",
-      "hintMessage": "Name the column shortest_song. Filter with WHERE artist = 'Benson Boone'.",
-      "successMessage": "Perfect, now the team can make the tiktok.",
+      "hintMessage": "Use MIN() to calculate the shortest song length and name the column shortest_song. Filter with WHERE artist = 'Benson Boone'.",
+      "successMessage": "Perfect, now the team can make the TikTok.",
       "table": [
         "top_songs"
       ]
@@ -28,10 +28,10 @@
     {
       "id": 3,
       "title": "Song Count by Genre",
-      "task": "A genre specialist at Stellar Sound wants a count per genre. Show genre and song_count (COUNT(*) for each group). Sort by genre A–Z so the order is fixed.",
+      "task": "A genre specialist wants to know how many songs are in each genre. Show each genre and the count of songs using COUNT(*). Rename the column song_count.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT genre, COUNT(*) AS song_count FROM top_songs GROUP BY genre ORDER BY genre;",
-      "hintMessage": "GROUP BY genre, use COUNT(*) AS song_count, then ORDER BY genre.",
+      "solution": "SELECT genre, COUNT(*) AS song_count FROM top_songs GROUP BY genre;",
+      "hintMessage": "Use COUNT(*) AS song_count, group the results by genre, and name the aggregated column song_count.",
       "successMessage": "Perfect! The label can see how many songs sit in each genre.",
       "table": [
         "top_songs"
@@ -40,11 +40,11 @@
     {
       "id": 4,
       "title": "Average Song Duration by Album",
-      "task": "The studio team at Stellar Sound wants the average song length per album. Show album_name first, then AVG(duration_ms) with no short name on the average. Sort albums A–Z.",
+      "task": "Audio Engineers want to know the average song length per album. Show album_name and the average song length using AVG().",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT album_name, AVG(duration_ms) FROM top_songs GROUP BY album_name ORDER BY album_name;",
-      "hintMessage": "First column album_name, second AVG(duration_ms). ORDER BY album_name.",
-      "successMessage": "Great! The engineers can plan timing with these averages.",
+      "solution": "SELECT album_name, AVG(duration_ms) FROM top_songs GROUP BY album_name;",
+      "hintMessage": "Show the album_name and the average song length using AVG(duration_ms). Group the results by album_name.",
+      "successMessage": "Great! The audio engineers can plan timing with these averages.",
       "table": [
         "top_songs"
       ]
@@ -52,10 +52,10 @@
     {
       "id": 5,
       "title": "Most Recent Release by Artist",
-      "task": "Leadership at Stellar Sound wants the newest release date for each artist. Columns: artist, max_release_date (use MAX on release_date). Sort with newest dates first, then artist A–Z when dates tie.",
+      "task": "Leadership wants a list of the most recent releases by each artist. Show the artist name and their most recent release date, sorted with the newest release date  at the top.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT artist, MAX(release_date) AS max_release_date FROM top_songs GROUP BY artist ORDER BY max_release_date DESC, artist;",
-      "hintMessage": "GROUP BY artist, alias max_release_date, ORDER BY max_release_date DESC, artist.",
+      "solution": "SELECT artist, MAX(release_date) AS max_release_date FROM top_songs GROUP BY artist ORDER BY max_release_date DESC;",
+      "hintMessage": "Use MAX(release_date) to find the most recent release date for each artist. Group the results by artist and sort by the release date in descending order.",
       "successMessage": "Great! This list helps the team spot who released music most recently.",
       "table": [
         "top_songs"

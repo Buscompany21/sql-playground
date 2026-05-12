@@ -3,7 +3,7 @@ export const moduleConfig = {
     title: "SELECT, DISTINCT, FROM, ORDER BY",
     levels: 5,
     storyline: {
-      text: "You use SELECT and FROM on the chart table, pick out one column, use DISTINCT for unique names, and ORDER BY to sort. Reading data only—no filters yet.",
+      text: "It's your first week at Stellar Sound Records, and you're eager to prove yourself. Your manager hands you a login to the music database and says, 'Let's see what you can do!' Time to dig into the data and show them you've got star potential—even behind the scenes.",
       image: "/images/storyline/module1.png"
     }
   },
@@ -11,7 +11,7 @@ export const moduleConfig = {
     title: "WHERE Statements",
     levels: 5,
     storyline: {
-      text: "You filter rows with WHERE: same artist, stream counts, dates before a cutoff, and AND for more than one rule.",
+      text: "Now that you've mastered the basics, you're trusted with more specific tasks. The team needs help finding songs for marketing campaigns, playlists, and artist highlights. You're learning that asking the right questions—just like writing a hit song—is everything.",
       image: "/images/storyline/module2.png"
     }
   },
@@ -19,7 +19,7 @@ export const moduleConfig = {
     title: "Advanced WHERE Statements",
     levels: 5,
     storyline: {
-      text: "You go further with WHERE: BETWEEN for date ranges, LIKE and wildcards for text, and IN for a short list of values.",
+      text: "The work is getting more detailed. You're analyzing patterns, filtering across different dates and keywords, and helping teams curate niche content. Every new skill gets you closer to understanding how data drives decisions in the music industry.",
       image: "/images/storyline/module3.png"
     }
   },
@@ -27,7 +27,7 @@ export const moduleConfig = {
     title: "Aggregates and Group By",
     levels: 5,
     storyline: {
-      text: "You group rows with GROUP BY and use SUM, COUNT, AVG, MIN, and MAX to turn many rows into simple totals and averages.",
+      text: "Since you have been doing such great work, you've been promoted from intern to Junior Analyst. You're not just pulling data—you're uncovering insights. Whether it's finding the most popular genres or tracking artist releases, your work is influencing what gets produced, promoted, and played. You're becoming a true data star behind the stars.",
       image: "/images/storyline/module4.png"
     }
   },
@@ -35,23 +35,23 @@ export const moduleConfig = {
     title: "Changing Data",
     levels: 5,
     storyline: {
-      text: "You create small tables with CREATE and INSERT, then change the chart: UPDATE a typo, DELETE old rows, INSERT a new song.",
+      text: "The label is launching a new artist scouting program, and you're the first to get the chance to build the database from scratch. You'll create tables, insert rows, update records, and delete data—all the skills you've learned so far, in practice.",
       image: "/images/storyline/module5.png"
     }
   },
   '6': {
-    title: "Joins: Chart Data Meets Label Metadata",
+    title: "Practice: Putting It All Together",
     levels: 5,
     storyline: {
-      text: "Label data lives in a second table. You join it to songs with INNER and LEFT joins, count rows each way, and use CASE when a label is missing.",
+      text: "You've picked up a real toolkit—filtering, sorting, grouping, and crunching numbers—and now your manager wants to see it all in action. The asks aren't simple anymore: they mix a filter here, a count there, a summary at the bottom. This is where the basics start to click as one connected skill.",
       image: "/images/storyline/module6.png"
     }
   },
   '7': {
-    title: "Window Functions",
+    title: "Joins: Chart Data Meets Label Metadata",
     levels: 5,
     storyline: {
-      text: "You rank and number rows without losing detail: RANK and ROW_NUMBER, totals across the set, running counts, and LAG to peek at the previous row.",
+      text: "The team needs help finding songs for marketing campaigns, playlists, and artist highlights. You're learning that asking the right questions—just like writing a hit song—is everything.",
       image: "/images/storyline/Module7.png"
     }
   },
@@ -59,7 +59,7 @@ export const moduleConfig = {
     title: "Common Table Expressions (CTEs)",
     levels: 5,
     storyline: {
-      text: "You split big questions into named steps using WITH … AS (CTEs), then SELECT from each step so the query is easier to read and fix.",
+      text: "Your projects are getting bigger, and so are the questions. Leadership wants reports that combine filters, counts, and lookups in one neat package. You're learning to break each big question into smaller, reusable pieces—and it's quickly making you the go-to analyst for cross-team work.",
       image: "/images/storyline/Module8.png"
     }
   },
@@ -67,7 +67,7 @@ export const moduleConfig = {
     title: "Indexes and Query Performance",
     levels: 5,
     storyline: {
-      text: "You practice tight WHERE filters on dates, cities, and chart weeks—small slices of data, the kind that stays quick when the database adds indexes.",
+      text: "The catalog keeps growing, and slow queries mean slow decisions. The IT team is training you to keep things lean—pulling only the slice of data the team actually needs. The faster your answers, the faster Stellar Sound can move.",
       image: "/images/storyline/Module9.png"
     }
   },
@@ -75,7 +75,7 @@ export const moduleConfig = {
     title: "Advanced Analytics and Reporting",
     levels: 5,
     storyline: {
-      text: "You filter groups with HAVING, bucket rows with CASE, and count across conditions in one query—short answers for “who has enough songs?” and “before vs after a date.”",
+      text: "You're not just answering questions anymore—you're shaping the stories Stellar Sound tells. Your reports power newsletters, marketing posters, and the slides leadership shows in boardrooms. A few clever rows of SQL turn into the headlines everyone reads.",
       image: "/images/storyline/Module10.png"
     }
   }

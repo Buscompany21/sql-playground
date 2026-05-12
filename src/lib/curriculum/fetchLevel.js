@@ -7,7 +7,6 @@ const REQUIRED = [
   'solution',
   'hintMessage',
   'successMessage',
-  'table',
 ]
 
 /** Normalize `table` from JSON: string or string[] → trimmed non-empty names. */
@@ -62,13 +61,10 @@ export async function fetchLevelDefinition(moduleId, levelId) {
     }
   }
 
+  // `table` is optional: lessons that start with an empty schema
+  // (e.g. CREATE TABLE) have no existing table to preview.
   const tables = normalizeLessonTables(data.table)
-  if (!tables?.length) {
-    throw new Error(
-      `Level JSON "table" must be a non-empty string or array of table names (level ${levelId} in module ${moduleId})`
-    )
-  }
-  data.table = tables
+  data.table = tables || []
 
   return data
 }

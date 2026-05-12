@@ -2,8 +2,8 @@ import { curriculumSchemaUrls } from './paths'
 
 const cache = new Map()
 
-export async function loadSchemaSql(moduleId) {
-  const urls = curriculumSchemaUrls(moduleId)
+export async function loadSchemaSql(moduleId, levelSchemaOverride = null) {
+  const urls = curriculumSchemaUrls(moduleId, levelSchemaOverride)
   const key = urls.join('|')
   if (cache.has(key)) return cache.get(key)
 

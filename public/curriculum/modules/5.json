@@ -3,64 +3,64 @@
   "levels": [
     {
       "id": 1,
-      "title": "Create a scouting table (CREATE + INSERT)",
-      "task": "Stellar Sound is scouting talent in Austin, Phnom Penh, and Detroit. The practice database is almost empty (top_songs is already there for later lessons). Create table new_artists with name VARCHAR(100), genre VARCHAR(50), city VARCHAR(100), state VARCHAR(100). Insert Luna Ray (Pop, Austin, TX), Sothea (Indie, Phnom Penh, KH), and Blaze Carter (Hip-Hop, Detroit, MI). Your last line must be: SELECT * FROM new_artists ORDER BY name; (This site checks only that last result—same columns and row order as the answer.)",
-      "initialCode": "-- CREATE TABLE, INSERT three artists, then SELECT * FROM new_artists ORDER BY name;\n",
-      "solution": "CREATE TABLE new_artists (\n  name VARCHAR(100),\n  genre VARCHAR(50),\n  city VARCHAR(100),\n  state VARCHAR(100)\n);\nINSERT INTO new_artists (name, genre, city, state) VALUES\n  ('Luna Ray', 'Pop', 'Austin', 'TX'),\n  ('Sothea', 'Indie', 'Phnom Penh', 'KH'),\n  ('Blaze Carter', 'Hip-Hop', 'Detroit', 'MI');\nSELECT * FROM new_artists ORDER BY name;",
-      "hintMessage": "You can run CREATE and INSERT first, but end with SELECT * FROM new_artists ORDER BY name. Only the last query is checked.",
-      "successMessage": "Nice! The scouting table is ready for the next open-mic or campus night.",
+      "title": "Build the scouting roster (CREATE TABLE)",
+      "task": "Stellar Sound is launching a new-artist scouting program and the database is empty. Create the new_artists table with the following columns: id, name, genre, country, signed_date. Use your best judgement for the data types.",
+      "initialCode": "CREATE TABLE new_artists (...);\n\nSELECT * FROM new_artists;",
+      "solution": "CREATE TABLE new_artists (id INTEGER PRIMARY KEY, name TEXT, genre TEXT, country TEXT, signed_date DATE);",
+      "hintMessage": "Use CREATE TABLE name (col TYPE, col TYPE, ...);. Don't forget to add your primary key column.",
+      "successMessage": "Nice! new_artists is live.",
+      "schema": "module5_lesson1.sql"
+    },
+    {
+      "id": 2,
+      "title": "Sign one new artist (INSERT one row)",
+      "task": "A&R just signed a new pop artist out of the United States. Add ONE row to new_artists with id 1, name 'Echo Park', genre 'Pop', country 'United States', signed_date '2026-06-01'.",
+      "initialCode": "INSERT INTO new_artists (...)\nVALUES (...);\n\nSELECT * FROM new_artists;",
+      "solution": "INSERT INTO new_artists (id, name, genre, country, signed_date) VALUES (1, 'Echo Park', 'Pop', 'United States', '2026-06-01');\nSELECT * FROM new_artists;",
+      "hintMessage": "Use quotes around text and date values. List the columns inside the INSERT in the same order as the VALUES.",
+      "successMessage": "Great! Echo Park is officially on the roster.",
+      "schema": "module5_lesson2.sql",
       "table": [
-        "top_songs",
         "new_artists"
       ]
     },
     {
-      "id": 2,
-      "title": "Track demo submissions (CREATE + INSERT)",
-      "task": "Still at Stellar Sound on a fresh database: create demo_songs with song_title VARCHAR(100), artist_name VARCHAR(100), submission_date DATE. Add 'Sunset City' by Luna Ray (2024-06-01) and 'River Lights' by Sothea (2024-06-02). End with: SELECT * FROM demo_songs ORDER BY submission_date; so the row order matches the answer.",
-      "initialCode": "-- CREATE demo_songs, INSERT two rows, then SELECT * ORDER BY submission_date\n",
-      "solution": "CREATE TABLE demo_songs (\n  song_title VARCHAR(100),\n  artist_name VARCHAR(100),\n  submission_date DATE\n);\nINSERT INTO demo_songs (song_title, artist_name, submission_date) VALUES\n  ('Sunset City', 'Luna Ray', '2024-06-01'),\n  ('River Lights', 'Sothea', '2024-06-02');\nSELECT * FROM demo_songs ORDER BY submission_date;",
-      "hintMessage": "Dates look like 'YYYY-MM-DD'. Your last line must be SELECT * FROM demo_songs ORDER BY submission_date (oldest date first).",
-      "successMessage": "Good! Demos are saved in date order for the listening team.",
-      "table": [
-        "top_songs",
-        "demo_songs"
-      ]
-    },
-    {
       "id": 3,
-      "title": "Fix a chart typo (UPDATE)",
-      "task": "Back on the live chart at Stellar Sound: song id 1003 has a typo—artist reads 'Dua Lipppa' but should be 'Dua Lipa'. Run UPDATE top_songs SET artist = 'Dua Lipa' WHERE id = 1003; then finish with SELECT id, track_name, artist FROM top_songs WHERE id = 1003; (Those three columns, in that order.)",
-      "initialCode": "-- UPDATE ... WHERE id = 1003;\n-- SELECT id, track_name, artist FROM top_songs WHERE id = 1003;\n",
-      "solution": "UPDATE top_songs SET artist = 'Dua Lipa' WHERE id = 1003;\nSELECT id, track_name, artist FROM top_songs WHERE id = 1003;",
-      "hintMessage": "The last SELECT must show id, track_name, artist for id 1003. The UPDATE line is not checked—only the final table you print.",
-      "successMessage": "Nice! The name is fixed for fans everywhere.",
+      "title": "Showcase signing (INSERT multiple rows)",
+      "task": "After Friday's showcase, three artists signed within a week. Insert all three into new_artists in a SINGLE INSERT statement (one INSERT, multiple VALUES rows). \nArtist 2: River Lights, Indie, Cambodia, 2026-06-15\nArtist 3: Crown Heights, Hip-Hop, England, 2026-06-18\nArtist 4: Luna Ray, R&B, Australia, 2026-06-20",
+      "initialCode": "INSERT INTO new_artists (...)\nVALUES\n  (...),\n  (...),\n  (...);\n\nSELECT * FROM new_artists;",
+      "solution": "INSERT INTO new_artists (id, name, genre, country, signed_date) VALUES\n  (2, 'River Lights', 'Indie', 'Cambodia', '2026-06-15'),\n  (3, 'Crown Heights', 'Hip-Hop', 'England', '2026-06-18'),\n  (4, 'Luna Ray', 'R&B', 'Australia', '2026-06-20');\nSELECT * FROM new_artists;",
+      "hintMessage": "One INSERT can add many rows at once, separated by commas: INSERT INTO t (cols) VALUES (...), (...), (...);. Don't forget single quotes around text and dates.",
+      "successMessage": "Perfect! All three showcase signings are in the system.",
+      "schema": "module5_lesson3.sql",
       "table": [
-        "top_songs"
+        "new_artists"
       ]
     },
     {
       "id": 4,
-      "title": "Remove very old songs (DELETE)",
-      "task": "Stellar Sound is cleaning the export: remove songs released before February 1, 2015. Run DELETE FROM top_songs WHERE release_date < '2015-02-01'; then end with SELECT COUNT(*) AS remaining_songs FROM top_songs; (The count column must be named remaining_songs.)",
-      "initialCode": "-- DELETE ...;\n-- SELECT COUNT(*) AS remaining_songs FROM top_songs;\n",
-      "solution": "DELETE FROM top_songs WHERE release_date < '2015-02-01';\nSELECT COUNT(*) AS remaining_songs FROM top_songs;",
-      "hintMessage": "Dates are text—use < '2015-02-01'. The last SELECT must name the count remaining_songs.",
-      "successMessage": "Great! Old rows are gone and the new count matches the answer.",
+      "title": "Move an artist's home base (UPDATE)",
+      "task": "Echo Park (id 1) just moved from the United States to Mexico. Change her country to 'Mexico'. End with: SELECT id, name, country FROM new_artists WHERE id = 1;",
+      "initialCode": "UPDATE new_artists SET ... WHERE ...;\n\nSELECT * FROM new_artists \nWHERE ...;",
+      "solution": "UPDATE new_artists SET country = 'Mexico' WHERE id = 1;\n\nSELECT * FROM new_artists \nWHERE id = 1;",
+      "hintMessage": "ALWAYS include a WHERE with an UPDATE statemet. Without it, every row in the table changes, so filter on id = 1.",
+      "successMessage": "Got it — Echo Park's profile now shows Mexico.",
+      "schema": "module5_lesson4.sql",
       "table": [
-        "top_songs"
+        "new_artists"
       ]
     },
     {
       "id": 5,
-      "title": "Add a new hit (INSERT)",
-      "task": "A new single just hit the Stellar Sound chart. Insert one row into top_songs: id 1006, track_name 'Espresso', artist 'Sabrina Carpenter', genre 'Pop', release_date '2024-04-12', spotify_streams 2050000000, album_name 'Short n Sweet', duration_ms 175000, weeks_on_chart 1. End with SELECT * FROM top_songs WHERE id = 1006; (You should see one new row.)",
-      "initialCode": "-- INSERT ... VALUES (...);\n-- SELECT * FROM top_songs WHERE id = 1006;\n",
-      "solution": "INSERT INTO top_songs (id, track_name, artist, genre, release_date, spotify_streams, album_name, duration_ms, weeks_on_chart) VALUES (1006, 'Espresso', 'Sabrina Carpenter', 'Pop', '2024-04-12', 2050000000, 'Short n Sweet', 175000, 1);\nSELECT * FROM top_songs WHERE id = 1006;",
-      "hintMessage": "Put the columns in INSERT in the same order as the lesson answer. Last line: SELECT * ... WHERE id = 1006.",
-      "successMessage": "Perfect! The new song row is saved in the chart.",
+      "title": "Close the Australian branch (DELETE)",
+      "task": "Stellar Sound is closing its Australian office and dropping every artist signed there. DELETE all rows from new_artists who live in Australia.",
+      "initialCode": "DELETE FROM new_artists WHERE ...;\n\nSELECT * FROM new_artists;",
+      "solution": "DELETE FROM new_artists WHERE country = 'Australia';\n\nSELECT * FROM new_artists;",
+      "hintMessage": "Same warning as UPDATE: a DELETE with no WHERE empties the whole table. Filter on country = 'Australia'.",
+      "successMessage": "Done — Australian roster cleared.",
+      "schema": "module5_lesson5.sql",
       "table": [
-        "top_songs"
+        "new_artists"
       ]
     }
   ]

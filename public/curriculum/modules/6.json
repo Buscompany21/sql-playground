@@ -3,67 +3,62 @@
   "levels": [
     {
       "id": 1,
-      "title": "Match songs to label info (INNER JOIN)",
-      "task": "At Stellar Sound, album labels live in album_info. Join it to the chart: show only track_name then label for song ids 1001 through 1005. Use INNER JOIN on album_name. Sort by track_name A–Z. This site checks only your last SELECT—same column order and spelling as the answer.",
-      "initialCode": "-- SELECT t.track_name, a.label ... INNER JOIN ... WHERE t.id BETWEEN 1001 AND 1005 ORDER BY t.track_name\n",
-      "solution": "SELECT t.track_name, a.label\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
-      "hintMessage": "First column track_name, second label. JOIN on album_name. ORDER BY t.track_name.",
-      "successMessage": "Great! INNER JOIN shows only songs that have a match in both tables.",
+      "title": "2024 songs per genre (WHERE + GROUP BY)",
+      "task": "Stellar Sound wants a quick snapshot of last year. For songs whose release_date is in 2024 only, show genre and song_count = COUNT(*). GROUP BY genre. ORDER BY song_count high to low, then genre A–Z.",
+      "initialCode": "-- SELECT genre, COUNT(*) AS song_count FROM top_songs WHERE release_date LIKE '2024-%' GROUP BY genre ORDER BY ...\n",
+      "solution": "SELECT genre, COUNT(*) AS song_count\nFROM top_songs\nWHERE release_date LIKE '2024-%'\nGROUP BY genre\nORDER BY song_count DESC, genre;",
+      "hintMessage": "Filter first with WHERE release_date LIKE '2024-%', then GROUP BY genre. Name the count column song_count.",
+      "successMessage": "Nice! WHERE picks the rows first, then GROUP BY rolls them up by genre.",
       "table": [
-        "top_songs",
-        "album_info"
+        "top_songs"
       ]
     },
     {
       "id": 2,
-      "title": "Count INNER JOIN rows",
-      "task": "Same song ids 1001–1005. Write one query with one column named match_count: count how many rows you get from INNER JOIN top_songs to album_info on album_name. The correct number is 3.",
-      "initialCode": "-- SELECT COUNT(*) AS match_count FROM top_songs t INNER JOIN album_info a ...\n",
-      "solution": "SELECT COUNT(*) AS match_count\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
-      "hintMessage": "The column name must be match_count. No extra columns. No ORDER BY.",
-      "successMessage": "Right! Three songs in that group have a matching album row.",
+      "title": "Pop hits over a billion (two WHEREs with AND)",
+      "task": "Marketing at Stellar Sound is making a 'Pop Billionaires' poster. Show track_name, artist, and spotify_streams for songs where genre is 'Pop' AND spotify_streams is at least 1,000,000,000. ORDER BY spotify_streams high to low, then track_name A–Z.",
+      "initialCode": "-- WHERE genre = 'Pop' AND spotify_streams >= 1000000000\n",
+      "solution": "SELECT track_name, artist, spotify_streams\nFROM top_songs\nWHERE genre = 'Pop' AND spotify_streams >= 1000000000\nORDER BY spotify_streams DESC, track_name;",
+      "hintMessage": "Use AND to combine the two filters. >= keeps songs that hit exactly 1,000,000,000 too.",
+      "successMessage": "Great! AND keeps only rows that pass BOTH tests.",
       "table": [
-        "top_songs",
-        "album_info"
+        "top_songs"
       ]
     },
     {
       "id": 3,
-      "title": "See missing labels (LEFT JOIN)",
-      "task": "Stellar Sound still uses ids 1001–1005 for training. LEFT JOIN album_info to top_songs on album_name. Show track_name and a second column named label (write a.label AS label). Sort by track_name. If there is no label row, the second cell is empty (NULL).",
-      "initialCode": "-- SELECT t.track_name, a.label AS label FROM top_songs t LEFT JOIN ...\n",
-      "solution": "SELECT t.track_name, a.label AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
-      "hintMessage": "Second column must be named label (use AS label). ORDER BY t.track_name. Five rows expected.",
-      "successMessage": "Good—LEFT JOIN keeps every song even when the label table has no match.",
+      "title": "Chart-wide stats in one row (many aggregates)",
+      "task": "Your boss wants one tidy summary row for the whole chart. In one SELECT, return four columns in this order: song_count = COUNT(*), total_streams = SUM(spotify_streams), avg_streams = AVG(spotify_streams), longest_song = MAX(duration_ms). No WHERE, no GROUP BY—one row, four numbers.",
+      "initialCode": "-- SELECT COUNT(*) AS song_count, SUM(...) AS total_streams, AVG(...) AS avg_streams, MAX(...) AS longest_song FROM top_songs;\n",
+      "solution": "SELECT\n  COUNT(*) AS song_count,\n  SUM(spotify_streams) AS total_streams,\n  AVG(spotify_streams) AS avg_streams,\n  MAX(duration_ms) AS longest_song\nFROM top_songs;",
+      "hintMessage": "You can stack aggregate functions in one SELECT. Column order matters: song_count, total_streams, avg_streams, longest_song.",
+      "successMessage": "Perfect! One row, four useful numbers—great for a status email.",
       "table": [
-        "top_songs",
-        "album_info"
+        "top_songs"
       ]
     },
     {
       "id": 4,
-      "title": "Count LEFT JOIN rows",
-      "task": "Same ids 1001–1005, same LEFT JOIN on album_name. One SELECT, one column left_join_rows = COUNT(*). You should get 5.",
-      "initialCode": "-- SELECT COUNT(*) AS left_join_rows FROM top_songs t LEFT JOIN album_info a ...\n",
-      "solution": "SELECT COUNT(*) AS left_join_rows\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
-      "hintMessage": "Name the count left_join_rows. One number, one row. No ORDER BY.",
-      "successMessage": "Yes! LEFT JOIN keeps all five songs—even when the label is missing.",
+      "title": "Pop artists: songs and total streams (WHERE + GROUP BY + 2 aggregates)",
+      "task": "A&R at Stellar Sound wants a Pop leaderboard. Filter to genre = 'Pop'. For each artist, show artist, song_count = COUNT(*), and total_streams = SUM(spotify_streams). GROUP BY artist. ORDER BY total_streams high to low, then artist A–Z.",
+      "initialCode": "-- SELECT artist, COUNT(*) AS song_count, SUM(spotify_streams) AS total_streams FROM top_songs WHERE genre = 'Pop' GROUP BY artist ORDER BY ...\n",
+      "solution": "SELECT artist, COUNT(*) AS song_count, SUM(spotify_streams) AS total_streams\nFROM top_songs\nWHERE genre = 'Pop'\nGROUP BY artist\nORDER BY total_streams DESC, artist;",
+      "hintMessage": "WHERE genre = 'Pop' runs first. Then GROUP BY artist so each row is one artist with COUNT(*) and SUM(spotify_streams).",
+      "successMessage": "Strong! You filtered, grouped, and stacked two aggregates in one query.",
       "table": [
-        "top_songs",
-        "album_info"
+        "top_songs"
       ]
     },
     {
       "id": 5,
-      "title": "Friendly labels with CASE",
-      "task": "Still at Stellar Sound, ids 1001–1005: show track_name and a column label. If the label is missing, show exactly the text 'No label info' (copy spelling). If it exists, show the real label. Use LEFT JOIN and CASE ... END AS label. Sort by track_name.",
-      "initialCode": "-- CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\n",
-      "solution": "SELECT t.track_name,\n  CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
-      "hintMessage": "CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label. Copy the words exactly. ORDER BY t.track_name.",
-      "successMessage": "Perfect! Now bosses can read the sheet without seeing blank cells.",
+      "title": "Artists on the 2023–2024 chart (BETWEEN + GROUP BY + 2 aggregates)",
+      "task": "Stellar Sound is prepping a recap of the last two years. For songs with release_date BETWEEN '2023-01-01' AND '2024-12-31', show artist, song_count = COUNT(*), and avg_streams = AVG(spotify_streams). GROUP BY artist. ORDER BY song_count high to low, then artist A–Z.",
+      "initialCode": "-- WHERE release_date BETWEEN '2023-01-01' AND '2024-12-31' GROUP BY artist\n",
+      "solution": "SELECT artist, COUNT(*) AS song_count, AVG(spotify_streams) AS avg_streams\nFROM top_songs\nWHERE release_date BETWEEN '2023-01-01' AND '2024-12-31'\nGROUP BY artist\nORDER BY song_count DESC, artist;",
+      "hintMessage": "BETWEEN includes both end dates. After filtering, GROUP BY artist so COUNT and AVG run per artist.",
+      "successMessage": "Great work! You combined a date range filter with two aggregates and a group—that's real reporting SQL.",
       "table": [
-        "top_songs",
-        "album_info"
+        "top_songs"
       ]
     }
   ]
