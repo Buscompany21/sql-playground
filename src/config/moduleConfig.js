@@ -56,10 +56,10 @@ export const moduleConfig = {
     }
   },
   '8': {
-    title: "Common Table Expressions (CTEs)",
+    title: "Data Transformations",
     levels: 5,
     storyline: {
-      text: "Your projects are getting bigger, and so are the questions. Leadership wants reports that combine filters, counts, and lookups in one neat package. You're learning to break each big question into smaller, reusable pieces—and it's quickly making you the go-to analyst for cross-team work.",
+      text: "Raw exports rarely match what stakeholders want to read. You're learning to reshape values in the query itself—swapping bad text for good text, turning numbers into friendly categories, and filling gaps—so every spreadsheet looks intentional before it leaves your desk.",
       image: "/images/storyline/Module8.png"
     }
   },

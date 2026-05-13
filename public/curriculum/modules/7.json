@@ -3,12 +3,12 @@
   "levels": [
     {
       "id": 1,
-      "title": "Match songs to label info (INNER JOIN)",
-      "task": "At Stellar Sound, album labels live in album_info. Join it to the chart: show only track_name then label for song ids 1001 through 1005. Use INNER JOIN on album_name. Sort by track_name A–Z.",
-      "initialCode": "-- SELECT t.track_name, a.label ... INNER JOIN ... WHERE t.id BETWEEN 1001 AND 1005 ORDER BY t.track_name\n",
-      "solution": "SELECT t.track_name, a.label\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
-      "hintMessage": "First column track_name, second label. JOIN on album_name. ORDER BY t.track_name.",
-      "successMessage": "Great! INNER JOIN shows only songs that have a match in both tables.",
+      "title": "Licensing only wants rows that line up",
+      "task": "Ops just added a second table, album_info: each row has the album name and label. The chart desk’s licensing contact wants to see all the information from the top_songs and album_info tables joined together.",
+      "initialCode": "SELECT ...\nFROM ...JOIN... ON...;",
+      "solution": "SELECT * FROM top_songs JOIN album_info ON top_songs.album_name = album_info.album_name;",
+      "hintMessage": "JOIN the top_songs and album_info tables on the album_name column.",
+      "successMessage": "Great job! You joined the two tables on the album_name column and selected all the columns from both tables.",
       "table": [
         "top_songs",
         "album_info"
@@ -16,12 +16,11 @@
     },
     {
       "id": 2,
-      "title": "Count INNER JOIN rows",
-      "task": "Same song ids 1001–1005. Write one query with one column named match_count: count how many rows you get from INNER JOIN top_songs to album_info on album_name. The correct number is 3.",
-      "initialCode": "-- SELECT COUNT(*) AS match_count FROM top_songs t INNER JOIN album_info a ...\n",
-      "solution": "SELECT COUNT(*) AS match_count\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
-      "hintMessage": "The column name must be match_count. No extra columns. No ORDER BY.",
-      "successMessage": "Right! Three songs in that group have a matching album row.",
+      "title": "Marketing analytics needs one number",
+      "task": "Someone on the festival marketing squad is sanity-checking the chart. They only care about albums that have a label",
+      "solution": "SELECT * FROM top_songs INNER JOIN album_info ON top_songs.album_name = album_info.album_name;",
+      "hintMessage": "INNER JOIN the top_songs and album_info tables on the album_name column.",
+      "successMessage": "Great job! You joined the two tables for albums that have a label.",
       "table": [
         "top_songs",
         "album_info"
@@ -29,12 +28,12 @@
     },
     {
       "id": 3,
-      "title": "See missing labels (LEFT JOIN)",
-      "task": "Stellar Sound still uses ids 1001–1005 for training. LEFT JOIN album_info to top_songs on album_name. Show track_name and a second column named label (write a.label AS label). Sort by track_name. If there is no label row, the second cell is empty (NULL).",
-      "initialCode": "-- SELECT t.track_name, a.label AS label FROM top_songs t LEFT JOIN ...\n",
-      "solution": "SELECT t.track_name, a.label AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
-      "hintMessage": "Second column must be named label (use AS label). ORDER BY t.track_name. Five rows expected.",
-      "successMessage": "Good—LEFT JOIN keeps every song even when the label table has no match.",
+      "title": "Tour liaison needs the full list, gaps and all",
+      "task": "Road office is building a day-of binder. For ids 1001 through 1005 they want every training-chart track listed with whatever label name we have on file—if we have nothing, the label side should simply be empty. First column: track name. Second column title must read label.",
+      "initialCode": "SELECT ...\nFROM ...\n...\nWHERE ...;\n",
+      "solution": "SELECT t.track_name, a.label AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
+      "hintMessage": "Start from the chart slice, attach directory rows where album names match, and alias the label column as label.",
+      "successMessage": "Five lines on the sheet—exactly what routing asked for.",
       "table": [
         "top_songs",
         "album_info"
@@ -42,12 +41,12 @@
     },
     {
       "id": 4,
-      "title": "Count LEFT JOIN rows",
-      "task": "Same ids 1001–1005, same LEFT JOIN on album_name. One SELECT, one column left_join_rows = COUNT(*). You should get 5.",
-      "initialCode": "-- SELECT COUNT(*) AS left_join_rows FROM top_songs t LEFT JOIN album_info a ...\n",
+      "title": "Show ops double-checks the widened list",
+      "task": "Programming lead wants proof the “don’t drop anyone” version of that same join still returns five lines for ids 1001–1005—not three, not six. One column only, named left_join_rows, equal to the row count.",
+      "initialCode": "SELECT ...;\n",
       "solution": "SELECT COUNT(*) AS left_join_rows\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
-      "hintMessage": "Name the count left_join_rows. One number, one row. No ORDER BY.",
-      "successMessage": "Yes! LEFT JOIN keeps all five songs—even when the label is missing.",
+      "hintMessage": "Use the same chart-to-directory pairing as the tour sheet, then count every row in the result.",
+      "successMessage": "Five rows—show ops can green-light the run of show.",
       "table": [
         "top_songs",
         "album_info"
@@ -55,12 +54,12 @@
     },
     {
       "id": 5,
-      "title": "Friendly labels with CASE",
-      "task": "Still at Stellar Sound, ids 1001–1005: show track_name and a column label. If the label is missing, show exactly the text 'No label info' (copy spelling). If it exists, show the real label. Use LEFT JOIN and CASE ... END AS label. Sort by track_name.",
-      "initialCode": "-- CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\n",
-      "solution": "SELECT t.track_name,\n  CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
-      "hintMessage": "CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label. Copy the words exactly. ORDER BY t.track_name.",
-      "successMessage": "Perfect! Now bosses can read the sheet without seeing blank cells.",
+      "title": "Royalty audit: who never hit the directory?",
+      "task": "Finance partner on the royalty desk is chasing missing paperwork. From the same training-chart ids (1001–1005), they want only the tracks that still have no matching row in the label directory. Output just track_name, ordered alphabetically by album name (so the binder lines up with how they sort physical LPs).",
+      "initialCode": "SELECT ...\n...\nWHERE ...\nORDER BY ...;\n",
+      "solution": "SELECT t.track_name\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\n  AND a.album_name IS NULL\nORDER BY t.album_name;",
+      "hintMessage": "Widen to the directory first, then keep rows where the directory side never matched. Sort using the chart’s album column.",
+      "successMessage": "Those two names go straight to the follow-up queue.",
       "table": [
         "top_songs",
         "album_info"

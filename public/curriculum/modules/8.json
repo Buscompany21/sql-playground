@@ -3,62 +3,65 @@
   "levels": [
     {
       "id": 1,
-      "title": "Warm up with a Pop CTE",
-      "task": "At Stellar Sound, build a CTE named pop_songs with every column from top_songs where genre = 'Pop'. Your last line must be SELECT * FROM pop_songs ORDER BY weeks_on_chart DESC, track_name. (Only that last SELECT is checked; columns follow the chart table.)",
-      "initialCode": "-- WITH pop_songs AS (...) SELECT * FROM pop_songs ORDER BY ...\n",
-      "solution": "WITH pop_songs AS (\n  SELECT * FROM top_songs WHERE genre = 'Pop'\n)\nSELECT * FROM pop_songs\nORDER BY weeks_on_chart DESC, track_name;",
-      "hintMessage": "WITH pop_songs AS ( ... ) then SELECT from pop_songs. Think of the CTE as a short saved step.",
-      "successMessage": "Nice! The team can read the Pop step before the final sort.",
+      "title": "Fix a typo with REPLACE",
+      "task": "Stellar Sound’s training slice is song ids 1001 through 1005. The roster has a misspelled artist: use REPLACE on artist so every 'Lipppa' becomes 'Lipa'. Show two columns: track_name, then REPLACE(...) AS artist_clean (use that exact alias). Sort by track_name alphabetically.",
+      "initialCode": "-- REPLACE(artist, 'Lipppa', 'Lipa') AS artist_clean\n",
+      "solution": "SELECT track_name,\n  REPLACE(artist, 'Lipppa', 'Lipa') AS artist_clean\nFROM top_songs\nWHERE id BETWEEN 1001 AND 1005\nORDER BY track_name;",
+      "hintMessage": "REPLACE(artist, 'Lipppa', 'Lipa') AS artist_clean. WHERE id BETWEEN 1001 AND 1005. ORDER BY track_name.",
+      "successMessage": "Nice! REPLACE swaps only the matching substring—everyone else stays untouched.",
       "table": [
         "top_songs"
       ]
     },
     {
       "id": 2,
-      "title": "CTE counts, then join venues",
-      "task": "Stellar Sound is counting festival sets per venue. CTE perf_counts: SELECT venue_id, COUNT(*) AS cnt FROM festival_performances GROUP BY venue_id. Join to venues. Show venue name then cnt in that order. ORDER BY cnt high to low, then name A–Z.",
-      "initialCode": "-- WITH perf_counts AS (SELECT venue_id, COUNT(*) AS cnt ... GROUP BY venue_id)\n",
-      "solution": "WITH perf_counts AS (\n  SELECT venue_id, COUNT(*) AS cnt\n  FROM festival_performances\n  GROUP BY venue_id\n)\nSELECT v.name, p.cnt\nFROM perf_counts p\nJOIN venues v ON p.venue_id = v.id\nORDER BY p.cnt DESC, v.name;",
-      "hintMessage": "Count inside the CTE, then JOIN venues ON venue_id = id.",
-      "successMessage": "Perfect! Count first, then add the venue names.",
+      "title": "Normalize a label with REPLACE",
+      "task": "Marketing wants the word 'Hip Hop' without a hyphen in slides. From top_songs, return only rows where genre is exactly 'Hip-Hop'. Show track_name and REPLACE(genre, 'Hip-Hop', 'Hip Hop') AS genre_display (copy the alias). Sort by track_name alphabetically.",
+      "initialCode": "-- WHERE genre = 'Hip-Hop' ... REPLACE(genre, 'Hip-Hop', 'Hip Hop') AS genre_display\n",
+      "solution": "SELECT track_name,\n  REPLACE(genre, 'Hip-Hop', 'Hip Hop') AS genre_display\nFROM top_songs\nWHERE genre = 'Hip-Hop'\nORDER BY track_name;",
+      "hintMessage": "Filter with WHERE genre = 'Hip-Hop'. Second column: REPLACE(genre, 'Hip-Hop', 'Hip Hop') AS genre_display (space, no hyphen). ORDER BY track_name.",
+      "successMessage": "Good! Same data, friendlier label—no need to edit the table.",
       "table": [
-        "festival_performances",
-        "venues"
+        "top_songs"
       ]
     },
     {
       "id": 3,
-      "title": "Two CTEs: chart artists who also play live",
-      "task": "Stellar Sound wants names that appear on the chart and on the festival stage. CTE song_artists: DISTINCT artist from top_songs. CTE perf_artists: DISTINCT artist_name from festival_performances. Join where names match. Final answer: one column artist, sorted A–Z.",
-      "initialCode": "-- WITH song_artists AS (...), perf_artists AS (...) SELECT ... JOIN ...\n",
-      "solution": "WITH song_artists AS (\n  SELECT DISTINCT artist FROM top_songs\n),\nperf_artists AS (\n  SELECT DISTINCT artist_name FROM festival_performances\n)\nSELECT s.artist\nFROM song_artists s\nJOIN perf_artists p ON s.artist = p.artist_name\nORDER BY s.artist;",
-      "hintMessage": "Join ON s.artist = p.artist_name. SELECT only s.artist. ORDER BY s.artist.",
-      "successMessage": "Great! You matched chart names with live show names.",
+      "title": "Friendly labels with CASE",
+      "task": "Still at Stellar Sound, ids 1001–1005: show track_name and a column label. If the label is missing after a LEFT JOIN to album_info on album_name, show exactly the text 'No label info' (copy spelling). If it exists, show the real label. Use CASE ... END AS label. Sort by track_name.",
+      "schema": [
+        "top_songs.sql",
+        "album_info.sql"
+      ],
+      "initialCode": "-- CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\n",
+      "solution": "SELECT t.track_name,\n  CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\nORDER BY t.track_name;",
+      "hintMessage": "LEFT JOIN album_info ON album_name. CASE WHEN a.label IS NULL THEN 'No label info' ELSE a.label END AS label. ORDER BY t.track_name.",
+      "successMessage": "Perfect! CASE turns NULLs into human-readable text for the same report.",
       "table": [
         "top_songs",
-        "festival_performances"
+        "album_info"
       ]
     },
     {
       "id": 4,
-      "title": "CTE: only big rooms",
-      "task": "The tour office at Stellar Sound wants venues over 3000 seats. WITH big_venues AS (SELECT * FROM venues WHERE capacity > 3000) then SELECT * FROM big_venues ORDER BY capacity DESC, name A–Z.",
-      "initialCode": "-- WITH big_venues AS (SELECT * FROM venues WHERE ...) SELECT * FROM big_venues ...\n",
-      "solution": "WITH big_venues AS (\n  SELECT * FROM venues WHERE capacity > 3000\n)\nSELECT * FROM big_venues\nORDER BY capacity DESC, name;",
-      "hintMessage": "Filter inside the CTE, then select from it with a clear ORDER BY.",
-      "successMessage": "Good! The CTE hides the filter so the last line stays short.",
+      "title": "Bucket rows with CASE",
+      "task": "For chart songs with ids 1 through 5 only, return id, track_name, and one column chart_segment built with CASE on weeks_on_chart: if weeks_on_chart is 40 or more, use exactly 'Long run'; if 20 or more (but under 40), use exactly 'Solid weeks'; otherwise use exactly 'Fresh entry'. Sort by id ascending.",
+      "initialCode": "-- CASE WHEN weeks_on_chart >= 40 THEN 'Long run' WHEN ... END AS chart_segment\n",
+      "solution": "SELECT id,\n  track_name,\n  CASE\n    WHEN weeks_on_chart >= 40 THEN 'Long run'\n    WHEN weeks_on_chart >= 20 THEN 'Solid weeks'\n    ELSE 'Fresh entry'\n  END AS chart_segment\nFROM top_songs\nWHERE id BETWEEN 1 AND 5\nORDER BY id;",
+      "hintMessage": "Three branches: >=40, then >=20, then ELSE. Spelling must match: 'Long run', 'Solid weeks', 'Fresh entry'. ORDER BY id.",
+      "successMessage": "Great! CASE is ideal for turning one numeric column into simple story buckets.",
       "table": [
-        "venues"
+        "top_songs"
       ]
     },
     {
       "id": 5,
-      "title": "CTE: small chart snapshot",
-      "task": "Stellar Sound needs just two columns for a slide. CTE chart_snapshot AS (SELECT track_name, weeks_on_chart FROM top_songs). Then SELECT * FROM chart_snapshot ORDER BY weeks_on_chart DESC, track_name A–Z.",
-      "initialCode": "-- WITH chart_snapshot AS (SELECT track_name, weeks_on_chart FROM top_songs)\n",
-      "solution": "WITH chart_snapshot AS (\n  SELECT track_name, weeks_on_chart FROM top_songs\n)\nSELECT * FROM chart_snapshot\nORDER BY weeks_on_chart DESC, track_name;",
-      "hintMessage": "Put ORDER BY in the last SELECT so the order always matches the answer checker.",
-      "successMessage": "Nice! You can reuse this small snapshot in longer homework later.",
+      "title": "REPLACE and CASE together",
+      "task": "Training ids 1001–1005 again. Build three columns: track_name; artist_fixed as REPLACE(artist, 'Lipppa', 'Lipa') (use that exact alias); and stream_story from CASE on spotify_streams—if 2 billion or more, exactly 'Mega hit'; if 1 billion or more (but under 2 billion), exactly 'Big streams'; otherwise exactly 'Growing'. Sort by track_name alphabetically.",
+      "initialCode": "-- REPLACE(...) AS artist_fixed, CASE WHEN spotify_streams >= ... END AS stream_story\n",
+      "solution": "SELECT track_name,\n  REPLACE(artist, 'Lipppa', 'Lipa') AS artist_fixed,\n  CASE\n    WHEN spotify_streams >= 2000000000 THEN 'Mega hit'\n    WHEN spotify_streams >= 1000000000 THEN 'Big streams'\n    ELSE 'Growing'\n  END AS stream_story\nFROM top_songs\nWHERE id BETWEEN 1001 AND 1005\nORDER BY track_name;",
+      "hintMessage": "REPLACE only changes the typo; CASE uses spotify_streams thresholds 2000000000 and 1000000000. Labels: 'Mega hit', 'Big streams', 'Growing'. ORDER BY track_name.",
+      "successMessage": "That’s the full picture—clean text and readable categories in one SELECT.",
       "table": [
         "top_songs"
       ]

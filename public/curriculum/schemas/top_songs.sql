@@ -10,21 +10,6 @@ CREATE TABLE top_songs (
   weeks_on_chart INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE TABLE album_info (
-  album_name TEXT PRIMARY KEY,
-  label TEXT NOT NULL
-);
-
-INSERT INTO album_info (album_name, label) VALUES
-  ('Future Nostalgia', 'Warner Records'),
-  ('Short n Sweet', 'Island Records'),
-  ('The Tortured Poets Department', 'Republic Records'),
-  ('Cowboy Carter', 'Parkwood / Columbia'),
-  ('One Thing At A Time', 'Big Loud / Republic'),
-  ('Lover', 'Republic Records'),
-  ('DAMN.', 'Top Dawg / Aftermath'),
-  ('Not Like Us', 'pgLang / Interscope');
-
 INSERT INTO top_songs (id, track_name, artist, genre, release_date, spotify_streams, album_name, duration_ms, weeks_on_chart) VALUES
   (1001, 'Training Wheels', 'Nova Keys', 'Pop', '2024-01-10', 120000000, 'Indie Loft Sessions', 188000, 8),
   (1002, 'Neon River', 'Nova Keys', 'Pop', '2024-02-05', 95000000, 'River City Mixtape', 192000, 11),

@@ -46,7 +46,10 @@ export function curriculumSchemaUrls(moduleId, levelSchemaOverride = null) {
     return [withBasePath('/curriculum/schemas/module5_lesson1.sql')]
   }
   if (m === 6 || m === 7) {
-    return [withBasePath('/curriculum/schemas/top_songs.sql')]
+    return [
+      withBasePath('/curriculum/schemas/top_songs.sql'),
+      withBasePath('/curriculum/schemas/album_info.sql'),
+    ]
   }
   if (m >= 8 && m <= 10) {
     return [
