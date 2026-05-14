@@ -110,3 +110,10 @@ export const getNextModuleId = (moduleId) => {
   if (idx === -1 || idx === ids.length - 1) return null
   return ids[idx + 1]
 }
+
+/** Static route shown after the final level of the final SQL module (module 10). */
+export const CURRICULUM_COMPLETION_PATH = '/congratulations/'
+
+export function isFinalCurriculumLevel(moduleId, levelId, maxLevels) {
+  return String(moduleId) === '10' && Number(levelId) === Number(maxLevels)
+}

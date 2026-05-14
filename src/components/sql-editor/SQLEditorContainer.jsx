@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import { AnimatePresence } from 'framer-motion'
-import { getModuleLevels, getNextModuleId } from '../../config/moduleConfig'
+import {
+  CURRICULUM_COMPLETION_PATH,
+  getModuleLevels,
+  getNextModuleId,
+  isFinalCurriculumLevel,
+} from '../../config/moduleConfig'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { GripVertical } from 'lucide-react'
 import { fetchLevelDefinition, getPreviewTableName, stripLevelForClient } from '../../lib/curriculum/fetchLevel'
@@ -27,7 +32,9 @@ export function SQLEditorContainer({ moduleId, levelId }) {
   // Get module data
   const maxLevels = getModuleLevels(moduleIdNum.toString());
   const nextModuleId = getNextModuleId(moduleIdNum.toString());
-  const canGoNext = levelIdNum < maxLevels || nextModuleId != null;
+  const onFinalSqlLevel = isFinalCurriculumLevel(moduleIdNum, levelIdNum, maxLevels);
+  const canGoNext =
+    levelIdNum < maxLevels || nextModuleId != null || onFinalSqlLevel;
 
   const levelDefinitionRef = useRef(null);
 
@@ -297,6 +304,11 @@ export function SQLEditorContainer({ moduleId, levelId }) {
           setFullscreenState(null);
         }
         window.location.href = `/module/${nextModuleId}/`;
+      } else if (onFinalSqlLevel) {
+        if (isFullScreen) {
+          setFullscreenState(null);
+        }
+        window.location.href = CURRICULUM_COMPLETION_PATH;
       }
       return;
     }
