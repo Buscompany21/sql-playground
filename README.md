@@ -2,7 +2,7 @@
 
 **Live site:** [https://sql-playground.codeadventure.net/](https://sql-playground.codeadventure.net/)
 
-Interactive SQL curriculum framed as a storyline: you are a junior data analyst at *Stellar Sound Records*, using SQL to explore charts, festivals, and reporting scenarios. Everything runs **in the browser**—there is no server-side SQL execution.
+Interactive SQL curriculum framed as a storyline: you are a junior data analyst at *Stellar Sound Records*, using SQL to explore chart data, label metadata, and reporting-style questions. Everything runs **in the browser**—there is no server-side SQL execution.
 
 ---
 

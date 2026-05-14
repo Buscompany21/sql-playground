@@ -3,21 +3,22 @@
   "levels": [
     {
       "id": 1,
-      "title": "Licensing only wants rows that line up",
-      "task": "Ops just added a second table, album_info: each row has the album name and label. The chart desk’s licensing contact wants to see all the information from the top_songs and album_info tables joined together.",
-      "initialCode": "SELECT ...\nFROM ...JOIN... ON...;",
-      "solution": "SELECT * FROM top_songs JOIN album_info ON top_songs.album_name = album_info.album_name;",
-      "hintMessage": "JOIN the top_songs and album_info tables on the album_name column.",
+      "title": "Licensing wants albums and labels information",
+      "task": "Ops just added a second table called album_info. Each row contains an album name and label. Join the top_songs table to album_info using the album_name column. Show all columns from both tables. Keep every song from top_songs, even if there is no matching album in album_info.",
+      "initialCode": "SELECT *\nFROM ...\nLEFT JOIN ... ON ...;",
+      "solution": "SELECT * FROM top_songs LEFT JOIN album_info ON top_songs.album_name = album_info.album_name;",
+      "hintMessage": "LEFT JOIN the top_songs and album_info tables on the album_name column.",
       "successMessage": "Great job! You joined the two tables on the album_name column and selected all the columns from both tables.",
       "table": [
-        "top_songs",
-        "album_info"
+        "album_info",
+        "top_songs"
       ]
     },
     {
       "id": 2,
-      "title": "Marketing analytics needs one number",
-      "task": "Someone on the festival marketing squad is sanity-checking the chart. They only care about albums that have a label",
+      "title": "Only songs with label rows",
+      "task": "Someone on the festival marketing squad wants only the songs that have a matching album in album_info. Show all rows where top_songs has a matching album in album_info.",
+      "initialCode": "SELECT *\nFROM ...\nINNER JOIN ... ON ...;",
       "solution": "SELECT * FROM top_songs INNER JOIN album_info ON top_songs.album_name = album_info.album_name;",
       "hintMessage": "INNER JOIN the top_songs and album_info tables on the album_name column.",
       "successMessage": "Great job! You joined the two tables for albums that have a label.",
@@ -28,12 +29,12 @@
     },
     {
       "id": 3,
-      "title": "Tour liaison needs the full list, gaps and all",
-      "task": "Road office is building a day-of binder. For ids 1001 through 1005 they want every training-chart track listed with whatever label name we have on file—if we have nothing, the label side should simply be empty. First column: track name. Second column title must read label.",
-      "initialCode": "SELECT ...\nFROM ...\n...\nWHERE ...;\n",
-      "solution": "SELECT t.track_name, a.label AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
-      "hintMessage": "Start from the chart slice, attach directory rows where album names match, and alias the label column as label.",
-      "successMessage": "Five lines on the sheet—exactly what routing asked for.",
+      "title": "Top five: track and label",
+      "task": "Tour ops is printing wristbands for the top 5 songs. For each of those rows, show track_name and label. Keep tracks even when the directory has no row for that album.",
+      "initialCode": "SELECT ... \nFROM top_songs t\n",
+      "solution": "SELECT t.track_name, a.label AS label\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1 AND 5;",
+      "hintMessage": "LEFT JOIN album_info on the album_name column. Check where the id is between 1 and 5.",
+      "successMessage": "Great job! You joined the two tables for the top 5 songs and selected the track_name and label columns.",
       "table": [
         "top_songs",
         "album_info"
@@ -41,12 +42,12 @@
     },
     {
       "id": 4,
-      "title": "Show ops double-checks the widened list",
-      "task": "Programming lead wants proof the “don’t drop anyone” version of that same join still returns five lines for ids 1001–1005—not three, not six. One column only, named left_join_rows, equal to the row count.",
-      "initialCode": "SELECT ...;\n",
-      "solution": "SELECT COUNT(*) AS left_join_rows\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005;",
-      "hintMessage": "Use the same chart-to-directory pairing as the tour sheet, then count every row in the result.",
-      "successMessage": "Five rows—show ops can green-light the run of show.",
+      "title": "Top five with a label match",
+      "task": "We only have wristbands for the top five chart ranks that already have a label on file. Return every column from top_songs for those ranks (1–5) whose album appears in album_info.",
+      "initialCode": "--Write your solution here--",
+      "solution": "SELECT *\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1 AND 5;",
+      "hintMessage": "INNER JOIN album_info on album_name. WHERE t.id BETWEEN 1 AND 5.",
+      "successMessage": "We only have wristbands for the top five songs that have a matching album in album_info.",
       "table": [
         "top_songs",
         "album_info"
@@ -54,12 +55,12 @@
     },
     {
       "id": 5,
-      "title": "Royalty audit: who never hit the directory?",
-      "task": "Finance partner on the royalty desk is chasing missing paperwork. From the same training-chart ids (1001–1005), they want only the tracks that still have no matching row in the label directory. Output just track_name, ordered alphabetically by album name (so the binder lines up with how they sort physical LPs).",
-      "initialCode": "SELECT ...\n...\nWHERE ...\nORDER BY ...;\n",
-      "solution": "SELECT t.track_name\nFROM top_songs t\nLEFT JOIN album_info a ON t.album_name = a.album_name\nWHERE t.id BETWEEN 1001 AND 1005\n  AND a.album_name IS NULL\nORDER BY t.album_name;",
-      "hintMessage": "Widen to the directory first, then keep rows where the directory side never matched. Sort using the chart’s album column.",
-      "successMessage": "Those two names go straight to the follow-up queue.",
+      "title": "Long chart run plus label",
+      "task": "Radio partnerships wants a full song row for every track that has been on the chart at least 25 weeks and has a matching album in the label directory.",
+      "initialCode": "--Write your solution here--",
+      "solution": "SELECT *\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE t.weeks_on_chart >= 25;",
+      "hintMessage": "INNER JOIN album_info on album_name. WHERE weeks_on_chart >= 25.",
+      "successMessage": "Radio has full rows for every long chart run that already has label info—ready to pitch without chasing paperwork first.",
       "table": [
         "top_songs",
         "album_info"

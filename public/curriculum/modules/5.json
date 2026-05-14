@@ -43,7 +43,7 @@
       "task": "Echo Park (id 1) just moved from the United States to Mexico. Change her country to 'Mexico'. End with: SELECT id, name, country FROM new_artists WHERE id = 1;",
       "initialCode": "UPDATE new_artists SET ... WHERE ...;\n\nSELECT * FROM new_artists \nWHERE ...;",
       "solution": "UPDATE new_artists SET country = 'Mexico' WHERE id = 1;\n\nSELECT * FROM new_artists \nWHERE id = 1;",
-      "hintMessage": "ALWAYS include a WHERE with an UPDATE statemet. Without it, every row in the table changes, so filter on id = 1.",
+      "hintMessage": "ALWAYS include a WHERE with an UPDATE statement. Without it, every row in the table changes, so filter on id = 1.",
       "successMessage": "Got it — Echo Park's profile now shows Mexico.",
       "schema": "module5_lesson4.sql",
       "table": [

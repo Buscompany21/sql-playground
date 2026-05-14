@@ -52,10 +52,10 @@
     {
       "id": 5,
       "title": "Select with IN",
-      "task": "You’re building a comparison between Taylor Swift, Beyoncé, and Kendrick Lamar. Show all columns for all songs by these artists.",
+      "task": "You’re building a comparison between Taylor Swift, Kendrick Lamar, and Morgan Wallen. Show all columns for all songs by these artists.",
       "initialCode": "-- Write your query here\n",
-      "solution": "SELECT * FROM top_songs WHERE artist IN ('Taylor Swift', 'Beyoncé', 'Kendrick Lamar');",
-      "hintMessage": "Use artist IN ('Taylor Swift', 'Beyoncé', 'Kendrick Lamar').",
+      "solution": "SELECT * FROM top_songs WHERE artist IN ('Taylor Swift', 'Kendrick Lamar', 'Morgan Wallen');",
+      "hintMessage": "Use artist IN ('Taylor Swift', 'Kendrick Lamar', 'Morgan Wallen').",
       "successMessage": "Great! All three artists are in one result table.",
       "table": [
         "top_songs"

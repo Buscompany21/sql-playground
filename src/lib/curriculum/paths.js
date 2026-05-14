@@ -45,17 +45,10 @@ export function curriculumSchemaUrls(moduleId, levelSchemaOverride = null) {
     // only matters if a new module-5 lesson ever forgets to set `schema`.
     return [withBasePath('/curriculum/schemas/module5_lesson1.sql')]
   }
-  if (m === 6 || m === 7) {
+  if (m >= 6 && m <= 10) {
     return [
       withBasePath('/curriculum/schemas/top_songs.sql'),
       withBasePath('/curriculum/schemas/album_info.sql'),
-    ]
-  }
-  if (m >= 8 && m <= 10) {
-    return [
-      withBasePath('/curriculum/schemas/top_songs.sql'),
-      withBasePath('/curriculum/schemas/venues.sql'),
-      withBasePath('/curriculum/schemas/festival_performances.sql'),
     ]
   }
   return [withBasePath('/curriculum/schemas/top_songs.sql')]

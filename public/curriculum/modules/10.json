@@ -4,10 +4,10 @@
     {
       "id": 1,
       "title": "Artists with more than one hit (HAVING)",
-      "task": "Stellar Sound wants a short report: each artist and how many chart songs they have, but only if they have 2 or more songs. Columns artist and song_count (COUNT(*)). Use HAVING COUNT(*) >= 2. ORDER BY song_count high to low, then artist A–Z. This site checks names and order.",
-      "initialCode": "-- GROUP BY artist HAVING COUNT(*) >= 2\n",
-      "solution": "SELECT artist, COUNT(*) AS song_count\nFROM top_songs\nGROUP BY artist\nHAVING COUNT(*) >= 2\nORDER BY song_count DESC, artist;",
-      "hintMessage": "WHERE runs before GROUP BY. HAVING runs after the count—use it to drop small groups.",
+      "task": "The CEO wants to know how many artists have 2 or more songs on the top 50 list. Show the artist and the count of songs (song_count). Use HAVING to filter the aggregate functions after the GROUP BY.",
+      "initialCode": "-- Write your solution here --",
+      "solution": "SELECT artist, COUNT(*) AS song_count\nFROM top_songs\nGROUP BY artist\nHAVING COUNT(*) >= 2",
+      "hintMessage": "WHERE runs before GROUP BY. HAVING runs after the count—use it to drop small groups. Use HAVING COUNT(*) >= 2 at the end of your query.",
       "successMessage": "Great! HAVING keeps only artists with enough songs on the chart.",
       "table": [
         "top_songs"
@@ -16,10 +16,10 @@
     {
       "id": 2,
       "title": "Very new acts (MIN + HAVING)",
-      "task": "A&R at Stellar Sound wants artists whose first chart date is after 2024-03-01. Show artist and earliest_release = MIN(release_date). Use HAVING on that MIN date. Sort by artist A–Z.",
-      "initialCode": "-- SELECT artist, MIN(release_date) AS earliest_release ... GROUP BY artist HAVING ...\n",
-      "solution": "SELECT artist, MIN(release_date) AS earliest_release\nFROM top_songs\nGROUP BY artist\nHAVING MIN(release_date) > '2024-03-01'\nORDER BY artist;",
-      "hintMessage": "Put the date test in HAVING with MIN(release_date), not only in WHERE on one row.",
+      "task": "A&R at Stellar Sound wants artists whose first release date is after 2024-03-01. Show artist and the earliest release date (earliest_release). Use HAVING on that MIN date.",
+      "initialCode": "-- Write your solution here --",
+      "solution": "SELECT artist, MIN(release_date) AS earliest_release\nFROM top_songs\nGROUP BY artist\nHAVING MIN(release_date) > '2024-03-01'",
+      "hintMessage": " Use HAVING MIN(release_date) > '2024-03-01' at the end of your query.",
       "successMessage": "Great! Every artist here is new on the chart after that date.",
       "table": [
         "top_songs"
@@ -27,38 +27,40 @@
     },
     {
       "id": 3,
-      "title": "CASE: two spotlight labels",
-      "task": "Marketing at Stellar Sound needs simple tags. Columns: track_name, artist, spotlight. CASE: if artist is Beyoncé OR artist starts with Dua Lip (LIKE 'Dua Lip%'), spotlight = 'Pop Princess'. Else 'Other'. Only ids 1003, 5, 6, 1005. ORDER BY id. Copy the quoted words exactly.",
-      "initialCode": "-- CASE WHEN artist = 'Beyoncé' OR artist LIKE 'Dua Lip%' THEN ... ELSE ... END\n",
-      "solution": "SELECT track_name, artist,\n  CASE\n    WHEN artist = 'Beyoncé' OR artist LIKE 'Dua Lip%' THEN 'Pop Princess'\n    ELSE 'Other'\n  END AS spotlight\nFROM top_songs\nWHERE id IN (1003, 5, 6, 1005)\nORDER BY id;",
-      "hintMessage": "CASE checks each WHEN in order; use the Beyoncé and Dua tests before ELSE.",
-      "successMessage": "Nice! CASE turns many values into two easy labels.",
+      "title": "CASE: viral or rising",
+      "task": "The social media team wants simple categories for songs released by Summit Records. Join top_songs to album_info on album_name. Show track_name, spotify_streams, and a new column called stream_status. Use CASE: if spotify_streams is 2000000000 or more, stream_status should be 'Viral'. Otherwise, stream_status should be 'Rising'. Only include songs where the label is 'Summit Records'.",
+      "initialCode": "-- Write your solution here --",
+      "solution": "SELECT t.track_name,\n  t.spotify_streams,\n  CASE\n    WHEN t.spotify_streams >= 2000000000 THEN 'Viral'\n    ELSE 'Rising'\n  END AS stream_status\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE a.label = 'Summit Records';",
+      "hintMessage": "CASE checks each row one at a time. Use WHEN spotify_streams >= 2000000000 THEN 'Viral'. Use ELSE 'Rising' for everything else.",
+      "successMessage": "Great work! You used a JOIN to filter by label and CASE to create readable stream categories.",
       "table": [
-        "top_songs"
+        "top_songs",
+        "album_info"
       ]
     },
     {
       "id": 4,
-      "title": "CASE: Top 3 or not",
-      "task": "The newsletter team at Stellar Sound needs tiers. For ids 1001–1005: show id, track_name, chart_status. If id is 1001, 1002, or 1003, chart_status = 'Top 3'. Else chart_status = 'Honorable Mention'. ORDER BY id. Match spelling exactly.",
-      "initialCode": "-- CASE WHEN id IN (1001, 1002, 1003) THEN 'Top 3' ELSE ... END\n",
-      "solution": "SELECT id, track_name,\n  CASE\n    WHEN id IN (1001, 1002, 1003) THEN 'Top 3'\n    ELSE 'Honorable Mention'\n  END AS chart_status\nFROM top_songs\nWHERE id BETWEEN 1001 AND 1005\nORDER BY id;",
-      "hintMessage": "WHERE id BETWEEN 1001 AND 1005 keeps the list short. CASE picks the tier text.",
-      "successMessage": "Perfect! Simple tiers help posters and web banners.",
+      "title": "CASE: release quarter",
+      "task": "The analytics team wants to group 2024 songs by release quarter. Show track_name, release_date, and a new column called release_quarter. Use CASE to create these labels: dates from January through March = 'Quarter 1', April through June = 'Quarter 2', July through September = 'Quarter 3', and October through December = 'Quarter 4'. Only include songs released in 2024. ORDER BY release_date.",
+      "initialCode": "-- Write your solution here --",
+      "solution": "SELECT track_name,\n  release_date,\n  CASE\n    WHEN release_date BETWEEN '2024-01-01' AND '2024-03-31' THEN 'Quarter 1'\n    WHEN release_date BETWEEN '2024-04-01' AND '2024-06-30' THEN 'Quarter 2'\n    WHEN release_date BETWEEN '2024-07-01' AND '2024-09-30' THEN 'Quarter 3'\n    ELSE 'Quarter 4'\n  END AS release_quarter\nFROM top_songs\nWHERE release_date LIKE '2024-%'\nORDER BY release_date;",
+      "hintMessage": "Start your CASE with: WHEN release_date BETWEEN '2024-01-01' AND '2024-03-31' THEN 'Quarter 1'",
+      "successMessage": "Great work! CASE can turn raw dates into simple business categories like quarters.",
       "table": [
         "top_songs"
       ]
-    },
+    },    
     {
       "id": 5,
-      "title": "Count songs before and after April",
-      "task": "Extra practice at Stellar Sound: only artists Sabrina Carpenter, Taylor Swift, Kendrick Lamar. For each artist show artist, before_april (SUM of 1 when release_date < 2024-04-01 else 0), from_april_on (SUM of 1 when release_date >= 2024-04-01 else 0). GROUP BY artist. ORDER BY artist. No extra columns.",
-      "initialCode": "-- Filter artists IN (...); SUM(CASE ...) for each bucket\n",
-      "solution": "SELECT artist,\n  SUM(CASE WHEN release_date < '2024-04-01' THEN 1 ELSE 0 END) AS before_april,\n  SUM(CASE WHEN release_date >= '2024-04-01' THEN 1 ELSE 0 END) AS from_april_on\nFROM top_songs\nWHERE artist IN ('Sabrina Carpenter', 'Taylor Swift', 'Kendrick Lamar')\nGROUP BY artist\nORDER BY artist;",
-      "hintMessage": "Each CASE gives 1 or 0 per song; SUM adds them inside each artist group.",
-      "successMessage": "Strong work! You split counts by date in one grouped query.",
+      "title": "CASE and REPLACE with labels",
+      "task": "The playlist team is reviewing 2024 songs from Summit Records. Join top_songs to album_info on album_name. Show track_name, a cleaned-up artist name called artist_clean, and a new column called song_length. Use REPLACE to shorten every 'Kendrick Lamar' to 'K. Lamar'. Use CASE: if duration_ms is 200000 or more, song_length should be 'Long'. Otherwise, song_length should be 'Short'. Only include songs where the label is 'Summit Records'.",
+      "initialCode": "-- Write your solution here --",
+      "solution": "SELECT t.track_name,\n  REPLACE(t.artist, 'Kendrick Lamar', 'K. Lamar') AS artist_clean,\n  CASE\n    WHEN t.duration_ms >= 200000 THEN 'Long'\n    ELSE 'Short'\n  END AS song_length\nFROM top_songs t\nINNER JOIN album_info a ON t.album_name = a.album_name\nWHERE a.label = 'Summit Records'\n  AND t.release_date LIKE '2024-%';",
+      "hintMessage": "REPLACE changes the artist name text. CASE checks whether duration_ms is 200000 or more.",
+      "successMessage": "Awesome work! You combined a JOIN, REPLACE, and CASE in one query.",
       "table": [
-        "top_songs"
+        "top_songs",
+        "album_info"
       ]
     }
   ]
