@@ -30,7 +30,7 @@
       "task": "After Friday's showcase, three artists signed within a week. Insert all three into new_artists in a SINGLE INSERT statement (one INSERT, multiple VALUES rows). \nArtist 2: River Lights, Indie, Cambodia, 2026-06-15\nArtist 3: Crown Heights, Hip-Hop, England, 2026-06-18\nArtist 4: Luna Ray, R&B, Australia, 2026-06-20",
       "initialCode": "INSERT INTO new_artists (...)\nVALUES\n  (...),\n  (...),\n  (...);\n\nSELECT * FROM new_artists;",
       "solution": "INSERT INTO new_artists (id, name, genre, country, signed_date) VALUES\n  (2, 'River Lights', 'Indie', 'Cambodia', '2026-06-15'),\n  (3, 'Crown Heights', 'Hip-Hop', 'England', '2026-06-18'),\n  (4, 'Luna Ray', 'R&B', 'Australia', '2026-06-20');\nSELECT * FROM new_artists;",
-      "hintMessage": "One INSERT can add many rows at once, separated by commas: INSERT INTO t (cols) VALUES (...), (...), (...);. Don't forget single quotes around text and dates.",
+      "hintMessage": "One INSERT can add many rows at once, separated by commas: INSERT INTO table_name (cols) VALUES (...), (...), (...);. Don't forget single quotes around text and dates.",
       "successMessage": "Perfect! All three showcase signings are in the system.",
       "schema": "module5_lesson3.sql",
       "table": [

@@ -283,7 +283,20 @@ export function SQLEditorContainer({ moduleId, levelId }) {
 
   // Toggle elements
   const toggleMessageBox = () => setIsMessageExpanded(prev => !prev);
-  const toggleHint = () => setShowHint(prev => !prev);
+  const toggleHint = () => {
+    setShowHint(prev => {
+      const next = !prev;
+      if (next) setShowSolution(false);
+      return next;
+    });
+  };
+  const toggleSolution = () => {
+    setShowSolution(prev => {
+      const next = !prev;
+      if (next) setShowHint(false);
+      return next;
+    });
+  };
   const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
   };
@@ -403,7 +416,7 @@ export function SQLEditorContainer({ moduleId, levelId }) {
                 toggleHint={toggleHint}
                 canShowSolution={canShowSolution}
                 showSolution={showSolution}
-                toggleSolution={() => setShowSolution(prev => !prev)}
+                toggleSolution={toggleSolution}
                 solutionText={levelDefinitionRef.current?.solution || ''}
                 isFullScreen={true}
                 width="300px"
@@ -478,7 +491,7 @@ export function SQLEditorContainer({ moduleId, levelId }) {
                 toggleHint={toggleHint}
                 canShowSolution={canShowSolution}
                 showSolution={showSolution}
-                toggleSolution={() => setShowSolution(prev => !prev)}
+                toggleSolution={toggleSolution}
                 solutionText={levelDefinitionRef.current?.solution || ''}
                 isMessageExpanded={isMessageExpanded}
                 toggleMessageBox={toggleMessageBox}

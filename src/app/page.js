@@ -77,7 +77,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
               {Object.entries(moduleConfig).map(([id, module]) => (
                 <div key={id} className="flex flex-col h-full">
-                  <ModuleStorylinePreview moduleId={id} practiceTables={module.practiceTables} />
+                  <ModuleStorylinePreview moduleId={id} />
                 </div>
               ))}
             </div>

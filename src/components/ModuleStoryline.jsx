@@ -107,7 +107,7 @@ export function ModuleStoryline({ moduleId, onContinue }) {
   )
 }
 
-export function ModuleStorylinePreview({ moduleId, practiceTables }) {
+export function ModuleStorylinePreview({ moduleId }) {
   const moduleData = moduleConfig[moduleId]
   
   if (!moduleData || !moduleData.storyline) {
@@ -134,24 +134,6 @@ export function ModuleStorylinePreview({ moduleId, practiceTables }) {
         <p className="text-sm text-[#4E5964] line-clamp-4 flex-grow">
           {moduleData.storyline.text}
         </p>
-
-        {Array.isArray(practiceTables) && practiceTables.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-slate-100">
-            <p className="text-[10px] font-medium uppercase tracking-wide text-[#5B8A9D]/85 mb-1.5">
-              Tables in lessons
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {practiceTables.map((name) => (
-                <span
-                  key={name}
-                  className="inline-flex items-center rounded bg-[#E6F2F2]/90 px-2 py-0.5 font-mono text-[11px] text-[#2A6B70]"
-                >
-                  {name}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="mt-5 flex justify-end">
           <Link href={`/module/${moduleId}`} className="group-hover:translate-x-0.5 transition-transform">
