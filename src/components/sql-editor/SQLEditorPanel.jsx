@@ -3,7 +3,7 @@ import { Button } from '../ui/button'
 import CodeMirror from '@uiw/react-codemirror'
 import { sql } from '@codemirror/lang-sql'
 import { vscodeDark } from '@uiw/codemirror-theme-vscode'
-import { PlayCircle, Loader2 } from 'lucide-react'
+import { PlayCircle, Loader2, Maximize2, Minimize2 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 export function SQLEditorPanel({
@@ -13,7 +13,8 @@ export function SQLEditorPanel({
   width,
   editorRef,
   isExecuting,
-  handleExecute
+  handleExecute,
+  toggleFullScreen
 }) {
   // Common CodeMirror configuration
   const codeMirrorConfig = {
@@ -53,8 +54,20 @@ export function SQLEditorPanel({
           width: width,
           transition: 'width 0.1s ease-out' 
         }}
-        className="h-full overflow-hidden flex flex-col min-w-0"
+        className="h-full overflow-hidden flex flex-col min-w-0 relative"
       >
+        <div className="absolute right-3 top-3 z-10">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleFullScreen}
+            className="h-8 w-8 border-slate-500/60 bg-[#1e1e1e]/90 text-slate-200 hover:bg-[#2d2d2d] hover:text-white"
+            aria-label="Exit Fullscreen"
+          >
+            <Minimize2 className="h-4 w-4" />
+          </Button>
+        </div>
+
         <div className="flex-1 bg-[#1e1e1e] overflow-hidden">
           <CodeMirror
             {...codeMirrorConfig}
@@ -66,7 +79,19 @@ export function SQLEditorPanel({
 
   // Regular mode version
   return (
-    <Card className="flex-1 flex flex-col border-slate-200 overflow-hidden min-h-0">
+    <Card className="flex-1 flex flex-col border-slate-200 overflow-hidden min-h-0 relative">
+      <div className="absolute right-3 top-3 z-10">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={toggleFullScreen}
+          className="h-8 w-8 border-slate-500/60 bg-[#1e1e1e]/90 text-slate-200 hover:bg-[#2d2d2d] hover:text-white"
+          aria-label="Enter Fullscreen"
+        >
+          <Maximize2 className="h-4 w-4" />
+        </Button>
+      </div>
+
       <div className="flex-1 overflow-hidden min-h-0 bg-[#1e1e1e]">
         <CodeMirror
           {...codeMirrorConfig}

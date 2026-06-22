@@ -1,0 +1,31 @@
+sound_id,track_title,artist,genre,mood_tag,bpm,energy_score,first_spike_week,peak_views_millions,avg_watch_pct,hashtag_count,creator_reuse_count,duet_stitch_rate,region_top,rights_risk,brand_safety_score,notes
+SND001,Midnight Echo,Luna Vale,synth-pop,hypnotic,118,7.2,2026-W02,12.4,68,18400,920,0.14,NA,low,9,Favored by dance creators; clean stems.
+SND002,Neon Static,Kairo + Miko,electronic,chaotic,140,9.1,2026-W05,28.1,52,42000,2100,0.22,EU,medium,7,Spike tied to fitness trend; verify clearance on sample loop.
+SND003,Papercut Heart,Nia Rowan,indie,bittersweet,96,4.5,2026-W01,6.8,74,6200,310,0.31,NA,low,10,Strong completion; slower burn than viral peak suggests.
+SND004,Clockwork Kiss,The Marbles,pop-punk,rebellious,152,8.4,2026-W03,15.9,49,22100,1800,0.18,APAC,low,8,
+SND005,Velvet Algorithm,Studio 47,house,playful,124,6.9,2026-W04,9.2,61,9800,540,0.11,NA,low,9,
+SND006,Saltwater Sky,Olive + Tide,folk-electronic,cinematic,88,5.1,2026-W02,4.1,81,3100,120,0.08,EU,low,10,Small volume but elite watch time; good for mood channel.
+SND007,404 Feelings,byteboy,hyperpop,ironic,160,8.9,2026-W06,33.5,44,51000,3400,0.26,NA,high,6,Rights flagged in notes from distributor; double-check before promo.
+SND008,Golden Hour Riot,Sable Crown,alt-R&B,confident,102,6.3,2026-W03,11.0,66,13300,670,0.15,LATAM,low,9,
+SND009,Loop Me In,TikTok Symphony,orchestral-meme,humorous,72,3.2,2026-W05,19.7,58,38000,900,0.41,NA,medium,8,High duet/stitch; meme format may age quickly.
+SND010,Run It Back,Jules Park,K-pop influenced,energetic,128,8.0,2026-W01,22.4,55,29000,1600,0.19,APAC,low,8,
+SND011,Static Bloom,River North,ambient-pop,calm,92,3.8,2026-W04,3.6,77,2100,95,0.05,NA,low,10,Niche; great for wind-down content blocks.
+SND012,Sidechain Serenade,DJ Parcel,UK garage,flirty,132,7.5,2026-W02,8.8,59,11200,880,0.12,EU,low,9,
+SND013,Champagne Problems 3000,May Wright,pop,sassy,110,6.0,2026-W06,14.2,63,17500,720,0.17,NA,low,9,
+SND014,Glass Cannon,REMNANT,trap-metal,intense,148,9.4,2026-W05,7.9,41,8600,410,0.09,NA,medium,6,Loud mix; brand-sensitive placements only.
+SND015,Slow Zoom,Sofia Reyes (fictional),latin-pop,romantic,104,5.6,2026-W03,18.6,70,24000,1300,0.21,LATAM,low,9,Strong hashtag velocity pre-peak.
+SND016,Copy/Paste My Heart,CTRL+C,indie-pop,quirky,118,5.9,2026-W04,5.5,69,5400,260,0.24,NA,low,9,
+SND017,Blueprint Dreams,Twin Cities AI Choir,experimental,hopeful,100,4.9,2026-W01,2.9,73,1800,80,0.06,NA,low,10,Includes AI-generated vocal credit line; disclose in captions.
+SND018,Heatmap Honey,VCR Stars,disco-funk,groovy,116,7.1,2026-W06,10.4,62,15100,950,0.16,NA,low,8,
+SND019,No Signal,Operator Unknown,industrial,anxious,138,8.2,2026-W02,6.2,46,4700,220,0.07,EU,medium,7,
+SND020,Soft Launch,Sleeve Notes,bedroom pop,wistful,94,4.2,2026-W05,9.1,76,8900,400,0.13,NA,low,10,
+SND021,Go Viral Responsibly,Professor Meme,comedy-rap,satirical,112,6.4,2026-W06,25.0,51,45000,2200,0.33,NA,low,8,Satire; avoid if channel avoids politics-adjacent humor.
+SND022,Pixel Heart,ARCADE LOVE,chiptune-nostalgia,joyful,140,7.8,2026-W03,13.7,57,19800,1400,0.20,APAC,low,9,
+SND023,Afterparty Astronomy,Zed Orion,deep house,mysterious,122,6.6,2026-W04,7.4,60,7700,500,0.10,EU,low,9,
+SND024,Replay Tax,The Loops,nu-disco,fun,124,7.0,2026-W01,16.3,54,20500,1100,0.14,NA,low,8,
+SND025,Trend Decay,TikTok Symphony,orchestral-meme,humorous,74,3.5,2026-W06,12.8,48,36000,700,0.38,NA,medium,7,Sequel sound to SND009; audience overlap.
+SND026,Offline Oasis,Yuki M.,lo-fi,cozy,82,2.9,2026-W02,5.1,84,4200,210,0.04,APAC,low,10,
+SND027,Mirrorball Panic,Strobe Society,synthwave,dramatic,128,8.1,2026-W05,20.4,53,26800,1900,0.17,NA,low,8,
+SND028,Swipe Left Symphony,Metro Minimalists,classical-remix,elegant,96,4.6,2026-W03,4.4,72,3300,150,0.09,EU,low,10,
+SND029,Hashtag Healing,Dr. Groove,afrobeats,optimistic,108,7.3,2026-W04,17.9,67,21700,1500,0.23,AFR,low,9,
+SND030,Bassline Bureaucracy,Red Tape DJs,funk,bureaucratic-silly,112,6.1,2026-W06,8.0,61,10100,600,0.20,NA,low,9,Novelty hook; monitor for fatigue after week 2.

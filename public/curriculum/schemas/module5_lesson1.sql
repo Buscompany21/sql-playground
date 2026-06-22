@@ -1,0 +1,4 @@
+-- Module 5, lesson 1 starts from a truly empty database. The learner
+-- runs CREATE TABLE new_artists (...); themselves. Lessons 2-5 each
+-- ship their own starting-state schema that picks up where the previous
+-- lesson would have left off.

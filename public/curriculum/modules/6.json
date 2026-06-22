@@ -1,0 +1,65 @@
+{
+  "moduleId": 6,
+  "levels": [
+    {
+      "id": 1,
+      "title": "2024 songs per genre",
+      "task": "Stellar Sound wants a quick snapshot of 2024: how many chart songs landed in each genre. Sort so genres with the most songs appear first; if two genres tie, list them A–Z by genre name.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT genre, COUNT(*) AS song_count\nFROM top_songs\nWHERE release_date LIKE '2024-%'\nGROUP BY genre\nORDER BY song_count DESC, genre;",
+      "hintMessage": "Try WHERE release_date LIKE '2024-%' to lock the year, then GROUP BY genre so each count is per genre.",
+      "successMessage": "Nice! WHERE picks the rows first, then GROUP BY organizes them by genre.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Pop hits over a billion",
+      "task": "Marketing is making a poster of pop songs with over 1 billion streams. Return each song’s name, artist, and stream count, with the biggest hits at the top.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, artist, spotify_streams\nFROM top_songs\nWHERE genre = 'Pop' AND spotify_streams >= 1000000000\nORDER BY spotify_streams DESC;",
+      "hintMessage": "Put both tests in one WHERE … AND …. For “at least” a billion, spotify_streams >= 1000000000 does the job.",
+      "successMessage": "Great! AND keeps only rows that pass BOTH tests.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Chart-wide stats in one row",
+      "task": "Your boss wants a single summary row for the whole chart: total number of songs, sum of all streams, average streams per song, and the longest track by duration (in milliseconds). No filtering—just one row of four numbers.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT\n  COUNT(*) AS song_count,\n  SUM(spotify_streams) AS total_streams,\n  AVG(spotify_streams) AS avg_streams,\n  MAX(duration_ms) AS longest_song\nFROM top_songs;",
+      "hintMessage": "COUNT(*) and SUM(spotify_streams) are two of the calculations. Skip GROUP BY for this one since we are looking at the whole chart.",
+      "successMessage": "Perfect! One row, four useful numbers—great for a status email.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Pop artists: songs and total streams",
+      "task": "A&R wants a Pop-only leaderboard: one row per artist showing how many songs they have on the chart and their combined streams. Order by combined streams highest first then by artist name alphabetically.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist, COUNT(*) AS song_count, SUM(spotify_streams) AS total_streams\nFROM top_songs\nWHERE genre = 'Pop'\nGROUP BY artist\nORDER BY total_streams DESC, artist;",
+      "hintMessage": "WHERE genre = 'Pop' first, then GROUP BY artist. COUNT(*) and SUM(spotify_streams) give songs vs. combined streams per artist.",
+      "successMessage": "Strong! You filtered, grouped, and stacked two aggregates in one query.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Artists on the 2023–2024 chart",
+      "task": "Stellar Sound is prepping a two-year recap (releases from the start of 2023 through the end of 2024). For each artist, show how many qualifying songs they have and their average streams on those songs. Sort it by artists with the most songs first, then alphabetically by artist name.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist, COUNT(*) AS song_count, AVG(spotify_streams) AS avg_streams\nFROM top_songs\nWHERE release_date BETWEEN '2023-01-01' AND '2024-12-31'\nGROUP BY artist\nORDER BY song_count DESC, artist;",
+      "hintMessage": "WHERE release_date BETWEEN '2023-01-01' AND '2024-12-31' picks the window (inclusive). You will use COUNT() and AVG() for this query.",
+      "successMessage": "Great work! You combined a date range filter with two aggregates and a group—that's real reporting SQL.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

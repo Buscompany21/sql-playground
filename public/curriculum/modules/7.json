@@ -1,0 +1,70 @@
+{
+  "moduleId": 7,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Licensing wants albums and labels information",
+      "task": "The operations team just added a second table called album_info. Each row contains an album name and label. Join the top_songs table to album_info using the album_name column. Show all columns from both tables. Keep every song from top_songs, even if there is no matching album in album_info.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs LEFT JOIN album_info ON top_songs.album_name = album_info.album_name;",
+      "hintMessage": "LEFT JOIN the top_songs and album_info tables on the album_name column.",
+      "successMessage": "Great job! You joined the two tables on the album_name column and selected all the columns from both tables.",
+      "table": [
+        "album_info",
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Only songs with label rows",
+      "task": "Someone on the festival marketing squad wants only the songs that have a matching album in album_info. Show all rows where top_songs has a matching album in album_info.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs INNER JOIN album_info ON top_songs.album_name = album_info.album_name;",
+      "hintMessage": "INNER JOIN the top_songs and album_info tables on the album_name column.",
+      "successMessage": "Great job! You joined the two tables for albums that have a label.",
+      "table": [
+        "top_songs",
+        "album_info"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Top five: track and label",
+      "task": "Tour operations is printing wristbands for the first 5 songs in the table (id between 1 and 5). For each of those rows, show track_name and label. Keep tracks even when the directory has no row for that album.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, label AS label\nFROM top_songs\nLEFT JOIN album_info ON top_songs.album_name = album_info.album_name\nWHERE id BETWEEN 1 AND 5;",
+      "hintMessage": "LEFT JOIN album_info on the album_name column. Check where the id is between 1 and 5.",
+      "successMessage": "Great job! You joined the two tables for the top 5 songs and selected the track_name and label columns.",
+      "table": [
+        "top_songs",
+        "album_info"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Top five with a label match",
+      "task": "Stellar Sound is preparing VIP wristbands for the highest-ranked songs on the chart, but they can only make wristbands for albums that already have label details on file. From the top_songs table, return every column for songs ranked 1 through 5 where the album also appears in the album_info table. Use the top_songs and album_info tables. HINT: There will only be 3 rows returned.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT *\nFROM top_songs\nINNER JOIN album_info ON top_songs.album_name = album_info.album_name\nWHERE id BETWEEN 1 AND 5;",
+      "hintMessage": "INNER JOIN album_info on album_name. WHERE id BETWEEN 1 AND 5. There will only be 3 rows retured",
+      "successMessage": "We only have wristbands for the top five songs that have a matching album in album_info.",
+      "table": [
+        "top_songs",
+        "album_info"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Long chart run plus label",
+      "task": "Radio partnerships wants a full song row for every track that has been on the chart at least 25 weeks and has a matching album in the label directory.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT *\nFROM top_songs\nINNER JOIN album_info ON top_songs.album_name = album_info.album_name\nWHERE weeks_on_chart >= 25;",
+      "hintMessage": "INNER JOIN album_info on album_name. WHERE weeks_on_chart >= 25.",
+      "successMessage": "Radio has full rows for every long chart run that already has label info—ready to pitch without chasing paperwork first.",
+      "table": [
+        "top_songs",
+        "album_info"
+      ]
+    }
+  ]
+}

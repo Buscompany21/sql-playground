@@ -1,0 +1,67 @@
+{
+  "moduleId": 5,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Build the scouting roster (CREATE TABLE)",
+      "task": "Stellar Sound is launching a new-artist scouting program and the database is empty. Create the new_artists table with the following columns: id, name, genre, country, signed_date. Use your best judgement for the data types.",
+      "initialCode": "CREATE TABLE new_artists (...);\n\nSELECT * FROM new_artists;",
+      "solution": "CREATE TABLE new_artists (id INTEGER PRIMARY KEY, name TEXT, genre TEXT, country TEXT, signed_date DATE);",
+      "hintMessage": "Use CREATE TABLE name (col TYPE, col TYPE, ...);. Don't forget to add your primary key column.",
+      "successMessage": "Nice! new_artists is live.",
+      "schema": "module5_lesson1.sql"
+    },
+    {
+      "id": 2,
+      "title": "Sign one new artist (INSERT one row)",
+      "task": "A&R just signed a new pop artist out of the United States. Add ONE row to new_artists with id 1, name 'Echo Park', genre 'Pop', country 'United States', signed_date '2026-06-01'.",
+      "initialCode": "INSERT INTO new_artists (...)\nVALUES (...);\n\nSELECT * FROM new_artists;",
+      "solution": "INSERT INTO new_artists (id, name, genre, country, signed_date) VALUES (1, 'Echo Park', 'Pop', 'United States', '2026-06-01');\nSELECT * FROM new_artists;",
+      "hintMessage": "Use quotes around text and date values. List the columns inside the INSERT in the same order as the VALUES.",
+      "successMessage": "Great! Echo Park is officially on the roster.",
+      "schema": "module5_lesson2.sql",
+      "table": [
+        "new_artists"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Showcase signing (INSERT multiple rows)",
+      "task": "After Friday's showcase, three artists signed within a week. Insert all three into new_artists in a SINGLE INSERT statement (one INSERT, multiple VALUES rows). \nArtist 2: River Lights, Indie, Cambodia, 2026-06-15\nArtist 3: Crown Heights, Hip-Hop, England, 2026-06-18\nArtist 4: Luna Ray, R&B, Australia, 2026-06-20",
+      "initialCode": "INSERT INTO new_artists (...)\nVALUES\n  (...),\n  (...),\n  (...);\n\nSELECT * FROM new_artists;",
+      "solution": "INSERT INTO new_artists (id, name, genre, country, signed_date) VALUES\n  (2, 'River Lights', 'Indie', 'Cambodia', '2026-06-15'),\n  (3, 'Crown Heights', 'Hip-Hop', 'England', '2026-06-18'),\n  (4, 'Luna Ray', 'R&B', 'Australia', '2026-06-20');\nSELECT * FROM new_artists;",
+      "hintMessage": "One INSERT can add many rows at once, separated by commas: INSERT INTO table_name (cols) VALUES (...), (...), (...);. Don't forget single quotes around text and dates.",
+      "successMessage": "Perfect! All three showcase signings are in the system.",
+      "schema": "module5_lesson3.sql",
+      "table": [
+        "new_artists"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Move an artist's home base (UPDATE)",
+      "task": "Echo Park (id 1) just moved from the United States to Mexico. Change her country to 'Mexico'. End with: SELECT id, name, country FROM new_artists WHERE id = 1;",
+      "initialCode": "UPDATE new_artists SET ... WHERE ...;\n\nSELECT * FROM new_artists \nWHERE ...;",
+      "solution": "UPDATE new_artists SET country = 'Mexico' WHERE id = 1;\n\nSELECT * FROM new_artists \nWHERE id = 1;",
+      "hintMessage": "ALWAYS include a WHERE with an UPDATE statement. Without it, every row in the table changes, so filter on id = 1.",
+      "successMessage": "Got it — Echo Park's profile now shows Mexico.",
+      "schema": "module5_lesson4.sql",
+      "table": [
+        "new_artists"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Close the Australian branch (DELETE)",
+      "task": "Stellar Sound is closing its Australian office and dropping every artist signed there. DELETE all rows from new_artists who live in Australia.",
+      "initialCode": "DELETE FROM new_artists WHERE ...;\n\nSELECT * FROM new_artists;",
+      "solution": "DELETE FROM new_artists WHERE country = 'Australia';\n\nSELECT * FROM new_artists;",
+      "hintMessage": "Same warning as UPDATE: a DELETE with no WHERE empties the whole table. Filter on country = 'Australia'.",
+      "successMessage": "Done — Australian roster cleared.",
+      "schema": "module5_lesson5.sql",
+      "table": [
+        "new_artists"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "moduleId": 2,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Select with WHERE",
+      "task": "The promotions team at Stellar Sound is making a highlight video for Sabrina Carpenter. List every column for all her songs on the chart so they can prepare the clips.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE artist = 'Sabrina Carpenter';",
+      "hintMessage": "Use WHERE artist = 'Sabrina Carpenter'.",
+      "successMessage": "Great! You listed all of her songs.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Select with WHERE Greater Than",
+      "task": "Your manager at Stellar Sound wants the biggest streaming hits: show all columns for all songs with more than 2 billion Spotify streams.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE spotify_streams > 2000000000;",
+      "hintMessage": "Use WHERE spotify_streams > 2000000000 (9 zeroes).",
+      "successMessage": "Well done! These are the strongest numbers on the chart.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Select with WHERE Dates",
+      "task": "A famous blogger is writing a blog post about music before covid and how covid shifted the music industry. Can you find all songs released before January 1st, 2020? Show the track_name, artist, and release_date.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, artist, release_date FROM top_songs WHERE release_date < '2020-01-01';",
+      "hintMessage": "Compare dates with < '2020-01-01'.",
+      "successMessage": "Nice work! Now they’ve got all the data they need.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Select with WHERE for Two Elements",
+      "task": "Your team is putting together a report of recommended artists for an Outdoor Music Festival, but they want to leave out any artists in the Country or Folk genres. Return only the unique artist names whose genres are not Country or Folk.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT DISTINCT artist FROM top_songs WHERE genre != 'Country' AND genre != 'Folk';",
+      "hintMessage": "Use DISTINCT artist, filter with genre != 'Country' AND genre != 'Folk'.",
+      "successMessage": "Great! The festival list has no Country or Folk artists.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Select with WHERE for 2 Different Elements",
+      "task": "The magazine team is writing about Morgan Wallen’s biggest album. Show the track_name, artist, and album_name for songs where the artist is Morgan Wallen and the album is \"One Thing At A Time\".",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, artist, album_name FROM top_songs WHERE artist = 'Morgan Wallen' AND album_name = 'One Thing At A Time';",
+      "hintMessage": "Use AND for artist and album_name.",
+      "successMessage": "Perfect! Now the feature can highlight just the right songs.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { moduleConfig } from '../../config/moduleConfig'
 import { Button } from '../ui/button'
 import Link from 'next/link'
-import { X, ChevronDown, ChevronRight, FileText } from 'lucide-react'
+import { X, ChevronDown, ChevronRight } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 // Individual module navigation item with expandable levels
@@ -48,6 +48,15 @@ const ModuleNavigationItem = ({
       {isExpanded && (
         <div className="bg-slate-50 px-3 py-3 border-t">
           <div className="grid grid-cols-4 gap-2 mb-3">
+            <Link
+              href={`/module/${moduleId}`}
+              className={cn(
+                "flex items-center justify-center h-8 w-full rounded text-sm font-medium transition-colors",
+                "bg-white text-[#4E5964] border border-slate-200 hover:bg-[#E6F2F2] hover:text-[#2A6B70]"
+              )}
+            >
+              Home
+            </Link>
             {[...Array(maxLevels)].map((_, index) => {
               const levelNumber = index + 1;
               const isActiveLvl = isActive && activeLevelId === levelNumber;
@@ -69,16 +78,8 @@ const ModuleNavigationItem = ({
             })}
           </div>
           
-          <div className="flex justify-between items-center">
-            <Link
-              href={`/module/${moduleId}`}
-              className="text-xs text-[#5B8A9D] hover:text-[#4A7688] flex items-center gap-1"
-            >
-              <FileText className="h-3 w-3" />
-              <span>Overview</span>
-            </Link>
-            
-            {parseInt(moduleId) < Object.keys(moduleConfig).length && (
+          {parseInt(moduleId) < Object.keys(moduleConfig).length && (
+            <div className="flex justify-end items-center">
               <Link
                 href={`/module/${parseInt(moduleId) + 1}`}
                 className="text-xs text-[#5B8A9D] hover:text-[#4A7688] flex items-center gap-1"
@@ -86,8 +87,8 @@ const ModuleNavigationItem = ({
                 <span>Next Module</span>
                 <ChevronRight className="h-3 w-3" />
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>

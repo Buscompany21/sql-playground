@@ -1,0 +1,65 @@
+{
+  "moduleId": 3,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Filter with BETWEEN for Dates",
+      "task": "The planning team wants to study music trends in 2023. Show all columns for every song released between January 1, 2023 and December 31, 2023.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE release_date BETWEEN '2023-01-01' AND '2023-12-31';",
+      "hintMessage": "Use BETWEEN '2023-01-01' AND '2023-12-31' on release_date.",
+      "successMessage": "Good work! You listed only the 2023 songs.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Using LIKE with Wildcards",
+      "task": "The marketing team is making a pink-themed playlist poster. Find song titles that contain the word 'pink'.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name FROM top_songs WHERE track_name LIKE '%pink%';",
+      "hintMessage": "Try WHERE track_name LIKE '%pink%'.",
+      "successMessage": "Nice! The pink playlist titles are ready.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Albums Starting with f",
+      "task": "For a February magazine spread, the design team needs every song where the album name starts with the letter F, show all columns for each song.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE album_name LIKE 'F%';",
+      "hintMessage": "Use LIKE 'F%'.",
+      "successMessage": "Done! You’ve filtered the songs for the design feature.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Songs Released in May 2024",
+      "task": "To celebrate the start of spring, the marketing team needs every song released in May 2024. Show all columns for each song released in May 2024.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE release_date LIKE '2024-05-%';",
+      "hintMessage": "Use LIKE with a date pattern like '2024-05-%'.",
+      "successMessage": "Perfect! The May playlist is ready to go.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Select with IN",
+      "task": "You’re building a comparison between Taylor Swift, Kendrick Lamar, and Morgan Wallen. Show all columns for all songs by these artists.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs WHERE artist IN ('Taylor Swift', 'Kendrick Lamar', 'Morgan Wallen');",
+      "hintMessage": "Use artist IN ('Taylor Swift', 'Kendrick Lamar', 'Morgan Wallen').",
+      "successMessage": "Great! All three artists are in one result table.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

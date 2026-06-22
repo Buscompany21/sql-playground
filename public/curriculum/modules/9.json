@@ -1,0 +1,67 @@
+{
+  "moduleId": 9,
+  "levels": [
+    {
+      "id": 1,
+      "title": "Harbor Light in the 2024 window",
+      "task": "Royalties at Stellar Sound are looking at songs released in 2024, but only for albums with the Harbor Light Music label. Return every column from top_songs for rows where label is Harbor Light Music and released in 2024 (from '2024-01-01' through '2024-12-31') and sort by release_date. Use the top_songs and album_info tables.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT *\nFROM top_songs\nINNER JOIN album_info ON top_songs.album_name = album_info.album_name\nWHERE label = 'Harbor Light Music'\n  AND release_date >= '2024-01-01'\n  AND release_date <= '2024-12-31'\nORDER BY release_date;",
+      "hintMessage": "INNER JOIN album_info ON top_songs.album_name = album_info.album_name. WHERE label = 'Harbor Light Music' AND release_date from '2024-01-01' through '2024-12-31'. SELECT t.*. ORDER BY t.release_date",
+      "successMessage": "Good—label metadata plus a year window is a common royalties cut. Here the slice is empty for this sample data.",
+      "table": [
+        "top_songs",
+        "album_info"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "How many albums per label",
+      "task": "Label relations want to know how many albums each label has. Show each label and the number of albums that label lists (album_count). Group by label and sort with the largest count first.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT label, COUNT(*) AS album_count\nFROM album_info\nGROUP BY label\nORDER BY album_count DESC;",
+      "hintMessage": "You only need use the album_info table and don't forget to GROUP BY label.",
+      "successMessage": "Great—that GROUP BY snapshot is how teams compare partner depth.",
+      "table": [
+        "album_info"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Riverside songs on the chart",
+      "task": "Partnerships only wants songs that are signed with a label. Show the count of songs (song_count) signed with Riverside Audio. ",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT COUNT(*) AS song_count\nFROM top_songs\nINNER JOIN album_info ON top_songs.album_name = album_info.album_name\nWHERE label = 'Riverside Audio';",
+      "hintMessage": "Only keep rows where label = 'Riverside Audio'",
+      "successMessage": "Great job! You provided the count of songs signed with Riverside Audio.",
+      "table": [
+        "top_songs",
+        "album_info"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Genre change",
+      "task": "The genre 'Alternative' has changed its name to 'Indie', so we need to use REPLACE to update the genre column. Return the track_name and the new genre column called genre_display for rows where genre is 'Alternative'.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, REPLACE(genre, 'Alternative', 'Indie') AS genre_display\nFROM top_songs\nWHERE genre = 'Alternative';",
+      "hintMessage": "REPLACE(genre, 'Alternative', 'Indie') AS genre_display.",
+      "successMessage": "Great job! You changed the genre from Alternative to Indie.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Song count per artist",
+      "task": "The CEO wants to know how many songs each artist has. Show the count of songs (song_count) per artist. Group by artist and sort with the largest count first.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT artist, COUNT(*) AS song_count\nFROM top_songs\nGROUP BY artist\nORDER BY song_count DESC;",
+      "hintMessage": "You only need use the top_songs table and don't forget to GROUP BY artist.",
+      "successMessage": "Great job! You provided the count of songs per artist.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

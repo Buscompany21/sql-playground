@@ -1,0 +1,65 @@
+{
+  "moduleId": 1,
+  "levels": [
+    {
+      "id": 1,
+      "title": "First Day on the Job",
+      "task": "Your supervisor at Stellar Sound wants a quick look at the latest chart. She asks you to open the whole top_songs table. Show every column with SELECT * FROM top_songs.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT * FROM top_songs;",
+      "hintMessage": "Write only: SELECT * FROM top_songs.",
+      "successMessage": "Great job! You showed the full chart table.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Select Specific Column",
+      "task": "You are asked to help the playlist team at Stellar Sound. They want all song titles in alphabetical order so the team can scan ideas fast. Return track_name in alphabetical order from the top_songs table.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name FROM top_songs ORDER BY track_name;",
+      "hintMessage": "Use SELECT track_name FROM top_songs ORDER BY track_name.",
+      "successMessage": "Great! The team can read the titles in alphabetical order.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Select Distinct",
+      "task": "The artist team at Stellar Sound is building their artist discovery list from the top_songs table. They want to see every artist who made it onto the Top 50 chart, but they only need each artist listed once. Return the artist column with no repeats, and sort the artists alphabetically from the top_songs table.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT DISTINCT artist FROM top_songs ORDER BY artist;",
+      "hintMessage": "Use DISTINCT artist and ORDER BY artist so the list order is the same every time.",
+      "successMessage": "Nice work! The artist team has a clean artist list.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Sorting with ORDER BY",
+      "task": "Your boss is curious about how release timing affects popularity. She asks you to organize the songs by release date so she can look for trends. Provide a list of track_name, artist, and release_date from the top_songs table with the most recent release dates first.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, artist, release_date FROM top_songs ORDER BY release_date DESC;",
+      "hintMessage": "Use columns in this order: track_name, artist, release_date. Then ORDER BY release_date DESC.",
+      "successMessage": "Great work! Your boss can now see which songs are newest first.",
+      "table": [
+        "top_songs"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Select with ORDER BY",
+      "task": "Another intern at Stellar Sound is building an artist spotlight wall. She wants to see only the track_name and artist from the top_songs table. Sort by artist and track_name.",
+      "initialCode": "-- Write your query here\n",
+      "solution": "SELECT track_name, artist FROM top_songs ORDER BY artist, track_name;",
+      "hintMessage": "SELECT track_name, artist then ORDER BY artist, track_name so the order is the same every time.",
+      "successMessage": "Great! Your intern can build the wall with this sorted list.",
+      "table": [
+        "top_songs"
+      ]
+    }
+  ]
+}

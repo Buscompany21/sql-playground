@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Button } from "./ui/button"
 import { ArrowRight, ChevronRight, BookOpen } from 'lucide-react'
 import { moduleConfig, curriculumStoryline } from '../config/moduleConfig'
@@ -134,7 +134,7 @@ export function ModuleStorylinePreview({ moduleId }) {
         <p className="text-sm text-[#4E5964] line-clamp-4 flex-grow">
           {moduleData.storyline.text}
         </p>
-        
+
         <div className="mt-5 flex justify-end">
           <Link href={`/module/${moduleId}`} className="group-hover:translate-x-0.5 transition-transform">
             <Button 
